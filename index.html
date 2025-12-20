@@ -1,57 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
-  
-  <title>Frontend Mentor | Typing Speed Test</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/favicon-32x32.png"
+    />
 
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
-</head>
-<body>
+    <title>Frontend Mentor | Typing Speed Test</title>
 
-  Personal best: <!-- PB --> WPM
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style>
+      .attribution {
+        font-size: 11px;
+        text-align: center;
+      }
+      .attribution a {
+        color: hsl(228, 45%, 44%);
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="index.html">
+          <img
+            src="./assets/images/logo-large.svg"
+            alt="Typing Speed Test Logo"
+          />
+        </a>
+      </nav>
+      <h1>Personal best: 92WPM</h1>
+    </header>
 
-  WPM: <!-- WPM -->
-  Accuracy: <!-- Accuracy -->
-  Time: <!-- Time -->
+    <main>
+      <section class="time-area">
+        <!-- PB -->
+        <div class="time-measurements">
+          <!-- WPM -->
+          <p class="time-button" data-time="15">WPM:</p>
+          <!-- Accuracy -->
+          <p class="time-button" data-time="30">Accuracy:</p>
 
-  Difficulty:
-  Easy
-  Medium
-  Hard
+          <!-- Time -->
+          <p class="time-button" data-time="60">Time:</p>
+        </div>
+      </section>
+      <section class="settings-area">
+        <div class="settings-wrapper">
+          <div class="difficulty-settings">
+            <h2>Difficulty:</h2>
 
-  Mode:
-  Timed (60s)
-  Passage
+            <button class="difficulty-button" type="button">Easy</button>
 
-  <!-- Passage -->
+            <button class="difficulty-button" type="button">Medium</button>
+            <button class="difficulty-button" type="button">Hard</button>
+          </div>
+          <div class="mode-settings">
+            <h2>Mode:</h2>
+            <button class="mode-button" type="button">Timed (60s)</button>
+            <button class="mode-button" type="button">Passage</button>
+          </div>
+        </div>
+      </section>
 
-  Start Typing Test
-  Or click the text and start typing
+      <!-- Passage Text -->
+      <section class="test-area">
+        <div class="test-wrapper">
+          <div class="test-text">
+            <p></p>
+          </div>
+          <textarea
+            class="test-input"
+            placeholder="Click here and start typing..."
+          ></textarea>
+        </div>
+      </section>
 
-  <!-- Test Complete Start -->
+      <section class="Passage">
+        <button class="passage" type="button">Start Typing Test</button> Or
+        click the text and start typing
+      </section>
 
-  Test Complete!
-  Solid run. Keep pushing to beat your high score.
+      <!-- Test Complete Start -->
+      <section>
+        <div class="result">
+          <div class="test-complete">
+            <img src="./assets/images/icon-completed.svg" alt="Check Icon" />
+            <h2>Test Complete!</h2>
+            <p>Solid run. Keep pushing to beat your high score.</p>
+          </div>
+        
+          <div class="test-result">
+            <!-- WPM -->
+          <div class="result-WPM">
+               <h1>WPM: </h2> </div>
+          <!-- Accuracy: Characters: -->
+           <div class="result-Accuracy">
+               <h1>Accuracy: </h2> </div>
+          <!-- Correct/Incorrect -->
+           <div class="result-Errors">
+                <h1>Characters: </h2> </div>  
+        </div>
+          <button class="reset" type="button">Go Again</button>  
+      </div>
+       
+      </section>
+    </main>
+    <!-- Test Complete End -->
 
-  WPM: <!-- WPM -->
-  Accuracy: <!-- Accuracy -->
-  Characters: <!-- Correct/Incorrect -->
-
-  Go Again
-  
-  <!-- Test Complete End -->
-
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
-</body>
+    <div class="attribution">
+      Challenge by
+      <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>.
+      Coded by <a href="#">Your Name Here</a>.
+    </div>
+  </body>
 </html>
