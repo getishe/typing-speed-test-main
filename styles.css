@@ -1,0 +1,160 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+}
+:root {
+  /* Neutral Colors */
+  --neutral-900: hsl(0, 0%, 7%);
+  --neutral-800: hsl(0, 0%, 15%);
+  --neutral-500: hsl(240, 3%, 46%);
+  --neutral-400: hsl(240, 1%, 59%);
+  --neutral-0: hsl(0, 0%, 100%);
+
+  /* Blue Colors */
+  --blue-600: hwb(214 10% 0%);
+  --blue-400: hsl(210, 100%, 65%);
+
+  /* Red Color */
+  --red-500: hsl(354, 63%, 57%);
+
+  /* Green Color */
+  --green-500: hsl(140, 63%, 57%);
+
+  /* Yellow Color */
+  --yellow-400: hsl(49, 85%, 70%);
+
+  /* Typography */
+  --font-family: "Sora", sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-size-body: 16px;
+}
+
+body {
+  background-color: var(--neutral-900);
+  color: var(--neutral-0);
+  font-size: var(--font-size-body);
+  line-height: 1.6;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+  /* padding: 20px; */
+  margin-top: 20px;
+  border: 2px solid red;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.trophy-icon {
+  height: 24px;
+  width: auto;
+}
+.theme-toggle h1 {
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--neutral-500);
+}
+
+main {
+  padding: 20px 0;
+}
+
+section#intro-area {
+  border: 2px solid red;
+  display: flex;
+  justify-content: space-between;
+}
+
+.time-measurements {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.time-measurements p:not(.wpm):not(.accuracy):not(.time) {
+  font-weight: var(--font-weight-bold);
+  /* font-size: clamp(2.5rem, 10vw, 11.2rem); */
+  line-height: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+span:is(.wpm, .accuracy, .time) {
+  font-weight: var(--font-weight-regular);
+  color: var(--neutral-400);
+}
+
+span.break {
+  color: var(--neutral-500);
+  font-weight: var(--font-weight-regular);
+  padding: 0 5px;
+  /* border: 2px solid red; */
+}
+
+.settings-wrapper {
+  border: 2px solid blue;
+  display: flex;
+  gap: 20px;
+}
+
+.difficulty-settings {
+  display: flex;
+  gap: 5px;
+}
+.difficulty-settings p {
+  margin-right: 5px;
+  font-weight: var(--font-weight-regular);
+  color: var(--neutral-400);
+}
+.difficulty-settings button {
+  background-color: var(--neutral-800);
+  color: var(--neutral-0);
+  border: 1px solid var(--neutral-500);
+  text-align: center;
+  padding: 0 10px;
+  width: auto;
+  height: 25px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mode-settings {
+  display: flex;
+  gap: 5px;
+}
+.mode-settings p {
+  margin-right: 5px;
+  font-weight: var(--font-weight-regular);
+  color: var(--neutral-400);
+}
+
+.mode-settings button {
+  background-color: var(--neutral-800);
+  color: var(--neutral-0);
+  border: 1px solid var(--neutral-500);
+  text-align: center;
+  padding: 0 10px;
+  width: auto;
+  height: 25px;
+  border-radius: 5px;
+  cursor: pointer;
+}
