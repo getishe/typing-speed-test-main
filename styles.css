@@ -256,3 +256,8 @@ section.result-area {
     0 0 10px 12px var(--neutral-900), 0 0 10px 19px var(--green-500),
     0 0 10px var(--green-500);
 }
+
+.test-complete h2 {
+  color: var(--neutral-0);
+  margin-top: 20px;
+}
