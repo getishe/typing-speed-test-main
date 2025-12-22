@@ -53,12 +53,12 @@
         <!-- PB -->
         <div class="time-measurements">
           <!-- WPM -->
-          <p class="time-button" data-time="15"><span class="wpm">WPM: </span>0  <span class="break">|</span></p>
+          <p class="time-button" data-time="15"><span class="wpm">WPM: </span>0  <hr> </p>
           <!-- Accuracy -->
-          <p class="time-button" data-time="30"><span class="accuracy">Accuracy: </span>100%  <span class="break">|</span></p>
+          <p class="time-button" data-time="30"><span class="accuracy">Accuracy: </span>100%  <hr> </p>
 
           <!-- Time -->
-          <p class="time-button" data-time="60"><span class="time">Time: </span>0:60  </p>
+          <p class="time-button" data-time="60"><span class="time">Time: </span>0:60   </p>
         </div>
  
       <!-- <section class="settings-area"> -->
@@ -68,18 +68,20 @@
             <button class="difficulty-button" type="button">Easy</button>
             <button class="difficulty-button" type="button">Medium</button>
             <button class="difficulty-button" type="button">Hard</button>
-            <span class="break">|</span>
+            
           </div>
           <div class="mode-settings">
             <p>Mode:</p>
             <button class="mode-button" type="button">Timed (60s)</button>
             <button class="mode-button" type="button">Passage</button>
           </div>
+           
         </div>
+      
       </section>
-  
+     <div class="horizontal-line"></div>
       <!-- Passage Text -->
-      <section class="test-area">
+      <section class="text-area">
         <div class="test-wrapper">
           <div class="test-text">
             <p></p>
@@ -91,14 +93,14 @@
         </div>
       </section>
 
-      <section class="Passage">
+      <section class="passage-area">
         <button class="passage" type="button">Start Typing Test</button> Or
         click the text and start typing
       </section>
 
       <!-- Test Complete Start -->
-      <section>
-        <div class="result">
+      <section class="result-area">
+       
           <div class="test-complete">
             <img src="./assets/images/icon-completed.svg" alt="Check Icon" />
             <h2>Test Complete!</h2>
@@ -108,16 +110,16 @@
           <div class="test-result">
             <!-- WPM -->
           <div class="result-WPM">
-               <h1>WPM: </h2> </div>
+               <h1>WPM: </h1> </div>
           <!-- Accuracy: Characters: -->
            <div class="result-Accuracy">
-               <h1>Accuracy: </h2> </div>
+               <h1>Accuracy: </h1> </div>
           <!-- Correct/Incorrect -->
            <div class="result-Errors">
-                <h1>Characters: </h2> </div>  
+                <h1>Characters: </h1> </div>  
         </div>
           <button class="reset" type="button">Go Again</button>  
-      </div>
+      
        
       </section>
     </main>
