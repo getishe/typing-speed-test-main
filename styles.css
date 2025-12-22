@@ -8,6 +8,7 @@
   /* Neutral Colors */
   --neutral-900: hsl(0, 0%, 7%);
   --neutral-800: hsl(0, 0%, 15%);
+  --neutral-700: hsl(240, 2%, 25%);
   --neutral-500: hsl(240, 3%, 46%);
   --neutral-400: hsl(240, 1%, 59%);
   --neutral-0: hsl(0, 0%, 100%);
@@ -259,5 +260,65 @@ section.result-area {
 
 .test-complete h2 {
   color: var(--neutral-0);
+  font-size: 2rem;
   margin-top: 20px;
+}
+
+.test-complete p {
+  color: var(--neutral-400);
+}
+
+.test-result {
+  border: 2px solid red;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+:is(.result-WPM, .result-Accuracy, .result-Errors) {
+  padding: 10px;
+  height: 70px;
+  width: auto;
+  border: 2px solid var(--neutral-700);
+  border-radius: 8px;
+  /* text-align: center; */
+}
+:where(.result-WPM h1, .result-Accuracy h1, .result-Errors h1) {
+  color: var(--neutral-400);
+  font-size: var(--font-size-body);
+}
+
+button.reset {
+  background-color: var(--neutral-0);
+  margin-top: 20px;
+  color: var(--neutral-900);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
+
+button.reset:hover {
+  background-color: var(--neutral-400);
+}
+
+button.reset:active {
+  background-color: var(--neutral-500);
+}
+
+button.reset:focus {
+  outline: 2px solid var(--blue-600);
+}
+
+button.reset img {
+  height: 16px;
+  width: auto;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+button.reset img:hover {
+  filter: brightness(0.8);
 }
