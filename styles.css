@@ -279,7 +279,8 @@ section.result-area {
   padding: 10px;
   height: 70px;
   width: auto;
-  border: 2px solid var(--neutral-700);
+  /* border: 2px solid var(--neutral-700); */
+  border: 0.2px solid var(--neutral-500);
   border-radius: 8px;
   /* text-align: center; */
 }
