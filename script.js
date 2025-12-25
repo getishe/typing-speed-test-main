@@ -40,10 +40,23 @@ modeSettings.forEach((buttons) => {
 function startTest() {
   console.log("statred");
 }
-start.addEventListener("click", () => {
-  if (start) {
+if (start) {
+  start.addEventListener("click", () => {
     startTest();
-  }
+  });
+}
+function resetTest() {
+  console.log("restart");
+}
+
+reset.addEventListener("click", () => {
+  resetTest();
+});
+
+textarea.addEventListener("input", () => {
+  map.set("input", textarea.value);
+  console.log(textarea.value);
+  console.log(map.get("input"));
 });
 
 // const timemodebutton = document
