@@ -38,11 +38,12 @@ modeSettings.forEach((buttons) => {
 //Add click listener to start button → call a startTest() function
 
 function startTest() {
-  console.log("statred");
+  console.log(" Test statred");
 }
 if (start) {
   start.addEventListener("click", () => {
     startTest();
+    textarea.focus();
   });
 }
 function resetTest() {
@@ -57,6 +58,10 @@ textarea.addEventListener("input", () => {
   map.set("input", textarea.value);
   console.log(textarea.value);
   console.log(map.get("input"));
+});
+
+textarea.addEventListener("focus", () => {
+  startTest();
 });
 
 // const timemodebutton = document
