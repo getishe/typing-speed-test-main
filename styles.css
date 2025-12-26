@@ -242,14 +242,14 @@ section.passage-area {
   background-color: var(--blue-400);
 }
 
-section.result-area {
+/* section.result-area {
   border: 2px solid red;
   display: grid;
   gap: 10px;
   margin: 50px auto;
   place-items: center;
   padding: 20px;
-}
+} */
 
 .test-complete {
   text-align: center;
@@ -277,15 +277,18 @@ section.result-area {
 
 .test-result {
   border: 2px solid red;
-  display: grid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 10px;
+  /* margin: 0 auto; */
 }
 :is(.result-WPM, .result-Accuracy, .result-Errors) {
   padding: 10px;
   height: 70px;
-  width: auto;
+  width: 150px;
   border: 0.1px solid var(--neutral-700);
   border-radius: 8px;
   /* text-align: center; */
@@ -295,9 +298,13 @@ section.result-area {
   font-size: var(--font-size-body);
 }
 
-button.reset {
+button.reset-button {
   background-color: var(--neutral-0);
-  margin-top: 20px;
+  /* margin: 20px auto 0 auto; */
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--neutral-900);
   border: none;
   padding: 10px 20px;
@@ -307,32 +314,32 @@ button.reset {
   font-weight: var(--font-weight-semibold);
 }
 
-button.reset:hover {
+button.reset-button:hover {
   background-color: var(--neutral-400);
 }
 
-button.reset:active {
+button.reset-button:active {
   background-color: var(--neutral-500);
 }
 
-button.reset:focus {
+button.reset-button:focus {
   outline: 2px solid var(--blue-600);
 }
 
-button.reset img {
+button.reset-button img {
   height: 16px;
   width: auto;
   margin-left: 8px;
   vertical-align: middle;
 }
 
-button.reset img:hover {
+button.reset-button img:hover {
   filter: brightness(0.8);
 }
 
-.test-state {
+/* .test-state {
   display: none;
-}
+} */
 
 .test-state.active {
   display: block;
