@@ -288,7 +288,7 @@ section.passage-area {
 :is(.result-WPM, .result-Accuracy, .result-Errors) {
   padding: 10px;
   height: 70px;
-  width: 150px;
+  width: 120px;
   border: 0.1px solid var(--neutral-700);
   border-radius: 8px;
   /* text-align: center; */
@@ -336,10 +336,9 @@ button.reset-button img {
 button.reset-button img:hover {
   filter: brightness(0.8);
 }
-
-/* .test-state {
+.test-state {
   display: none;
-} */
+}
 
 .test-state.active {
   display: block;
