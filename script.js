@@ -23,6 +23,9 @@ difficultySettings.forEach((button) => {
     difficultySettings.forEach((d) => d.classList.remove("active"));
     // add active to the clicked one
     button.classList.add("active");
+
+    gameState.difficulty = button.textContent.toLocaleLowerCase();
+    console.log("Difficulty", gameState.difficulty);
   });
 });
 
@@ -32,6 +35,10 @@ modeSettings.forEach((buttons) => {
     modeSettings.forEach((s) => s.classList.remove("active"));
     // add active to the clicked one
     buttons.classList.add("active");
+    gameState.mode = buttons.textContent.includes("Timed")
+      ? "timed"
+      : "passage";
+    console.log("Difficulty", gameState.mode);
   });
 });
 
@@ -40,16 +47,17 @@ modeSettings.forEach((buttons) => {
 function startTest() {
   console.log(" Test statred");
 }
-if (start) {
-  start.addEventListener("click", () => {
-    startTest();
-    textarea.focus();
-  });
-}
+
 function resetTest() {
   console.log("restart");
 }
+if (start) {
+  start.addEventListener("click", () => {
+    startTest();
 
+    textarea.focus();
+  });
+}
 reset.addEventListener("click", () => {
   resetTest();
 });
@@ -64,15 +72,38 @@ textarea.addEventListener("focus", () => {
   startTest();
 });
 
-// const timemodebutton = document
-// function showState(stateName) {
-//   document.querySelectorAll('.test-state').forEach(state => {
-//     state.classList.remove('active');
-//   });
-//   document.getElementById(stateName).classList.add('active');
-// }
+const gameState = {
+  difficulty: "easy",
+  mode: "timed",
+  isTestActive: false,
+  typedText: "",
+};
 
+function showState(stateName) {
+  document.querySelectorAll(".test-state").forEach((state) => {
+    state.classList.add("active");
+  });
+  document.getElementById(stateName).classList.add("active");
+}
+
+function startTest() {
+  gameState.isTestActive = true;
+  textarea.value = ""; // Clear textarea
+  showState("test-active");
+  console.log("Test started");
+  textarea.focus();
+  // Show the typing section (adjust ID to match your HTML)
+}
 // // Usage:
 // showState('test-active');    // Show typing screen
 // showState('test-results');   // Show results
 // showState('test-setup');     // Back to initial
+
+function resetTest() {
+  gameState.isTestActive = false;
+  textarea.value = ""; // Clear textarea
+  // Show setup section
+
+  showState("test-setup");
+  console.log("Test reset");
+}
