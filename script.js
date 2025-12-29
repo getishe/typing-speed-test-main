@@ -1,21 +1,22 @@
-const easybutton = document.querySelector(".easy-button");
-const mediumbutton = document.querySelector(".medium-button");
-const hardbutton = document.querySelector(".hard-button");
-
-const timemodebutton = document.querySelector(".Time-mode-button");
-const passagemodebutton = document.querySelector(".passage-mode-button");
-
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 
 const textarea = document.querySelector(".text-input");
 const teststate = document.querySelectorAll(".test-state");
 
+const passageArea = document.querySelector(".passage-area");
 const difficultySettings = document.querySelectorAll(
   ".difficulty-settings button"
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
+
+const gameState = {
+  difficulty: "easy",
+  mode: "timed",
+  isTestActive: false,
+  typedText: "",
+};
 
 difficultySettings.forEach((button) => {
   button.addEventListener("click", () => {
@@ -38,14 +39,14 @@ modeSettings.forEach((buttons) => {
     gameState.mode = buttons.textContent.includes("Timed")
       ? "timed"
       : "passage";
-    console.log("Difficulty", gameState.mode);
+    console.log("Mode", gameState.mode);
   });
 });
 
 //Add click listener to start button → call a startTest() function
 
 function startTest() {
-  console.log(" Test statred");
+  console.log("Test started");
 }
 
 function resetTest() {
@@ -54,30 +55,31 @@ function resetTest() {
 if (start) {
   start.addEventListener("click", () => {
     startTest();
-
+    // passageArea.remove();
     textarea.focus();
   });
 }
-reset.addEventListener("click", () => {
-  resetTest();
-});
+if (reset) {
+  reset.addEventListener("click", () => {
+    resetTest();
+  });
+}
 
-textarea.addEventListener("input", () => {
-  map.set("input", textarea.value);
-  console.log(textarea.value);
-  console.log(map.get("input"));
-});
+if (textarea) {
+  textarea.addEventListener("input", () => {
+    // map.set("input", textarea.value);
+    // console.log(textarea.value);
+    // console.log(map.get("input"));
+    gameState.typedText = textarea.value;
+    console.log(gameState.typedText);
+  });
 
-textarea.addEventListener("focus", () => {
-  startTest();
-});
-
-const gameState = {
-  difficulty: "easy",
-  mode: "timed",
-  isTestActive: false,
-  typedText: "",
-};
+  textarea.addEventListener("focus", () => {
+    if (!gameState.isTestActive) {
+      startTest();
+    }
+  });
+}
 
 function showState(stateName) {
   document.querySelectorAll(".test-state").forEach((state) => {
@@ -102,11 +104,21 @@ function clearStates() {
 
 function startTest() {
   gameState.isTestActive = true;
-  textarea.value = ""; // Clear textarea
+  gameState.typedText = "";
+  if (textarea) {
+    textarea.value = ""; // Clear textarea
+    textarea.focus();
+  }
+  if (passageArea) {
+    passageArea.style.display = "none";
+  }
   showState("test-active");
   removeState("test-results");
   console.log("Test started");
-  textarea.focus();
+
+  if (passageArea) {
+    passageArea.style.display = "none";
+  }
   // Show the typing section (adjust ID to match your HTML)
 }
 // // Usage:
@@ -116,9 +128,14 @@ function startTest() {
 
 function resetTest() {
   gameState.isTestActive = false;
-  textarea.value = ""; // Clear textarea
+  gameState.typedText = "";
+  if (textarea) {
+    textarea.value = ""; // Clear textarea
+  }
   // Show setup section
-
+  if (passageArea) {
+    passageArea.style.display = "block";
+  }
   showState("test-setup");
-  console.log("Test reset");
+  console.log("Test reset", gameState);
 }
