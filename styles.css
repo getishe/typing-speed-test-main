@@ -210,7 +210,7 @@ textarea:focus {
   outline: none;
 }
 
-section#passage-area {
+section.passage-area {
   /* border: 2px solid red; */
   display: grid;
   text-align: center;
@@ -250,6 +250,22 @@ section#passage-area {
   place-items: center;
   padding: 20px;
 } */
+
+button.try-again-button {
+  background-color: var(--neutral-0);
+  /* margin: 20px auto 0 auto; */
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neutral-900);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+}
 
 .test-complete {
   text-align: center;
@@ -339,11 +355,7 @@ button.reset-button img:hover {
 .test-state {
   display: none;
 }
-/* 
-.hidden {
-  display: none;
-} */
 
-/* .test-state.active {
+.test-state.active {
   display: block;
-} */
+}
