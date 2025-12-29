@@ -11,11 +11,19 @@ const reset = document.querySelector(".reset-button");
 const textarea = document.querySelector(".text-input");
 const teststate = document.querySelectorAll(".test-state");
 
+const passageArea = document.getElementById("passage-area");
 const difficultySettings = document.querySelectorAll(
   ".difficulty-settings button"
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
+
+const gameState = {
+  difficulty: "easy",
+  mode: "timed",
+  isTestActive: false,
+  typedText: "",
+};
 
 difficultySettings.forEach((button) => {
   button.addEventListener("click", () => {
@@ -24,7 +32,7 @@ difficultySettings.forEach((button) => {
     // add active to the clicked one
     button.classList.add("active");
 
-    gameState.difficulty = button.textContent.toLocaleLowerCase();
+    gameState.difficulty = button.textContent.toLowerCase();
     console.log("Difficulty", gameState.difficulty);
   });
 });
@@ -44,66 +52,71 @@ modeSettings.forEach((buttons) => {
 
 //Add click listener to start button → call a startTest() function
 
-function startTest() {
-  console.log(" Test statred");
+// ========== #3 EVENT LISTENERS - Reset Button ==========
+if (reset) {
+  reset.addEventListener("click", () => {
+    resetTest();
+  });
 }
 
-function resetTest() {
-  console.log("restart");
-}
+// ========== #2 EVENT LISTENERS - Start Button ==========
 if (start) {
   start.addEventListener("click", () => {
     startTest();
-
     textarea.focus();
   });
 }
-reset.addEventListener("click", () => {
-  resetTest();
-});
+// ========== #2 EVENT LISTENERS - Textarea Input (Map Version) ==========
+// textarea.addEventListener("input", () => {
+//   map.set("input", textarea.value);
+//   console.log(textarea.value);
+//   console.log(map.get("input"));
+// });
 
-textarea.addEventListener("input", () => {
-  map.set("input", textarea.value);
-  console.log(textarea.value);
-  console.log(map.get("input"));
-});
-
-textarea.addEventListener("focus", () => {
-  startTest();
-});
-
-const gameState = {
-  difficulty: "easy",
-  mode: "timed",
-  isTestActive: false,
-  typedText: "",
-};
-
-function showState(stateName) {
-  document.querySelectorAll(".test-state").forEach((state) => {
-    state.classList.add("active");
+// ========== #2 EVENT LISTENERS - Textarea Input ==========
+if (textarea) {
+  textarea.addEventListener("input", () => {
+    gameState.typedText = textarea.value;
+    console.log("Typed text:", gameState.typedText);
   });
-  document.getElementById(stateName).classList.add("active");
+
+  textarea.addEventListener("focus", () => {
+    if (!gameState.isTestActive) {
+      startTest();
+    }
+  });
+}
+
+// ========== #3 STATE MANAGEMENT - Show/Hide States ==========
+function showState(stateName) {
+  // Remove active from ALL test-state sections
+  document.querySelectorAll(".test-state").forEach((state) => {
+    state.classList.remove("active");
+  });
+  // Add active to ONLY the one we want
+  document.getElementById(stateName).classList.remove("active");
 }
 
 function startTest() {
   gameState.isTestActive = true;
   textarea.value = ""; // Clear textarea
+  // Show typing screen, hide others
   showState("test-active");
-  console.log("Test started");
+  showState("test-setup");
+  showState("test-results");
+  gameState.typedText = "";
+  console.log("Test started", gameState);
   textarea.focus();
   // Show the typing section (adjust ID to match your HTML)
 }
-// // Usage:
-// showState('test-active');    // Show typing screen
-// showState('test-results');   // Show results
-// showState('test-setup');     // Back to initial
 
+// ========== #3 STATE MANAGEMENT - Reset Test ==========
 function resetTest() {
   gameState.isTestActive = false;
-  textarea.value = ""; // Clear textarea
-  // Show setup section
+  // showState("test-setup");
+  gameState.typedText = "";
+  showState("passage-area");
 
-  showState("test-setup");
+  textarea.value = ""; // clear textarea
   console.log("Test reset");
 }
