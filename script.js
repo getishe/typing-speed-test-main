@@ -4,7 +4,8 @@ const reset = document.querySelector(".reset-button");
 const textarea = document.querySelector(".text-input");
 const teststate = document.querySelectorAll(".test-state");
 
-const passageArea = document.querySelector(".passage-area");
+const againInfo = document.querySelector("#try-button");
+const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
   ".difficulty-settings button"
 );
@@ -45,17 +46,10 @@ modeSettings.forEach((buttons) => {
 
 //Add click listener to start button → call a startTest() function
 
-function startTest() {
-  console.log("Test started");
-}
-
-function resetTest() {
-  console.log("restart");
-}
 if (start) {
   start.addEventListener("click", () => {
     startTest();
-    // passageArea.remove();
+
     textarea.focus();
   });
 }
@@ -83,23 +77,24 @@ if (textarea) {
 
 function showState(stateName) {
   document.querySelectorAll(".test-state").forEach((state) => {
-    state.classList.add("active");
+    state.classList.remove("active");
   });
   document.getElementById(stateName).classList.add("active");
 }
 
-function removeState(stateName) {
+// function removeState(stateName) {
+//   document.querySelectorAll(".test-state").forEach((state) => {
+//     state.classList.add("active");
+//   });
+//   document.getElementById(stateName).classList.remove("active");
+// }
+
+function clearStates(stateName) {
+  // gameState.isTestActive = true;
   document.querySelectorAll(".test-state").forEach((state) => {
     state.classList.add("active");
   });
-  document.getElementById(stateName).classList.remove("active");
-}
-
-function clearStates() {
-  gameState.isTestActive = false;
-  document.querySelectorAll(".test-state").forEach((state) => {
-    state.classList.remove("active");
-  });
+  document.getElementById(stateName).classList.add("active");
 }
 
 function startTest() {
@@ -113,15 +108,12 @@ function startTest() {
     passageArea.style.display = "none";
   }
   showState("test-active");
-  removeState("test-results");
+
   console.log("Test started");
 
-  if (passageArea) {
-    passageArea.style.display = "none";
-  }
   // Show the typing section (adjust ID to match your HTML)
 }
-// // Usage:
+// Usage:
 // showState('test-active');    // Show typing screen
 // showState('test-results');   // Show results
 // showState('test-setup');     // Back to initial
@@ -132,10 +124,12 @@ function resetTest() {
   if (textarea) {
     textarea.value = ""; // Clear textarea
   }
-  // Show setup section
-  if (passageArea) {
-    passageArea.style.display = "block";
+
+  if (againInfo) {
+    againInfo.style.display = "block";
   }
-  showState("test-setup");
+  // Show setup section
+
+  clearStates("test-setup");
   console.log("Test reset", gameState);
 }
