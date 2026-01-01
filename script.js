@@ -4,7 +4,7 @@ const reset = document.querySelector(".reset-button");
 const textarea = document.querySelector(".text-input");
 const teststate = document.querySelectorAll(".test-state");
 
-const againInfo = document.querySelector("#try-button");
+const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
   ".difficulty-settings button"
@@ -75,28 +75,16 @@ if (textarea) {
   });
 }
 
-function showState(stateName) {
-  document.querySelectorAll(".test-state").forEach((state) => {
-    state.classList.remove("active");
+function setActiveStates(...stateNames) {
+  document
+    .querySelectorAll(".test-state")
+    .forEach((s) => s.classList.remove("active"));
+  stateNames.forEach((name) => {
+    const el = document.getElementById(name);
+    if (el) el.classList.add("active");
   });
-  document.getElementById(stateName).classList.add("active");
 }
-
-// function removeState(stateName) {
-//   document.querySelectorAll(".test-state").forEach((state) => {
-//     state.classList.add("active");
-//   });
-//   document.getElementById(stateName).classList.remove("active");
-// }
-
-function clearStates(stateName) {
-  // gameState.isTestActive = true;
-  document.querySelectorAll(".test-state").forEach((state) => {
-    state.classList.add("active");
-  });
-  document.getElementById(stateName).classList.add("active");
-}
-
+setActiveStates("test-setup");
 function startTest() {
   gameState.isTestActive = true;
   gameState.typedText = "";
@@ -107,16 +95,22 @@ function startTest() {
   if (passageArea) {
     passageArea.style.display = "none";
   }
-  showState("test-active");
+  setActiveStates("test-setup", "test-active", "try-button");
 
   console.log("Test started");
 
   // Show the typing section (adjust ID to match your HTML)
 }
-// Usage:
-// showState('test-active');    // Show typing screen
-// showState('test-results');   // Show results
-// showState('test-setup');     // Back to initial
+
+function endTest() {
+  gameState.isTestActive = false;
+  if (textarea) {
+    textarea.value = ""; // Clear textarea
+  }
+  setActiveStates("test-results");
+  console.log("Test ended", gameState);
+  // Show the test complete section (adjust ID to match your HTML)
+}
 
 function resetTest() {
   gameState.isTestActive = false;
@@ -124,12 +118,14 @@ function resetTest() {
   if (textarea) {
     textarea.value = ""; // Clear textarea
   }
-
-  if (againInfo) {
-    againInfo.style.display = "block";
-  }
-  // Show setup section
-
-  clearStates("test-setup");
   console.log("Test reset", gameState);
+  setActiveStates("test-setup");
+
+  // Show setup section
+}
+
+if (tryAgain) {
+  tryAgain.addEventListener("click", () => {
+    startTest();
+  });
 }
