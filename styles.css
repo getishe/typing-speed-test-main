@@ -90,7 +90,7 @@ section#intro-area {
   margin-bottom: 20px;
 }
 
-.time-measurements p:not(.wpm):not(.accuracy):not(.time) {
+.time-measurements p.time-button {
   font-weight: var(--font-weight-bold);
   /* font-size: clamp(2.5rem, 10vw, 11.2rem); */
   line-height: 1;
@@ -98,11 +98,16 @@ section#intro-area {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-span:is(.wpm, .accuracy, .time) {
   font-weight: var(--font-weight-regular);
   color: var(--neutral-400);
+  border: 1px solid var(--neutral-500);
+}
+
+.time-measurements p.time-button span {
+  font-size: clamp(0.5rem, 2vw, 5.2rem);
+  margin-left: 8px;
+  /* font-weight: var(--font-weight-bold); */
+  color: var(--neutral-0);
 }
 
 hr {
