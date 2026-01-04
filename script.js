@@ -1,7 +1,7 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 
-const textarea = document.querySelector(".text-input");
+const textarea = document.querySelector("textarea");
 const teststate = document.querySelectorAll(".test-state");
 const passageDisplay = document.querySelector("textarea.passage-display");
 const tryAgain = document.querySelector("#try-button");
@@ -27,6 +27,7 @@ const gameState = {
   timeRemaining: 60,
   timeElapsed: 0,
   timerStartTime: null,
+  timerRunning: false,
 };
 
 difficultySettings.forEach((button) => {
@@ -59,8 +60,6 @@ modeSettings.forEach((buttons) => {
 if (start) {
   start.addEventListener("click", () => {
     startTest();
-
-    textarea.focus();
     passageDisplay.focus();
   });
 }
@@ -161,8 +160,9 @@ function resetTest() {
 }
 
 if (tryAgain) {
-  tryAgain.addEventListener("click", () => {
+  tryAgain.addEventListener("click", (event) => {
     startTest();
+    event.preventDefault();
   });
 }
 
@@ -202,8 +202,10 @@ function getRandomSelection(passages, difficulty) {
 
 // Timer mode (60 seconds)
 function startTimedMode() {
-  gameState.timeRemaining = 60;
+  // if (gameState.timerRunning) return; // Prevent multiple timers
 
+  gameState.timeRemaining = 60;
+  // gameState.timerRunning = true;
   // Update UI every 1 second
   timerInterval = setInterval(() => {
     gameState.timeRemaining--;
@@ -221,6 +223,8 @@ function startTimedMode() {
     // Stop when time runs out
     if (gameState.timeRemaining <= 0) {
       clearInterval(timerInterval);
+      // gameState.timerRunning = false;
+      timerInterval = null;
       endTest();
     }
   }, 1000);
