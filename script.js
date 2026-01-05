@@ -202,10 +202,10 @@ function getRandomSelection(passages, difficulty) {
 
 // Timer mode (60 seconds)
 function startTimedMode() {
-  // if (gameState.timerRunning) return; // Prevent multiple timers
+  if (gameState.timerRunning) return; // Prevent multiple timers
 
   gameState.timeRemaining = 60;
-  // gameState.timerRunning = true;
+  gameState.timerRunning = true;
   // Update UI every 1 second
   timerInterval = setInterval(() => {
     gameState.timeRemaining--;
