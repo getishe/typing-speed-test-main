@@ -2,7 +2,7 @@ const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 
 // const textarea = document.querySelector("textarea");
-const teststate = document.querySelectorAll(".test-state");
+// const teststate = document.querySelectorAll(".test-state");
 const passageDisplay = document.querySelector(".passage-display");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
@@ -13,6 +13,8 @@ const difficultySettings = document.querySelectorAll(
 const modeSettings = document.querySelectorAll(".mode-settings button");
 
 let timerInterval = null;
+const TOTAL_TIME = 60;
+
 const gameState = {
   difficulty: "easy",
   mode: "timed",
@@ -24,7 +26,7 @@ const gameState = {
     medium: [],
     hard: [],
   },
-  timeRemaining: 60,
+  timeRemaining: TOTAL_TIME,
   timeElapsed: 0,
   timerStartTime: null,
   timerRunning: false,
@@ -97,6 +99,7 @@ function setActiveStates(...stateNames) {
 setActiveStates("test-setup");
 
 async function startTest() {
+  // if (gameState.isTestActive) return; // Prevent starting a new test if one is already active
   gameState.isTestActive = true;
   gameState.typedText = "";
 
@@ -163,6 +166,9 @@ if (tryAgain) {
   tryAgain.addEventListener("click", (event) => {
     startTest();
     event.preventDefault();
+    clearInterval(timerInterval);
+    gameState.timerRunning = false;
+    timerInterval = null;
   });
 }
 
@@ -186,6 +192,10 @@ async function loadData() {
 }
 
 function getRandomSelection(passages, difficulty) {
+  if (!passages || !passages[difficulty]) {
+    console.error("Invalid passages data or difficulty level.");
+    return null;
+  }
   // Access the correct difficulty array
   const difficultyArea = passages[difficulty];
   //safety check
@@ -197,15 +207,20 @@ function getRandomSelection(passages, difficulty) {
   // Get random passage object
   const randomPassage = difficultyArea[index];
   // Return passage text
-  return randomPassage.text;
+  // Handle multiple possible data formats
+  if (typeof randomPassage === "string") {
+    return randomPassage; // If it's just a string
+  }
+  return randomPassage.text || randomPassage.passage || null; // If it's an object
 }
 
 // Timer mode (60 seconds)
 function startTimedMode() {
   if (gameState.timerRunning) return; // Prevent multiple timers
 
-  gameState.timeRemaining = 60;
+  gameState.timeRemaining = TOTAL_TIME;
   gameState.timerRunning = true;
+  gameState.timerStartTime = Date.now();
   // Update UI every 1 second
 
   //update display immediately
@@ -214,14 +229,18 @@ function startTimedMode() {
     timeDisplay.textContent = `1:00`;
   }
   timerInterval = setInterval(() => {
-    gameState.timeRemaining--;
+    // gameState.timeRemaining--;
 
     // Update timer display in HTML
-    const timeDisplay = document.querySelector(".time");
+    // const timeDisplay = document.querySelector(".time");
+    const elapsed = Date.now() - gameState.timerStartTime;
+    const elapsedSeconds = Math.floor(elapsed / 1000);
 
+    gameState.timeRemaining = TOTAL_TIME - elapsedSeconds;
     if (timeDisplay) {
-      const minutes = Math.floor(gameState.timeRemaining / 60);
-      const seconds = gameState.timeRemaining % 60;
+      const minutes = Math.max(0, Math.floor(gameState.timeRemaining / 60));
+      const seconds = Math.max(0, gameState.timeRemaining % 60);
+
       timeDisplay.textContent = `${minutes}:${seconds
         .toString()
         .padStart(2, "0")}`;
