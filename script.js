@@ -1,9 +1,9 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 
-const textarea = document.querySelector("textarea");
+// const textarea = document.querySelector("textarea");
 const teststate = document.querySelectorAll(".test-state");
-const passageDisplay = document.querySelector("textarea.passage-display");
+const passageDisplay = document.querySelector(".passage-display");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
@@ -110,10 +110,10 @@ async function startTest() {
   gameState.currentPassage = selectedPassage;
 
   // find the .passage-display element selected passage
-  const passageDisplay = document.querySelector("textarea.passage-display");
+  // const passageDisplay = document.querySelector("textarea.passage-display");
 
   if (passageDisplay) {
-    passageDisplay.value = selectedPassage || "No passage available.";
+    passageDisplay.textContent = selectedPassage || "No passage available.";
     passageDisplay.focus();
   }
 
@@ -207,11 +207,17 @@ function startTimedMode() {
   gameState.timeRemaining = 60;
   gameState.timerRunning = true;
   // Update UI every 1 second
+
+  //update display immediately
+  const timeDisplay = document.querySelector(".time");
+  if (timeDisplay) {
+    timeDisplay.textContent = `1:00`;
+  }
   timerInterval = setInterval(() => {
     gameState.timeRemaining--;
 
     // Update timer display in HTML
-    const timeDisplay = document.querySelector(".time");
+
     if (timeDisplay) {
       const minutes = Math.floor(gameState.timeRemaining / 60);
       const seconds = gameState.timeRemaining % 60;
@@ -223,7 +229,7 @@ function startTimedMode() {
     // Stop when time runs out
     if (gameState.timeRemaining <= 0) {
       clearInterval(timerInterval);
-      // gameState.timerRunning = false;
+      gameState.timerRunning = false;
       timerInterval = null;
       endTest();
     }
