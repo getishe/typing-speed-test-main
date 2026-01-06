@@ -217,6 +217,7 @@ function startTimedMode() {
     gameState.timeRemaining--;
 
     // Update timer display in HTML
+    const timeDisplay = document.querySelector(".time");
 
     if (timeDisplay) {
       const minutes = Math.floor(gameState.timeRemaining / 60);
