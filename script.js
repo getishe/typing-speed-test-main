@@ -1,8 +1,5 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
-
-// const textarea = document.querySelector("textarea");
-// const teststate = document.querySelectorAll(".test-state");
 const passageDisplay = document.querySelector(".passage-display");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
@@ -38,7 +35,6 @@ difficultySettings.forEach((button) => {
     difficultySettings.forEach((d) => d.classList.remove("active"));
     // add active to the clicked one
     button.classList.add("active");
-
     gameState.difficulty = button.textContent.toLocaleLowerCase();
     console.log("Difficulty", gameState.difficulty);
   });
@@ -97,6 +93,17 @@ function setActiveStates(...stateNames) {
   });
 }
 setActiveStates("test-setup");
+
+// when the reset button is clicked, reset the game state and clear the passage display
+function setRemoveActiveStates(...stateNames) {
+  document
+    .querySelectorAll(".test-state")
+    .forEach((s) => s.classList.remove("active"));
+  stateNames.forEach((name) => {
+    const el = document.getElementById(name);
+    if (el) el.classList.remove("active");
+  });
+}
 
 async function startTest() {
   // if (gameState.isTestActive) return; // Prevent starting a new test if one is already active
@@ -157,7 +164,7 @@ function resetTest() {
     passageDisplay.value = ""; // Clear textarea
   }
 
-  setActiveStates("test-setup");
+  setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
   // Show setup section
 }
@@ -169,6 +176,8 @@ if (tryAgain) {
     clearInterval(timerInterval);
     gameState.timerRunning = false;
     timerInterval = null;
+    setRemoveActiveStates("test-active", "try-button");
+    setActiveStates("test-setup");
   });
 }
 
@@ -196,7 +205,7 @@ function getRandomSelection(passages, difficulty) {
     console.error("Invalid passages data or difficulty level.");
     return null;
   }
-  // Access the correct difficulty array
+  // Access the correct difficulty area
   const difficultyArea = passages[difficulty];
   //safety check
   if (!difficultyArea || difficultyArea.length === 0) {
@@ -237,6 +246,8 @@ function startTimedMode() {
     const elapsedSeconds = Math.floor(elapsed / 1000);
 
     gameState.timeRemaining = TOTAL_TIME - elapsedSeconds;
+
+    // Convert timeRemaining to minutes and seconds
     if (timeDisplay) {
       const minutes = Math.max(0, Math.floor(gameState.timeRemaining / 60));
       const seconds = Math.max(0, gameState.timeRemaining % 60);
@@ -276,3 +287,24 @@ function startPassageMode() {
     }
   }, 1000);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Set the first difficulty button as active by default
+  const firstDifficultyButton = document.querySelector(
+    ".difficulty-settings button"
+  );
+  if (firstDifficultyButton) {
+    firstDifficultyButton.classList.add("active");
+    gameState.difficulty =
+      firstDifficultyButton.textContent.toLocaleLowerCase();
+  }
+
+  // Set the first mode button as active by default
+  const firstModeButton = document.querySelector(".mode-settings button");
+  if (firstModeButton) {
+    firstModeButton.classList.add("active");
+    gameState.mode = firstModeButton.textContent.includes("Timed")
+      ? "timed"
+      : "passage";
+  }
+});
