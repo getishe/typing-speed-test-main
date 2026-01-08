@@ -130,6 +130,12 @@ hr {
   font-weight: var(--font-weight-regular);
   color: var(--neutral-400);
 }
+
+/* . {
+  border: 1px solid var(--blue-600);
+  color: 1px solid var(--blue-600);
+} */
+
 .difficulty-settings button {
   background-color: var(--neutral-800);
   color: var(--neutral-0);
@@ -141,6 +147,11 @@ hr {
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* .difficulty-settings button:default(.easy-button) {
+
+
+} */
 
 /* .difficulty-settings button:hover {
   border: 1px solid var(--blue-600);
