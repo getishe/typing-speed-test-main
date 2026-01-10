@@ -1,6 +1,6 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
-const passageDisplay = document.querySelector(".passage-display");
+const passageDisplay = document.querySelector("#passage-display");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
@@ -67,16 +67,28 @@ if (reset) {
   });
 }
 
-if (passageDisplay) {
-  passageDisplay.addEventListener("input", () => {
-    // map.set("input", textarea.value);
-    // console.log(textarea.value);
-    // console.log(map.get("input"));
-    gameState.typedText = passageDisplay.value;
+const userInput = document.querySelector("#user-input");
+
+let previousLength = 0;
+
+if (userInput) {
+  userInput.addEventListener("input", () => {
+    const currentLength = userInput.value.length;
+    gameState.typedText = userInput.value;
+
+    // Sync scroll position between both textareas
+    passageDisplay.scrollTop = userInput.scrollTop;
+    passageDisplay.scrollLeft = userInput.scrollLeft;
+
+    if (currentLength > previousLength) {
+      calculateWpm(gameState.typedText);
+    }
+
+    previousLength = currentLength;
     console.log(gameState.typedText);
   });
 
-  passageDisplay.addEventListener("focus", () => {
+  userInput.addEventListener("focus", () => {
     if (!gameState.isTestActive) {
       startTest();
     }
@@ -106,35 +118,29 @@ function setRemoveActiveStates(...stateNames) {
 }
 
 async function startTest() {
-  // if (gameState.isTestActive) return; // Prevent starting a new test if one is already active
   gameState.isTestActive = true;
   gameState.typedText = "";
 
-  //call fetch function to load passages
+  document.querySelectorAll(".wpm").forEach((el) => (el.textContent = "0"));
+
   const passages = await loadData();
-
-  // call random selection function with current difficulty
   const selectedPassage = getRandomSelection(passages, gameState.difficulty);
-
-  // store selected passage in gameState state
   gameState.currentPassage = selectedPassage;
 
-  // find the .passage-display element selected passage
-  // const passageDisplay = document.querySelector("textarea.passage-display");
-
   if (passageDisplay) {
-    passageDisplay.textContent = selectedPassage || "No passage available.";
-    passageDisplay.focus();
+    passageDisplay.value = selectedPassage || "No passage available.";
+  }
+
+  if (userInput) {
+    userInput.value = "";
+    previousLength = 0;
+    userInput.focus();
   }
 
   if (passageArea) {
     passageArea.style.display = "none";
   }
   setActiveStates("test-setup", "test-active", "try-button");
-
-  // Show the typing section (adjust ID to match your HTML)
-
-  // Decide which timer to use
 
   if (gameState.mode === "timed") {
     startTimedMode();
@@ -148,37 +154,24 @@ function endTest() {
   gameState.isTestActive = false;
   clearInterval(timerInterval);
 
-  if (passageDisplay) {
-    passageDisplay.value = ""; // Clear textarea
+  if (userInput) {
+    userInput.value = "";
   }
   setActiveStates("test-results");
+  calculateWpm(gameState.typedText);
   console.log("Test ended", gameState);
-  // Show the test complete section (adjust ID to match your HTML)
 }
 
 function resetTest() {
   gameState.isTestActive = false;
   gameState.typedText = "";
+  previousLength = 0;
   clearInterval(timerInterval);
-  if (passageDisplay) {
-    passageDisplay.value = ""; // Clear textarea
+  if (userInput) {
+    userInput.value = "";
   }
-
   setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
-  // Show setup section
-}
-
-if (tryAgain) {
-  tryAgain.addEventListener("click", (event) => {
-    startTest();
-    event.preventDefault();
-    clearInterval(timerInterval);
-    gameState.timerRunning = false;
-    timerInterval = null;
-    setRemoveActiveStates("test-active", "try-button");
-    setActiveStates("test-setup");
-  });
 }
 
 // loadData data.json
@@ -308,3 +301,30 @@ document.addEventListener("DOMContentLoaded", () => {
       : "passage";
   }
 });
+
+// Simplified WPM calculation
+function calculateWpm(typedText) {
+  const elapsedSeconds = Math.floor(
+    (Date.now() - gameState.timerStartTime) / 1000
+  );
+
+  const displayWpm = document.querySelectorAll(".wpm");
+
+  if (elapsedSeconds < 3) {
+    displayWpm.forEach((el) => {
+      el.textContent = "0";
+    });
+    return 0;
+  }
+
+  const charsTyped = typedText.length;
+  const words = charsTyped / 5;
+  const elapsedMinutes = elapsedSeconds / 60;
+  const wpm = words / elapsedMinutes;
+
+  displayWpm.forEach((element) => {
+    element.textContent = Math.floor(wpm);
+  });
+
+  return Math.floor(wpm);
+}
