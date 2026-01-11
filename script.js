@@ -8,10 +8,10 @@ const difficultySettings = document.querySelectorAll(
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
-
+let previousLength = 0;
 let timerInterval = null;
 const TOTAL_TIME = 60;
-
+let userInput = null;
 const gameState = {
   difficulty: "easy",
   mode: "timed",
@@ -58,40 +58,12 @@ modeSettings.forEach((buttons) => {
 if (start) {
   start.addEventListener("click", () => {
     startTest();
-    passageDisplay.focus();
+    // passageDisplay.focus();
   });
 }
 if (reset) {
   reset.addEventListener("click", () => {
     resetTest();
-  });
-}
-
-const userInput = document.querySelector("#user-input");
-
-let previousLength = 0;
-
-if (userInput) {
-  userInput.addEventListener("input", () => {
-    const currentLength = userInput.value.length;
-    gameState.typedText = userInput.value;
-
-    // Sync scroll position between both textareas
-    passageDisplay.scrollTop = userInput.scrollTop;
-    passageDisplay.scrollLeft = userInput.scrollLeft;
-
-    if (currentLength > previousLength) {
-      calculateWpm(gameState.typedText);
-    }
-
-    previousLength = currentLength;
-    console.log(gameState.typedText);
-  });
-
-  userInput.addEventListener("focus", () => {
-    if (!gameState.isTestActive) {
-      startTest();
-    }
   });
 }
 
@@ -142,6 +114,11 @@ async function startTest() {
   }
   setActiveStates("test-setup", "test-active", "try-button");
 
+  // focus on use input
+  if (userInput) {
+    userInput.focus();
+  }
+  
   if (gameState.mode === "timed") {
     startTimedMode();
   } else if (gameState.mode === "passage") {
@@ -179,9 +156,7 @@ async function loadData() {
   try {
     const response = await fetch("./data.json");
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
     const data = await response.json();
     return data;
@@ -282,6 +257,31 @@ function startPassageMode() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  userInput = document.querySelector("#user-input");
+
+  if (userInput) {
+    userInput.addEventListener("input", () => {
+      const currentLength = userInput.value.length;
+      gameState.typedText = userInput.value;
+
+      // Sync scroll position between both textareas
+      passageDisplay.scrollTop = userInput.scrollTop;
+      passageDisplay.scrollLeft = userInput.scrollLeft;
+
+      if (gameState.isTestActive && currentLength > previousLength) {
+        calculateWpm(gameState.typedText);
+      }
+
+      previousLength = currentLength;
+      console.log(gameState.typedText);
+    });
+
+    userInput.addEventListener("focus", () => {
+      if (!gameState.isTestActive) {
+        startTest();
+      }
+    });
+  }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
     ".difficulty-settings button"
