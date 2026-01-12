@@ -273,6 +273,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       previousLength = currentLength;
       console.log(gameState.typedText);
+
+      if (
+        currentLength >= gameState.currentPassage.length &&
+        gameState.isTestActive
+      ) {
+        endTest();
+      }
     });
 
     // userInput.addEventListener("focus", () => {
