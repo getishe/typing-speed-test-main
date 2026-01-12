@@ -118,7 +118,7 @@ async function startTest() {
   if (userInput) {
     userInput.focus();
   }
-  
+
   if (gameState.mode === "timed") {
     startTimedMode();
   } else if (gameState.mode === "passage") {
@@ -219,7 +219,6 @@ function startTimedMode() {
     if (timeDisplay) {
       const minutes = Math.max(0, Math.floor(gameState.timeRemaining / 60));
       const seconds = Math.max(0, gameState.timeRemaining % 60);
-
       timeDisplay.textContent = `${minutes}:${seconds
         .toString()
         .padStart(2, "0")}`;
@@ -276,11 +275,11 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(gameState.typedText);
     });
 
-    userInput.addEventListener("focus", () => {
-      if (!gameState.isTestActive) {
-        startTest();
-      }
-    });
+    // userInput.addEventListener("focus", () => {
+    //   if (!gameState.isTestActive) {
+    //     startTest();
+    //   }
+    // });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
@@ -310,7 +309,7 @@ function calculateWpm(typedText) {
 
   const displayWpm = document.querySelectorAll(".wpm");
 
-  if (elapsedSeconds < 3) {
+  if (elapsedSeconds < 1) {
     displayWpm.forEach((el) => {
       el.textContent = "0";
     });
