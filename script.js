@@ -67,6 +67,14 @@ if (reset) {
   });
 }
 
+if (tryAgain) {
+  tryAgain.addEventListener("click", () => {
+    startTest();
+    clearInterval(timerInterval);
+    gameState.timerRunning = false;
+    timerInterval = null;
+  });
+}
 function setActiveStates(...stateNames) {
   document
     .querySelectorAll(".test-state")
@@ -101,10 +109,12 @@ async function startTest() {
 
   if (passageDisplay) {
     passageDisplay.value = selectedPassage || "No passage available.";
+    passageDisplay.value = passageDisplay.value.trimEnd();
   }
 
   if (userInput) {
     userInput.value = "";
+    userInput.value = userInput.value.trimEnd();
     previousLength = 0;
     userInput.focus();
   }
@@ -260,6 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (userInput) {
     userInput.addEventListener("input", () => {
+      userInput.value = userInput.value.trimEnd(); // Remove trailing spaces
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
