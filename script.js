@@ -293,11 +293,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // userInput.addEventListener("focus", () => {
-    //   if (!gameState.isTestActive) {
-    //     startTest();
-    //   }
-    // });
+    userInput.addEventListener("focus", () => {
+      if (!gameState.isTestActive) {
+        startTest();
+      }
+    });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
