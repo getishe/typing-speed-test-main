@@ -4,7 +4,7 @@ const passageDisplay = document.querySelector("#passage-display");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
-  ".difficulty-settings button"
+  ".difficulty-settings button",
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
@@ -293,15 +293,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // userInput.addEventListener("focus", () => {
-    //   if (!gameState.isTestActive) {
-    //     startTest();
-    //   }
-    // });
+    userInput.addEventListener("focus", () => {
+      if (!gameState.isTestActive) {
+        startTest();
+      }
+    });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
-    ".difficulty-settings button"
+    ".difficulty-settings button",
   );
   if (firstDifficultyButton) {
     firstDifficultyButton.classList.add("active");
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Simplified WPM calculation
 function calculateWpm(typedText) {
   const elapsedSeconds = Math.floor(
-    (Date.now() - gameState.timerStartTime) / 1000
+    (Date.now() - gameState.timerStartTime) / 1000,
   );
 
   const displayWpm = document.querySelectorAll(".wpm");
