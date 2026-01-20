@@ -345,3 +345,5 @@ function calculateWpm(typedText) {
 
   return Math.floor(wpm);
 }
+
+// Adding a Best Wpm calculation
