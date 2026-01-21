@@ -1,6 +1,7 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 const passageDisplay = document.querySelector("#passage-display");
+const userInput = document.querySelector("#user-input");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
 const difficultySettings = document.querySelectorAll(
@@ -11,7 +12,7 @@ const modeSettings = document.querySelectorAll(".mode-settings button");
 let previousLength = 0;
 let timerInterval = null;
 const TOTAL_TIME = 60;
-let userInput = null;
+// let userInput = null;
 const gameState = {
   difficulty: "easy",
   mode: "timed",
@@ -98,6 +99,12 @@ function setRemoveActiveStates(...stateNames) {
 }
 
 async function startTest() {
+  // Clear any existing timer
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    gameState.timerRunning = false;
+    timerInterval = null;
+  }
   gameState.isTestActive = true;
   gameState.typedText = "";
 
@@ -105,16 +112,17 @@ async function startTest() {
 
   const passages = await loadData();
   const selectedPassage = getRandomSelection(passages, gameState.difficulty);
-  gameState.currentPassage = selectedPassage;
+
+  // ✅ NORMALIZE passage when storing it
+  gameState.currentPassage = normalizeText(selectedPassage);
 
   if (passageDisplay) {
-    passageDisplay.value = selectedPassage || "No passage available.";
-    passageDisplay.value = passageDisplay.value.trimEnd();
+    // ✅ Display the NORMALIZED passage, not the original!
+    passageDisplay.value = gameState.currentPassage || "No passage available.";
   }
 
   if (userInput) {
     userInput.value = "";
-    userInput.value = userInput.value.trimEnd();
     previousLength = 0;
     userInput.focus();
   }
@@ -124,7 +132,6 @@ async function startTest() {
   }
   setActiveStates("test-setup", "test-active", "try-button");
 
-  // focus on use input
   if (userInput) {
     userInput.focus();
   }
@@ -134,12 +141,19 @@ async function startTest() {
   } else if (gameState.mode === "passage") {
     startPassageMode();
   }
-  console.log("Test started with passage:", selectedPassage);
+  console.log("Test started with passage:", gameState.currentPassage); // ✅ Log normalized
+  console.log("Passage length:", gameState.currentPassage.length); // ✅ Log length
 }
 
 function endTest() {
   gameState.isTestActive = false;
-  clearInterval(timerInterval);
+  gameState.timerRunning = false;
+
+  // Clear timer safely
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
 
   if (userInput) {
     userInput.value = "";
@@ -203,13 +217,20 @@ function getRandomSelection(passages, difficulty) {
 
 // Timer mode (60 seconds)
 function startTimedMode() {
-  if (gameState.timerRunning) return; // Prevent multiple timers
+  if (gameState.timerRunning) {
+    console.warn("Timer is already running.");
+    return; // Prevent multiple timers
+  }
 
   gameState.timeRemaining = TOTAL_TIME;
   gameState.timerRunning = true;
   gameState.timerStartTime = Date.now();
   // Update UI every 1 second
 
+  //clear any existing interval
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
   //update display immediately
   const timeDisplay = document.querySelector(".time");
   if (timeDisplay) {
@@ -223,7 +244,7 @@ function startTimedMode() {
     const elapsed = Date.now() - gameState.timerStartTime;
     const elapsedSeconds = Math.floor(elapsed / 1000);
 
-    gameState.timeRemaining = TOTAL_TIME - elapsedSeconds;
+    gameState.timeRemaining = Math.max(0, TOTAL_TIME - elapsedSeconds);
 
     // Convert timeRemaining to minutes and seconds
     if (timeDisplay) {
@@ -241,7 +262,7 @@ function startTimedMode() {
       timerInterval = null;
       endTest();
     }
-  }, 1000);
+  }, 100);
 }
 
 function startPassageMode() {
@@ -265,12 +286,14 @@ function startPassageMode() {
   }, 1000);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  userInput = document.querySelector("#user-input");
+// Helper function tp normalize text (remove extra spaces, line breaks)
+function normalizeText(text) {
+  return text.replace(/\s+/g, " ").trim();
+}
 
+document.addEventListener("DOMContentLoaded", () => {
   if (userInput) {
     userInput.addEventListener("input", () => {
-      userInput.value = userInput.value.trimEnd(); // Remove trailing spaces
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
@@ -285,19 +308,36 @@ document.addEventListener("DOMContentLoaded", () => {
       previousLength = currentLength;
       console.log(gameState.typedText);
 
+      // Only Normalize user input and passage for comparison
+      const normalizedTyped = normalizeText(userInput.value);
+      const normalizedPassage = normalizeText(gameState.currentPassage);
+
+      console.log(
+        `User typed (normalized): "${normalizedTyped}" (${normalizedTyped.length} chars)`,
+      );
+      console.log(
+        `Passage (normalized): "${normalizedPassage}" (${normalizedPassage.length} chars)`,
+      );
+      // Compare the normalized texts
       if (
-        currentLength >= gameState.currentPassage.length &&
+        normalizedTyped.length >= normalizedPassage.length &&
         gameState.isTestActive
       ) {
         endTest();
       }
+      // if (
+      //   currentLength == gameState.currentPassage.length &&
+      //   gameState.isTestActive
+      // ) {
+      //   endTest();
+      // }
     });
 
-    userInput.addEventListener("focus", () => {
-      if (!gameState.isTestActive) {
-        startTest();
-      }
-    });
+    // userInput.addEventListener("focus", () => {
+    //   if (!gameState.isTestActive) {
+    //     startTest();
+    //   }
+    // });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
