@@ -390,6 +390,7 @@ button.reset-button img:hover {
   position: relative;
   display: inline-block;
   width: 100%;
+  border: 2px solid red;
 }
 
 .passage-display {
@@ -400,12 +401,14 @@ button.reset-button img:hover {
   border: 1px solid red;
   padding: 0 10px;
   font-family: monospace;
+  font-size: 25px;
   width: 100%;
-  height: 150px;
+  height: 350px;
   resize: none;
   pointer-events: none; /* Allow clicks to pass through to input below */
 }
 #user-input {
+  border: 2px solid blue;
   white-space: pre-wrap; /* Allow natural wrapping */
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -426,7 +429,7 @@ button.reset-button img:hover {
   left: 0;
   z-index: 2;
   width: 100%;
-  height: 150px;
+  height: 350px;
   background-color: transparent;
   color: transparent; /* Hide the text being typed */
   caret-color: blue; /* Show cursor */
@@ -434,7 +437,7 @@ button.reset-button img:hover {
   border: none;
   padding: 0 10px;
   font-family: monospace;
-  font-size: inherit;
+  font-size: 25px;
   resize: none;
   outline: none;
 }
