@@ -28,6 +28,7 @@ const gameState = {
   timeElapsed: 0,
   timerStartTime: null,
   timerRunning: false,
+  currentLineIndex: 0,
 };
 
 difficultySettings.forEach((button) => {
@@ -113,11 +114,11 @@ async function startTest() {
   const passages = await loadData();
   const selectedPassage = getRandomSelection(passages, gameState.difficulty);
 
-  // ✅ NORMALIZE passage when storing it
-  gameState.currentPassage = normalizeText(selectedPassage);
+  // ✅ FIX: Store passage WITHOUT normalizing
+  gameState.currentPassage = selectedPassage; // ← Just store as-is from JSON
 
   if (passageDisplay) {
-    // ✅ Display the NORMALIZED passage, not the original!
+    // ✅ Display the passage as-is
     passageDisplay.value = gameState.currentPassage || "No passage available.";
   }
 
@@ -141,8 +142,8 @@ async function startTest() {
   } else if (gameState.mode === "passage") {
     startPassageMode();
   }
-  console.log("Test started with passage:", gameState.currentPassage); // ✅ Log normalized
-  console.log("Passage length:", gameState.currentPassage.length); // ✅ Log length
+  console.log("Test started with passage:", gameState.currentPassage);
+  console.log("Passage length:", gameState.currentPassage.length);
 }
 
 function endTest() {
@@ -288,16 +289,26 @@ function startPassageMode() {
 
 // Helper function tp normalize text (remove extra spaces, line breaks)
 function normalizeText(text) {
-  return text.replace(/\s+/g, " ").trim();
+  return (
+    text
+      .replace(/\n/g, " ") // Newlines → space
+      .replace(/\t/g, " ") // Tabs → space
+      // .replace(/  +/g, " ") // Multiple spaces → single space
+      .trim()
+  ); // Remove leading/trailing
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   if (userInput) {
     userInput.addEventListener("input", () => {
+      // Clean only tabs
+      let cleanedInput = userInput.value.replace(/\t/g, " ");
+      userInput.value = cleanedInput;
+
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
-      // Sync scroll position between both textareas
+      // Sync scroll position
       passageDisplay.scrollTop = userInput.scrollTop;
       passageDisplay.scrollLeft = userInput.scrollLeft;
 
@@ -306,31 +317,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       previousLength = currentLength;
-      console.log(gameState.typedText);
-
-      // Only Normalize user input and passage for comparison
-      const normalizedTyped = normalizeText(userInput.value);
-      const normalizedPassage = normalizeText(gameState.currentPassage);
-
+      console.log(`Typed: "${gameState.typedText}"`);
       console.log(
-        `User typed (normalized): "${normalizedTyped}" (${normalizedTyped.length} chars)`,
+        `Length: ${currentLength} / ${gameState.currentPassage.length}`,
       );
-      console.log(
-        `Passage (normalized): "${normalizedPassage}" (${normalizedPassage.length} chars)`,
-      );
-      // Compare the normalized texts
+
+      // ✅ Compare RAW lengths (no normalization)
       if (
-        normalizedTyped.length >= normalizedPassage.length &&
+        userInput.value.length >= gameState.currentPassage.length &&
         gameState.isTestActive
       ) {
+        console.log("Passage complete!");
         endTest();
       }
-      // if (
-      //   currentLength == gameState.currentPassage.length &&
-      //   gameState.isTestActive
-      // ) {
-      //   endTest();
-      // }
     });
 
     // userInput.addEventListener("focus", () => {
