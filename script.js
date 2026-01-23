@@ -284,6 +284,11 @@ function startPassageMode() {
         .padStart(2, "0")}`;
     }
   }, 1000);
+
+  // prevent multiple timers
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
 }
 
 // Helper function tp normalize text (remove extra spaces, line breaks)
@@ -301,7 +306,11 @@ document.addEventListener("DOMContentLoaded", () => {
       passageDisplay.scrollTop = userInput.scrollTop;
       passageDisplay.scrollLeft = userInput.scrollLeft;
 
-      if (gameState.isTestActive && currentLength > previousLength) {
+      if (
+        gameState.isTestActive &&
+        currentLength > previousLength &&
+        gameState.mode === "timed"
+      ) {
         calculateWpm(gameState.typedText);
       }
 

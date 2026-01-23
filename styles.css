@@ -401,7 +401,7 @@ button.reset-button img:hover {
   border: 1px solid red;
   padding: 0 10px;
   font-family: monospace;
-  font-size: 25px;
+  font-size: 23px;
   width: 100%;
   height: 350px;
   resize: none;
@@ -437,7 +437,7 @@ button.reset-button img:hover {
   border: none;
   padding: 0 10px;
   font-family: monospace;
-  font-size: 25px;
+  font-size: 23px;
   resize: none;
   outline: none;
 }
