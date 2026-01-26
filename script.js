@@ -396,3 +396,20 @@ function calculateWpm(typedText) {
 }
 
 // Adding a Best Wpm calculation
+
+function updateBestWpm(currentWpm) {
+  const bestWpmDisplay = document.querySelectorAll(".best-wpm");
+  let bestWpm = 0;
+  bestWpmDisplay.forEach((el) => {
+    const existingBest = parseInt(el.textContent, 10);
+    if (!isNaN(existingBest) && existingBest > bestWpm) {
+      bestWpm = existingBest;
+    }
+  });
+
+  if (currentWpm > bestWpm) {
+    bestWpmDisplay.forEach((el) => {
+      el.textContent = currentWpm;
+    });
+  }
+}
