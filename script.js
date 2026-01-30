@@ -399,13 +399,13 @@ function calculateWpm(typedText) {
 
 /**
  * Updates the best words per minute (WPM) score displayed on the page.
- * 
+ *
  * Retrieves all elements with the "best-wpm" class, finds the highest existing WPM value,
  * and updates all instances if the current WPM exceeds the previous best score.
- * 
+ *
  * @param {number} currentWpm - The current words per minute score to compare against the best score
  * @returns {void}
- * 
+ *
  * @example
  * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
  */
