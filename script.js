@@ -286,9 +286,9 @@ function startPassageMode() {
   }, 1000);
 
   // prevent multiple timers
-  if (timerInterval) {
-    clearInterval(timerInterval);
-  }
+  // if (timerInterval) {
+  //   clearInterval(timerInterval);
+  // }
 }
 
 // Helper function tp normalize text (remove extra spaces, line breaks)
@@ -309,8 +309,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (
         gameState.isTestActive &&
         currentLength > previousLength &&
-        gameState.mode === "timed"
+        (gameState.mode === "timed" || gameState.mode === "passage")
       ) {
+        calculateWpm(gameState.typedText);
+      }
+
+      if (currentLength < previousLength) {
+        // Handle backspace or deletion
+        // Optionally, you can recalculate WPM here if desired
         calculateWpm(gameState.typedText);
       }
 
