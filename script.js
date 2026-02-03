@@ -28,6 +28,8 @@ const gameState = {
   timeElapsed: 0,
   timerStartTime: null,
   timerRunning: false,
+  passageLines: [],
+  currentLineIndex: 0,
 };
 
 difficultySettings.forEach((button) => {
@@ -293,9 +295,22 @@ function startPassageMode() {
 
 // Helper function tp normalize text (remove extra spaces, line breaks)
 function normalizeText(text) {
-  return text.replace(/\s+/g, " ").trim();
+  return text.replace(/[ \t]+/g, " ").trim();
 }
+function moveToNextLine() {
+  const lines = userInput.value.split("\n");
 
+  // Prevent duplicate newlines
+
+  if (lines.length - 1 === gameState.currentLineIndex) {
+    userInput.value += "\n";
+  }
+
+  gameState.currentLineIndex++;
+
+  // Move cursor to end
+  userInput.selectionStart = userInput.selectionEnd = userInput.value.length;
+}
 document.addEventListener("DOMContentLoaded", () => {
   if (userInput) {
     userInput.addEventListener("input", () => {
@@ -340,6 +355,20 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         endTest();
       }
+
+      gameState.passageLines = normalizedPassage.split("\n");
+      gameState.currentLineIndex = 0;
+
+      const passageLines = gameState.passageLines;
+      const typedLines = userInput.value.split("\n");
+
+      const currentLine = passageLines[gameState.currentLineIndex] || "";
+      const typedLine = typedLines[gameState.currentLineIndex] || "";
+
+      if (typedLine === currentLine) {
+        moveToNextLine();
+      }
+
       // if (
       //   currentLength == gameState.currentPassage.length &&
       //   gameState.isTestActive
