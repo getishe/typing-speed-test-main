@@ -460,3 +460,4 @@ function updateBestWpm(currentWpm) {
     });
   }
 }
+// needs some changes user typing area
