@@ -73,9 +73,6 @@ if (reset) {
 if (tryAgain) {
   tryAgain.addEventListener("click", () => {
     startTest();
-    clearInterval(timerInterval);
-    gameState.timerRunning = false;
-    timerInterval = null;
   });
 }
 function setActiveStates(...stateNames) {
@@ -115,8 +112,15 @@ async function startTest() {
   const passages = await loadData();
   const selectedPassage = getRandomSelection(passages, gameState.difficulty);
 
-  // ✅ NORMALIZE passage when storing it
-  gameState.currentPassage = normalizeText(selectedPassage);
+  if (!selectedPassage) {
+    console.error("No passage available for the selected difficulty.");
+    gameState.currentPassage = "";
+  } else {
+    // ✅ NORMALIZE passage when storing it
+    gameState.currentPassage = normalizeText(selectedPassage);
+  }
+  gameState.passageLines = gameState.currentPassage.split("\n");
+  gameState.currentLineIndex = 0;
 
   if (passageDisplay) {
     // ✅ Display the NORMALIZED passage, not the original!
@@ -169,7 +173,11 @@ function resetTest() {
   gameState.isTestActive = false;
   gameState.typedText = "";
   previousLength = 0;
-  clearInterval(timerInterval);
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  gameState.timerRunning = false;
   if (userInput) {
     userInput.value = "";
   }
@@ -268,8 +276,17 @@ function startTimedMode() {
 }
 
 function startPassageMode() {
+  if (gameState.timerRunning) {
+    console.warn("Timer is already running.");
+    return; // Prevent multiple timers
+  }
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
   gameState.timeRemaining = 0;
   gameState.timerStartTime = Date.now();
+  gameState.timerRunning = true;
 
   timerInterval = setInterval(() => {
     const elapsed = Date.now() - gameState.timerStartTime;
@@ -293,9 +310,20 @@ function startPassageMode() {
   // }
 }
 
-// Helper function tp normalize text (remove extra spaces, line breaks)
+// Helper function to normalize text (remove extra spaces and tabs)
 function normalizeText(text) {
+  if (typeof text !== "string") return "";
   return text.replace(/[ \t]+/g, " ").trim();
+}
+
+function normalizeForCompare(text) {
+  if (typeof text !== "string") return "";
+  return text.replace(/\s+/g, " ").trim();
+}
+
+function normalizeLine(text) {
+  if (typeof text !== "string") return "";
+  return text.replace(/[ \t]+/g, " ").trimEnd();
 }
 function moveToNextLine() {
   const lines = userInput.value.split("\n");
@@ -339,8 +367,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(gameState.typedText);
 
       // Only Normalize user input and passage for comparison
-      const normalizedTyped = normalizeText(userInput.value);
-      const normalizedPassage = normalizeText(gameState.currentPassage);
+      const normalizedTyped = normalizeForCompare(userInput.value);
+      const normalizedPassage = normalizeForCompare(gameState.currentPassage);
 
       console.log(
         `User typed (normalized): "${normalizedTyped}" (${normalizedTyped.length} chars)`,
@@ -356,16 +384,13 @@ document.addEventListener("DOMContentLoaded", () => {
         endTest();
       }
 
-      gameState.passageLines = normalizedPassage.split("\n");
-      gameState.currentLineIndex = 0;
-
       const passageLines = gameState.passageLines;
       const typedLines = userInput.value.split("\n");
 
       const currentLine = passageLines[gameState.currentLineIndex] || "";
       const typedLine = typedLines[gameState.currentLineIndex] || "";
 
-      if (typedLine === currentLine) {
+      if (normalizeLine(typedLine) === normalizeLine(currentLine)) {
         moveToNextLine();
       }
 
