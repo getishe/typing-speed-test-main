@@ -486,3 +486,5 @@ function updateBestWpm(currentWpm) {
   }
 }
 // needs some changes user typing area
+
+// addind some animations
