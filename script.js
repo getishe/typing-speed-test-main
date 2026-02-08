@@ -390,8 +390,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentLine = passageLines[gameState.currentLineIndex] || "";
       const typedLine = typedLines[gameState.currentLineIndex] || "";
 
-      if (normalizeLine(typedLine) === normalizeLine(currentLine)) {
-        moveToNextLine();
+      const expectedLine = normalizeLine(currentLine);
+      const typedLineNormalized = normalizeLine(typedLine);
+
+      // Prevent typing past the end of the expected line
+      if (typedLineNormalized.length > expectedLine.length) {
+        typedLines[gameState.currentLineIndex] = typedLine.slice(
+          0,
+          currentLine.length,
+        );
+        userInput.value = typedLines.join("\n");
+        userInput.selectionStart = userInput.selectionEnd =
+          userInput.value.length;
+        gameState.typedText = userInput.value;
+        return;
+      }
+
+      // Auto-advance when the line is fully matched
+      if (
+        expectedLine.length > 0 &&
+        typedLineNormalized.startsWith(expectedLine) &&
+        typedLineNormalized.length >= expectedLine.length
+      ) {
+        if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+          endTest();
+        } else {
+          moveToNextLine();
+        }
       }
 
       // if (
