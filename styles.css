@@ -398,14 +398,15 @@ button.reset-button img:hover {
   z-index: 1; /* Passage behind */
   background-color: #f0f0f0;
   color: #333;
-  border: 1px solid red;
-  padding: 0 10px;
+  border: none;
+  padding: 10px;
   font-family: monospace;
   font-size: 23px;
   width: 100%;
   height: 350px;
   resize: none;
   pointer-events: none; /* Allow clicks to pass through to input below */
+  line-height: 1.6;
 }
 #user-input {
   border: 2px solid blue;
@@ -433,13 +434,13 @@ button.reset-button img:hover {
   background-color: transparent;
   color: transparent; /* Hide the text being typed */
   caret-color: blue; /* Show cursor */
-  border: 2px solid red;
   border: none;
-  padding: 0 10px;
+  padding: 10px;
   font-family: monospace;
   font-size: 23px;
   resize: none;
   outline: none;
+  line-height: 1.6;
 }
 
 .user-input::selection {

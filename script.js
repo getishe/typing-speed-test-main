@@ -119,13 +119,10 @@ async function startTest() {
     // ✅ NORMALIZE passage when storing it
     gameState.currentPassage = normalizeText(selectedPassage);
   }
-  gameState.passageLines = gameState.currentPassage.split("\n");
   gameState.currentLineIndex = 0;
-
-  if (passageDisplay) {
-    // ✅ Display the NORMALIZED passage, not the original!
-    passageDisplay.value = gameState.currentPassage || "No passage available.";
-  }
+  gameState.passageLines = gameState.currentPassage
+    ? gameState.currentPassage.split("\n")
+    : [];
 
   if (userInput) {
     userInput.value = "";
@@ -137,6 +134,14 @@ async function startTest() {
     passageArea.style.display = "none";
   }
   setActiveStates("test-setup", "test-active", "try-button");
+
+  requestAnimationFrame(() => {
+    applyPassageWrapping();
+    if (passageDisplay) {
+      passageDisplay.value =
+        gameState.currentPassage || "No passage available.";
+    }
+  });
 
   if (userInput) {
     userInput.focus();
@@ -325,6 +330,120 @@ function normalizeLine(text) {
   if (typeof text !== "string") return "";
   return text.replace(/[ \t]+/g, " ").trimEnd();
 }
+
+function getTextareaContentWidth(textarea) {
+  if (!textarea) return 0;
+  const styles = window.getComputedStyle(textarea);
+  const paddingLeft = parseFloat(styles.paddingLeft) || 0;
+  const paddingRight = parseFloat(styles.paddingRight) || 0;
+  return textarea.clientWidth - paddingLeft - paddingRight;
+}
+
+function getTextMeasureContext(textarea) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  const styles = window.getComputedStyle(textarea);
+  ctx.font = [
+    styles.fontStyle,
+    styles.fontVariant,
+    styles.fontWeight,
+    styles.fontSize,
+    styles.fontFamily,
+  ].join(" ");
+  return ctx;
+}
+
+function measureTextWidth(ctx, text) {
+  if (!ctx) return 0;
+  return ctx.measureText(text).width;
+}
+
+function breakLongWord(ctx, word, maxWidth) {
+  const chunks = [];
+  let current = "";
+  for (const char of word) {
+    const candidate = current + char;
+    if (measureTextWidth(ctx, candidate) <= maxWidth || current.length === 0) {
+      current = candidate;
+    } else {
+      chunks.push(current);
+      current = char;
+    }
+  }
+  if (current.length > 0) {
+    chunks.push(current);
+  }
+  return chunks;
+}
+
+function wrapParagraph(ctx, paragraph, maxWidth) {
+  if (paragraph.length === 0) return [""];
+  const words = paragraph.split(" ").filter(Boolean);
+  const lines = [];
+  let line = "";
+
+  words.forEach((word) => {
+    const candidate = line.length ? `${line} ${word}` : word;
+    if (measureTextWidth(ctx, candidate) <= maxWidth) {
+      line = candidate;
+      return;
+    }
+
+    if (line.length) {
+      lines.push(line);
+    }
+
+    if (measureTextWidth(ctx, word) > maxWidth) {
+      const chunks = breakLongWord(ctx, word, maxWidth);
+      lines.push(...chunks.slice(0, -1));
+      line = chunks[chunks.length - 1] || "";
+    } else {
+      line = word;
+    }
+  });
+
+  if (line.length || lines.length === 0) {
+    lines.push(line);
+  }
+
+  return lines;
+}
+
+function wrapTextToTextarea(text, textarea) {
+  if (!textarea || typeof text !== "string" || text.length === 0) return text;
+  const contentWidth = getTextareaContentWidth(textarea);
+  if (contentWidth <= 0) return text;
+  const ctx = getTextMeasureContext(textarea);
+  if (!ctx) return text;
+
+  const paragraphs = text.split("\n");
+  const wrappedLines = [];
+
+  paragraphs.forEach((paragraph, index) => {
+    const lines = wrapParagraph(ctx, paragraph, contentWidth);
+    wrappedLines.push(...lines);
+    if (index < paragraphs.length - 1) {
+      wrappedLines.push("");
+    }
+  });
+
+  return wrappedLines.join("\n");
+}
+
+function applyPassageWrapping() {
+  if (!passageDisplay || !gameState.currentPassage) {
+    gameState.passageLines = gameState.currentPassage
+      ? gameState.currentPassage.split("\n")
+      : [];
+    return;
+  }
+
+  const wrapped = wrapTextToTextarea(gameState.currentPassage, passageDisplay);
+  gameState.currentPassage = wrapped;
+  gameState.passageLines = wrapped.split("\n");
+}
+
 function moveToNextLine() {
   const lines = userInput.value.split("\n");
 
@@ -393,29 +512,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const expectedLine = normalizeLine(currentLine);
       const typedLineNormalized = normalizeLine(typedLine);
 
-      // Prevent typing past the end of the expected line
-      if (typedLineNormalized.length > expectedLine.length) {
-        typedLines[gameState.currentLineIndex] = typedLine.slice(
-          0,
-          currentLine.length,
-        );
-        userInput.value = typedLines.join("\n");
-        userInput.selectionStart = userInput.selectionEnd =
-          userInput.value.length;
-        gameState.typedText = userInput.value;
-        return;
-      }
-
       // Auto-advance when the line is fully matched
       if (
         expectedLine.length > 0 &&
-        typedLineNormalized.startsWith(expectedLine) &&
         typedLineNormalized.length >= expectedLine.length
       ) {
-        if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-          endTest();
-        } else {
-          moveToNextLine();
+        const isExactMatch =
+          typedLineNormalized === expectedLine &&
+          typedLineNormalized.length === expectedLine.length;
+
+        if (typedLine.length > expectedLine.length) {
+          const overflow = typedLine.slice(expectedLine.length);
+          typedLines[gameState.currentLineIndex] = currentLine;
+          if (gameState.currentLineIndex < gameState.passageLines.length - 1) {
+            const nextIndex = gameState.currentLineIndex + 1;
+            typedLines[nextIndex] = `${overflow}${typedLines[nextIndex] || ""}`;
+          }
+          userInput.value = typedLines.join("\n");
+          gameState.typedText = userInput.value;
+        }
+
+        if (isExactMatch || typedLine.length >= expectedLine.length) {
+          if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+            endTest();
+          } else {
+            moveToNextLine();
+          }
         }
       }
 
