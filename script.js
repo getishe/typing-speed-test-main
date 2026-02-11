@@ -510,13 +510,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         endTest();
       }
-
+      // Split into lines and
       const passageLines = gameState.passageLines;
       const typedLines = userInput.value.split("\n");
-
+      // ) Determine current line and compare with the corresponding passage line
       const currentLine = passageLines[gameState.currentLineIndex] || "";
       const typedLine = typedLines[gameState.currentLineIndex] || "";
 
+      // Normalize both lines for comparison
       const expectedLine = normalizeLine(currentLine);
       const typedLineNormalized = normalizeLine(typedLine);
 
@@ -528,7 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const isExactMatch =
           typedLineNormalized === expectedLine &&
           typedLineNormalized.length === expectedLine.length;
-
+        //  Normalize current line for comparison
         if (typedLine.length > expectedLine.length) {
           const overflow = typedLine.slice(expectedLine.length);
           typedLines[gameState.currentLineIndex] = currentLine;
