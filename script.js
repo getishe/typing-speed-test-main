@@ -316,21 +316,26 @@ function startPassageMode() {
 }
 
 // Helper function to normalize text (remove extra spaces and tabs)
+
+// general cleanup for stored passage text (keeps words tight).
 function normalizeText(text) {
   if (typeof text !== "string") return "";
   return text.replace(/[ \t]+/g, " ").trim();
 }
 
+// compare full passages even if line breaks or multiple spaces differ.
 function normalizeForCompare(text) {
   if (typeof text !== "string") return "";
   return text.replace(/\s+/g, " ").trim();
 }
 
+// line‑by‑line comparison while preserving indentation/leading spaces.
 function normalizeLine(text) {
   if (typeof text !== "string") return "";
   return text.replace(/[ \t]+/g, " ").trimEnd();
 }
 
+// Compare that width to  to decide if it fits.
 function getTextareaContentWidth(textarea) {
   if (!textarea) return 0;
   const styles = window.getComputedStyle(textarea);
@@ -339,6 +344,7 @@ function getTextareaContentWidth(textarea) {
   return textarea.clientWidth - paddingLeft - paddingRight;
 }
 
+// applies the textarea font → accurate measurement.
 function getTextMeasureContext(textarea) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -354,11 +360,13 @@ function getTextMeasureContext(textarea) {
   return ctx;
 }
 
+//  gives actual pixel width of text.
 function measureTextWidth(ctx, text) {
   if (!ctx) return 0;
   return ctx.measureText(text).width;
 }
 
+// Use's if a word is too wide.
 function breakLongWord(ctx, word, maxWidth) {
   const chunks = [];
   let current = "";
