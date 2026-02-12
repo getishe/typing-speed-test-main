@@ -554,17 +554,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // if user has typed spaces equal to the passage,
       // just move to the next line until to reach the end of the passage.
       // Spaces-only skip rule: if user fills the line with spaces exactly equal to expected length, treat line as completed.
-      const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
-      const isSameLengthAsExpected = typedLine.length === expectedLine.length;
+      // const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
+      // const isSameLengthAsExpected = typedLine.length === expectedLine.length;
 
-      if (isOnlySpaces && isSameLengthAsExpected) {
-        if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-          endTest();
-        } else {
-          moveToNextLine();
-        }
-        return;
-      }
+      // if (isOnlySpaces && isSameLengthAsExpected) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+      //     endTest();
+      //   } else {
+      //     moveToNextLine();
+      //   }
+      //   return;
+      // }
 
       const hasTab = /\t/.test(typedLine);
       const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
@@ -592,7 +592,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 3) optional rule for mixed text + spaces
       if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
-        endTest();
+        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+          endTest();
+        else moveToNextLine();
         return;
       }
 
@@ -601,12 +603,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // keep typing current line
       }
 
-      if (isExact || isLonger) {
-        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-          endTest();
-        else moveToNextLine();
-        return;
-      }
+      // if (isExact || isLonger) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+      //     endTest();
+      //   else moveToNextLine();
+      //   return;
+      // }
     });
   }
   // Set the first difficulty button as active by default
