@@ -542,6 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (isExactMatch || typedLine.length >= expectedLine.length) {
+          // Check if current line is last line
           if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
             endTest();
           } else {
@@ -550,19 +551,63 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // if (
-      //   currentLength == gameState.currentPassage.length &&
-      //   gameState.isTestActive
-      // ) {
-      //   endTest();
-      // }
-    });
+      // if user has typed spaces equal to the passage,
+      // just move to the next line until to reach the end of the passage.
+      // Spaces-only skip rule: if user fills the line with spaces exactly equal to expected length, treat line as completed.
+      const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
+      const isSameLengthAsExpected = typedLine.length === expectedLine.length;
 
-    // userInput.addEventListener("focus", () => {
-    //   if (!gameState.isTestActive) {
-    //     startTest();
-    //   }
-    // });
+      if (isOnlySpaces && isSameLengthAsExpected) {
+        if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+          endTest();
+        } else {
+          moveToNextLine();
+        }
+        return;
+      }
+
+      const hasTab = /\t/.test(typedLine);
+      const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
+      const hasLettersOrDigits = /[A-Za-z0-9]/.test(typedLine);
+      const hasSpace = / /.test(typedLine);
+      const isMixedTextAndSpaces = hasLettersOrDigits && hasSpace;
+
+      const isShorter = typedLine.length < expectedLine.length;
+      const isExact = typedLine.length === expectedLine.length;
+      const isLonger = typedLine.length > expectedLine.length;
+
+      // 1) hard fail
+      if (hasTab) {
+        endTest();
+        return;
+      }
+
+      // 2) spaces-only skip rule
+      if (isOnlySpaces && isExact) {
+        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+          endTest();
+        else moveToNextLine();
+        return;
+      }
+
+      // 3) optional rule for mixed text + spaces
+      if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
+        endTest();
+        return;
+      }
+
+      // 4) normal length handling
+      if (isShorter) {
+        return; // keep typing current line
+      }
+
+      if (isExact || isLonger) {
+        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+          endTest();
+        else moveToNextLine();
+        return;
+      }
+    });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
