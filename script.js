@@ -370,15 +370,20 @@ function measureTextWidth(ctx, text) {
 function breakLongWord(ctx, word, maxWidth) {
   const chunks = [];
   let current = "";
+  //  iterates e, x, t, r, a, o, r, d, i, n, a, r, y
   for (const char of word) {
+    // candidate = "" + "e" = "e"
     const candidate = current + char;
     if (measureTextWidth(ctx, candidate) <= maxWidth || current.length === 0) {
+      // if it fits, add char to current chunk
       current = candidate;
     } else {
       chunks.push(current);
+      // start new chunk with current char
       current = char;
     }
   }
+  // push any remaining text in current chunk
   if (current.length > 0) {
     chunks.push(current);
   }
@@ -392,25 +397,33 @@ function wrapParagraph(ctx, paragraph, maxWidth) {
   let line = "";
 
   words.forEach((word) => {
+    // candidate = "" + "e" = "e" if line is empty, candidate is just the word, otherwise it's line + space + word
     const candidate = line.length ? `${line} ${word}` : word;
+    // check if adding the word exceeds the max width
     if (measureTextWidth(ctx, candidate) <= maxWidth) {
       line = candidate;
       return;
     }
-
+    // If the current line has content, push it before starting a new line
     if (line.length) {
       lines.push(line);
     }
-
+    // If the word itself is too wide, break it into chunks
     if (measureTextWidth(ctx, word) > maxWidth) {
+      // If the word is too long, break it into chunks
       const chunks = breakLongWord(ctx, word, maxWidth);
+      // Push all chunks except the last one as separate lines
       lines.push(...chunks.slice(0, -1));
+      // Start the new line with the last chunk
       line = chunks[chunks.length - 1] || "";
     } else {
+      // Start a new line with the current word if it fits on its own
       line = word;
     }
   });
 
+  // Push any remaining line content if it exists or
+  // if there were no lines at all (to handle empty paragraphs)
   if (line.length || lines.length === 0) {
     lines.push(line);
   }
@@ -418,6 +431,7 @@ function wrapParagraph(ctx, paragraph, maxWidth) {
   return lines;
 }
 
+// Main function to wrap text for the textarea
 function wrapTextToTextarea(text, textarea) {
   if (!textarea || typeof text !== "string" || text.length === 0) return text;
   const contentWidth = getTextareaContentWidth(textarea);
@@ -425,17 +439,25 @@ function wrapTextToTextarea(text, textarea) {
   const ctx = getTextMeasureContext(textarea);
   if (!ctx) return text;
 
+  // Split the text into paragraphs and wrap each one separately to preserve line breaks
   const paragraphs = text.split("\n");
   const wrappedLines = [];
 
+  // Wrap each paragraph and add a line break between them
+  // loop through each paragraph, wrap it, and add the wrapped lines to the result.
+  // If it's not the last paragraph,
+  // add an empty line to preserve the original line break.
   paragraphs.forEach((paragraph, index) => {
+    // Wrap the current paragraph and add the wrapped lines to the result
     const lines = wrapParagraph(ctx, paragraph, contentWidth);
+    // Add the wrapped lines to the result array
     wrappedLines.push(...lines);
     if (index < paragraphs.length - 1) {
+      // Add an empty line to preserve the original line break between paragraphs
       wrappedLines.push("");
     }
   });
-
+  // Join all the wrapped lines into a single string with line breaks and return it
   return wrappedLines.join("\n");
 }
 
