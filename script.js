@@ -591,7 +591,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 3) optional rule for mixed text + spaces
-      if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
+      // if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+      //     endTest();
+      //   else moveToNextLine();
+      //   return;
+      // }
+      if (isMixedTextAndSpaces && isExact) {
         if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
           endTest();
         else moveToNextLine();
