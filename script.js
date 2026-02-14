@@ -135,6 +135,8 @@ async function startTest() {
   }
   setActiveStates("test-setup", "test-active", "try-button");
 
+  //   After setActiveStates("test-setup", "test-active", "try-button"); changes classes/visibility, requestAnimationFrame(...) runs on the next paint frame, when those updates are applied.
+  // Then this block runs:
   requestAnimationFrame(() => {
     applyPassageWrapping();
     if (passageDisplay) {
@@ -452,6 +454,13 @@ function wrapTextToTextarea(text, textarea) {
     const lines = wrapParagraph(ctx, paragraph, contentWidth);
     // Add the wrapped lines to the result array
     wrappedLines.push(...lines);
+    //     paragraphs.length = 4
+    // paragraphs.length - 1 = 3
+    // Check: 2 < 3 -> true
+
+    // paragraphs.length = 3
+    // paragraphs.length - 1 = 2
+    // Check: 2 < 2 -> false (this is the last paragraph)
     if (index < paragraphs.length - 1) {
       // Add an empty line to preserve the original line break between paragraphs
       wrappedLines.push("");
@@ -478,11 +487,13 @@ function moveToNextLine() {
   const lines = userInput.value.split("\n");
 
   // Prevent duplicate newlines
-
+  // When user types the last character of the current line,
+  // we want to move to the next line.
   if (lines.length - 1 === gameState.currentLineIndex) {
+    // console.log("Moving to next line");
     userInput.value += "\n";
   }
-
+  // Increment the current line index to move to the next line
   gameState.currentLineIndex++;
 
   // Move cursor to end
