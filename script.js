@@ -712,7 +712,7 @@ function calculateWpm(typedText) {
  * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
  */
 function updateBestWpm(currentWpm) {
-  const bestWpmDisplay = document.querySelectorAll(".best-wpm");
+  const bestWpmDisplay = document.querySelectorAll(".wpm");
   let bestWpm = 0;
   bestWpmDisplay.forEach((el) => {
     const existingBest = parseInt(el.textContent, 10);
