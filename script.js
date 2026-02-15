@@ -93,7 +93,7 @@ function setRemoveActiveStates(...stateNames) {
     .forEach((s) => s.classList.remove("active"));
   stateNames.forEach((name) => {
     const el = document.getElementById(name);
-    if (el) el.classList.remove("active");
+    if (el) el.classList.add("active");
   });
 }
 
@@ -179,6 +179,8 @@ function endTest() {
 function resetTest() {
   gameState.isTestActive = false;
   gameState.typedText = "";
+  gameState.startTime = null;
+  gameState.timeRemaining = 0;
   previousLength = 0;
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -187,6 +189,17 @@ function resetTest() {
   gameState.timerRunning = false;
   if (userInput) {
     userInput.value = "";
+  }
+  calculateWpm(""); // Reset WPM display to 0
+  gameState.timerStartTime = null;
+  gameState.startTime = null;
+  const timeDisplay = document.querySelector(".time");
+  if (timeDisplay) {
+    timeDisplay.textContent = `0:00`;
+  }
+
+  if (passageArea) {
+    passageArea.style.display = "";
   }
   setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
