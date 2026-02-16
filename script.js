@@ -172,7 +172,20 @@ function endTest() {
     userInput.value = "";
   }
   setActiveStates("test-results");
-  calculateWpm(gameState.typedText);
+
+  const finalWpm = calculateWpm(gameState.typedText);
+  const wpmDisplay = document.querySelector("#personal-best");
+  if (wpmDisplay) {
+    wpmDisplay.textContent = finalWpm;
+  }
+  if (finalWpm > updateBestWpm(finalWpm)) {
+    updateBestWpm(finalWpm);
+  }
+
+  if (finalWpm < updateBestWpm(finalWpm)) {
+    updateBestWpm(finalWpm);
+  }
+
   console.log("Test ended", gameState);
 }
 
@@ -655,6 +668,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // keep typing current line
       }
 
+      // live typing update
+      const currentWpm = calculateWpm(gameState.typedText);
+      document.querySelectorAll(".wpm").forEach((el) => {
+        el.textContent = currentWpm;
+      });
+
       // if (isExact || isLonger) {
       //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
       //     endTest();
@@ -685,16 +704,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Simplified WPM calculation
 function calculateWpm(typedText) {
+  if (typeof typedText !== "string") {
+    return 0; // Handle non-string input gracefully
+  }
+
+  if (!gameState.timerStartTime) {
+    return 0; // Timer guard If gameState.timerStartTime is missing, return 0.
+  }
   const elapsedSeconds = Math.floor(
     (Date.now() - gameState.timerStartTime) / 1000,
   );
 
-  const displayWpm = document.querySelectorAll(".wpm");
-
   if (elapsedSeconds < 1) {
-    displayWpm.forEach((el) => {
-      el.textContent = "0";
-    });
+    // document.querySelectorAll(".wpm").forEach((el) => {
+    //   el.textContent = "0";
+    // });
     return 0;
   }
 
@@ -703,13 +727,16 @@ function calculateWpm(typedText) {
   const elapsedMinutes = elapsedSeconds / 60;
   const wpm = words / elapsedMinutes;
 
-  displayWpm.forEach((element) => {
-    element.textContent = Math.floor(wpm);
-  });
+  // displayWpm.forEach((element) => {
+  //   element.textContent = Math.floor(wpm);
+  // });
 
   return Math.floor(wpm);
 }
 
+document
+  .querySelectorAll(".wpm")
+  .forEach((el) => (el.textContent = calculateWpm(typedText)));
 // Adding a Best Wpm calculation
 
 /**
