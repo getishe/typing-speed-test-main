@@ -789,14 +789,14 @@ function savePersonalBest(wpm) {
   localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
 }
 
-function displayResultMessage(currentWpm, personalBest) {
+function displayResultMessage(currentWpm, previousBest) {
   const resultTitle = document.querySelector("#test-results h2");
   const resultMessage = document.querySelector("#test-results p");
-  if (personalBest === null) {
+  if (previousBest === 0) {
     resultTitle.textContent = "Baseline Established!";
     resultMessage.textContent =
       "Your baseline WPM has been set. Try again to beat your personal best!";
-  } else if (currentWpm > personalBest) {
+  } else if (currentWpm > previousBest) {
     resultTitle.textContent = "High Score Smashed!";
     resultMessage.textContent =
       "Incredible work! You've beaten your personal best. Can you do it again?";
