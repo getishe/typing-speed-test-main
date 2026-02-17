@@ -12,6 +12,10 @@ const modeSettings = document.querySelectorAll(".mode-settings button");
 let previousLength = 0;
 let timerInterval = null;
 const TOTAL_TIME = 60;
+const personalBest = document.querySelector("#personal-best");
+const hasCompletedBaseline = document.querySelector("#baseline-established");
+const PERSONAL_BEST_KEY = "personalBest";
+const HAS_COMPLETED_KEY = "hasCompletedBaseline";
 // let userInput = null;
 const gameState = {
   difficulty: "easy",
@@ -171,22 +175,23 @@ function endTest() {
   if (userInput) {
     userInput.value = "";
   }
-  setActiveStates("test-results");
 
   const finalWpm = calculateWpm(gameState.typedText);
-  const wpmDisplay = document.querySelector("#personal-best");
-  if (wpmDisplay) {
-    wpmDisplay.textContent = finalWpm;
-  }
-  if (finalWpm > updateBestWpm(finalWpm)) {
+  const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
+  const storedBest = personalBest ? parseInt(personalBest, 10) : 0;
+  const hasCompleted = localStorage.getItem(HAS_COMPLETED_KEY) === "true";
+  if (!hasCompleted) {
+    localStorage.setItem(HAS_COMPLETED_KEY, "true");
+    localStorage.setItem(PERSONAL_BEST_KEY, finalWpm.toString());
     updateBestWpm(finalWpm);
-  }
-
-  if (finalWpm < updateBestWpm(finalWpm)) {
+    setActiveStates("baseline-established");
+  } else if (finalWpm > storedBest) {
+    localStorage.setItem(PERSONAL_BEST_KEY, finalWpm.toString());
     updateBestWpm(finalWpm);
+    setActiveStates("high-score-smashed");
+  } else {
+    setActiveStates("test-results");
   }
-
-  console.log("Test ended", gameState);
 }
 
 function resetTest() {
@@ -668,11 +673,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return; // keep typing current line
       }
 
-      // live typing update
-      const currentWpm = calculateWpm(gameState.typedText);
-      document.querySelectorAll(".wpm").forEach((el) => {
-        el.textContent = currentWpm;
-      });
+      // Initialize localStorage on Page Load
+      const personalBest = localStorage.getItem("personalBest");
+      console.log("personalBest", personalBest);
+      if (personalBest) {
+        document.getElementById("personal-best").textContent = personalBest;
+      }
+      if (!personalBest) {
+        localStorage.setItem("personalBest", "0");
+        document.getElementById("personal-best").textContent = "0";
+      }
 
       // if (isExact || isLonger) {
       //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
@@ -767,6 +777,34 @@ function updateBestWpm(currentWpm) {
     });
   }
 }
-// needs some changes user typing area
+// Create Helper Functions
+function getPersonalBest() {
+  const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
+  if (personalBest === 0) {
+    return personalBest ? parseInt(personalBest, 10) : 0;
+  }
+}
+
+function savePersonalBest(wpm) {
+  localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
+}
+
+function displayResultMessage(currentWpm, personalBest) {
+  const resultTitle = document.querySelector("#test-results h2");
+  const resultMessage = document.querySelector("#test-results p");
+  if (personalBest === null) {
+    resultTitle.textContent = "Baseline Established!";
+    resultMessage.textContent =
+      "Your baseline WPM has been set. Try again to beat your personal best!";
+  } else if (currentWpm > personalBest) {
+    resultTitle.textContent = "High Score Smashed!";
+    resultMessage.textContent =
+      "Incredible work! You've beaten your personal best. Can you do it again?";
+  } else {
+    resultTitle.textContent = "Test Complete!";
+    resultMessage.textContent =
+      "Solid run. Keep pushing to beat your high score.";
+  }
+}
 
 // addind some animations
