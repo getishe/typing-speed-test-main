@@ -921,3 +921,5 @@ function displayResultMessage(currentWpm, previousBest) {
 }
 
 // addind some animations
+
+// When type on first line it will end when I reach the last index? The passage not finished yet
