@@ -666,7 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isShorter = typedLine.length < expectedLine.length;
       const isExact = typedLine.length === expectedLine.length;
       const isLonger = typedLine.length > expectedLine.length;
-
+      const isLineLengthReached = typedLine.length === expectedLine.length; // strict
       // const isFullPassageTyped =
       //   gameState.isTestActive && normalizedTyped === normalizedPassage;
 
@@ -688,34 +688,75 @@ document.addEventListener("DOMContentLoaded", () => {
       const isFullPassageTyped =
         gameState.isTestActive && normalizedTyped === normalizedPassage;
 
-      const finishOrAdvance = () => {
+      const typedAllSpaces =
+        userInput.value.length > 0 && /^[ ]+$/.test(userInput.value);
+      const fullLengthMatch =
+        userInput.value.length === gameState.currentPassage.length;
+
+      // const finishOrAdvance = () => {
+      //   const isLastLine =
+      //     gameState.currentLineIndex >= gameState.passageLines.length - 1;
+
+      //   if (isLastLine) {
+      //     if (isFullPassageTyped) endTest();
+      //     return;
+      //   }
+
+      //   moveToNextLine();
+      // };
+      // if (isLineExact) {
+      //   finishOrAdvance();
+      //   return;
+      // }
+
+      // if (isOnlySpaces && isLineLengthReached) {
+      //   finishOrAdvance();
+      //   return;
+      // }
+
+      // // if (isOnlySpaces && isExact) {
+      // //   finishOrAdvance();
+      // //   return;
+      // // }
+
+      // if (typedAllSpaces && fullLengthMatch) {
+      //   finishOrAdvance();
+      //   return;
+      // }
+
+      // if (isMixedTextAndSpaces && isExact) {
+      //   finishOrAdvance();
+      //   return;
+      // }
+
+      // if (isExact) {
+      //   finishOrAdvance();
+      //   return;
+      // }
+      const finishOrAdvance = ({ allowEndWithoutExact = false } = {}) => {
         const isLastLine =
           gameState.currentLineIndex >= gameState.passageLines.length - 1;
 
         if (isLastLine) {
-          if (isFullPassageTyped) endTest();
+          if (isFullPassageTyped || allowEndWithoutExact) endTest();
           return;
         }
 
         moveToNextLine();
       };
+
       if (isLineExact) {
         finishOrAdvance();
         return;
       }
 
-      if (isOnlySpaces && isExact) {
-        finishOrAdvance();
+      if (isOnlySpaces && isLineLengthReached) {
+        finishOrAdvance({ allowEndWithoutExact: true });
         return;
       }
 
-      if (isMixedTextAndSpaces && isExact) {
-        finishOrAdvance();
-        return;
-      }
-
-      if (isExact) {
-        finishOrAdvance();
+      if (isMixedTextAndSpaces && isLineLengthReached) {
+        finishOrAdvance({ allowEndWithoutExact: true });
         return;
       }
 
