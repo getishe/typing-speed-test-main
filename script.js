@@ -177,21 +177,33 @@ function endTest() {
   }
 
   const finalWpm = calculateWpm(gameState.typedText);
-  const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
-  const storedBest = personalBest ? parseInt(personalBest, 10) : 0;
-  const hasCompleted = localStorage.getItem(HAS_COMPLETED_KEY) === "true";
-  if (!hasCompleted) {
-    localStorage.setItem(HAS_COMPLETED_KEY, "true");
-    localStorage.setItem(PERSONAL_BEST_KEY, finalWpm.toString());
-    updateBestWpm(finalWpm);
+  const previousBest = getPersonalBest();
+
+  // Update WPM display in results section
+  document.querySelectorAll(".wpm").forEach((el) => {
+    el.textContent = finalWpm;
+  });
+
+  // Check if this is first test (baseline) or new high score
+  if (previousBest === 0) {
+    // First test - Baseline Established
+    savePersonalBest(finalWpm);
+    document.getElementById("personal-best").textContent = finalWpm;
+    displayResultMessage(finalWpm, 0);
     setActiveStates("baseline-established");
-  } else if (finalWpm > storedBest) {
-    localStorage.setItem(PERSONAL_BEST_KEY, finalWpm.toString());
-    updateBestWpm(finalWpm);
+  } else if (finalWpm > previousBest) {
+    // New high score - High Score Smashed
+    savePersonalBest(finalWpm);
+    document.getElementById("personal-best").textContent = finalWpm;
+    displayResultMessage(finalWpm, previousBest);
     setActiveStates("high-score-smashed");
   } else {
+    // Normal completion
+    displayResultMessage(finalWpm, previousBest);
     setActiveStates("test-results");
   }
+
+  console.log("Test ended", gameState);
 }
 
 function resetTest() {
@@ -506,6 +518,11 @@ function applyPassageWrapping() {
     gameState.passageLines = gameState.currentPassage
       ? gameState.currentPassage.split("\n")
       : [];
+    console.log(
+      "passageLines length:",
+      gameState.passageLines.length,
+      gameState.passageLines,
+    );
     return;
   }
 
@@ -531,6 +548,16 @@ function moveToNextLine() {
   userInput.selectionStart = userInput.selectionEnd = userInput.value.length;
 }
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ INITIALIZE LOCALSTORAGE ON PAGE LOAD
+  const storedBest = localStorage.getItem(PERSONAL_BEST_KEY);
+  if (storedBest) {
+    document.getElementById("personal-best").textContent = storedBest;
+  } else {
+    localStorage.setItem(PERSONAL_BEST_KEY, "0");
+    document.getElementById("personal-best").textContent = "0";
+  }
+
+  // ✅ NOW set up the input listener
   if (userInput) {
     userInput.addEventListener("input", () => {
       const currentLength = userInput.value.length;
@@ -640,19 +667,71 @@ document.addEventListener("DOMContentLoaded", () => {
       const isExact = typedLine.length === expectedLine.length;
       const isLonger = typedLine.length > expectedLine.length;
 
-      // 1) hard fail
-      if (hasTab) {
-        endTest();
+      // const isFullPassageTyped =
+      //   gameState.isTestActive && normalizedTyped === normalizedPassage;
+
+      // if (isFullPassageTyped) {
+      //   endTest();
+      //   return;
+      // }
+
+      // const finishOrAdvance = () => {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+      //     if (isFullPassageTyped || gameState.mode === "passage") {
+      //       endTest();
+      //     }
+      //     return;
+      //   }
+      //   moveToNextLine();
+      // };
+      const isLineExact = typedLineNormalized === expectedLine;
+      const isFullPassageTyped =
+        gameState.isTestActive && normalizedTyped === normalizedPassage;
+
+      const finishOrAdvance = () => {
+        const isLastLine =
+          gameState.currentLineIndex >= gameState.passageLines.length - 1;
+
+        if (isLastLine) {
+          if (isFullPassageTyped) endTest();
+          return;
+        }
+
+        moveToNextLine();
+      };
+      if (isLineExact) {
+        finishOrAdvance();
         return;
       }
 
-      // 2) spaces-only skip rule
       if (isOnlySpaces && isExact) {
-        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-          endTest();
-        else moveToNextLine();
+        finishOrAdvance();
         return;
       }
+
+      if (isMixedTextAndSpaces && isExact) {
+        finishOrAdvance();
+        return;
+      }
+
+      if (isExact) {
+        finishOrAdvance();
+        return;
+      }
+
+      // 1) hard fail
+      // if (hasTab) {
+      //   endTest();
+      //   return;
+      // }
+
+      // 2) spaces-only skip rule
+      // if (isOnlySpaces && isExact) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+      //     endTest();
+      //   else moveToNextLine();
+      //   return;
+      // }
 
       // 3) optional rule for mixed text + spaces
       // if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
@@ -661,28 +740,26 @@ document.addEventListener("DOMContentLoaded", () => {
       //   else moveToNextLine();
       //   return;
       // }
-      if (isMixedTextAndSpaces && isExact) {
-        if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-          endTest();
-        else moveToNextLine();
-        return;
-      }
+      // if (isMixedTextAndSpaces && isExact) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
+      //     endTest();
+      //   else moveToNextLine();
+      //   return;
+      // }
+
+      //Exact match handling (with or without spaces) → move to next line or end test if it was the last line.
+      // if (isExact) {
+      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
+      //     endTest();
+      //   } else {
+      //     moveToNextLine();
+      //   }
+      // }
 
       // 4) normal length handling
-      if (isShorter) {
-        return; // keep typing current line
-      }
-
-      // Initialize localStorage on Page Load
-      const personalBest = localStorage.getItem("personalBest");
-      console.log("personalBest", personalBest);
-      if (personalBest) {
-        document.getElementById("personal-best").textContent = personalBest;
-      }
-      if (!personalBest) {
-        localStorage.setItem("personalBest", "0");
-        document.getElementById("personal-best").textContent = "0";
-      }
+      // if (isShorter) {
+      //   return; // keep typing current line
+      // }
 
       // if (isExact || isLonger) {
       //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
@@ -744,9 +821,6 @@ function calculateWpm(typedText) {
   return Math.floor(wpm);
 }
 
-document
-  .querySelectorAll(".wpm")
-  .forEach((el) => (el.textContent = calculateWpm(typedText)));
 // Adding a Best Wpm calculation
 
 /**
@@ -755,34 +829,18 @@ document
  * Retrieves all elements with the "best-wpm" class, finds the highest existing WPM value,
  * and updates all instances if the current WPM exceeds the previous best score.
  *
- * @param {number} currentWpm - The current words per minute score to compare against the best score
- * @returns {void}
- *
- * @example
+ * current words per minute score to compare against the best score
+ 
  * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
  */
-function updateBestWpm(currentWpm) {
-  const bestWpmDisplay = document.querySelectorAll(".wpm");
-  let bestWpm = 0;
-  bestWpmDisplay.forEach((el) => {
-    const existingBest = parseInt(el.textContent, 10);
-    if (!isNaN(existingBest) && existingBest > bestWpm) {
-      bestWpm = existingBest;
-    }
-  });
 
-  if (currentWpm > bestWpm) {
-    bestWpmDisplay.forEach((el) => {
-      el.textContent = currentWpm;
-    });
-  }
-}
 // Create Helper Functions
 function getPersonalBest() {
   const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
-  if (personalBest === 0) {
-    return personalBest ? parseInt(personalBest, 10) : 0;
+  if (personalBest === null) {
+    return 0;
   }
+  return parseInt(personalBest, 10);
 }
 
 function savePersonalBest(wpm) {
@@ -790,20 +848,34 @@ function savePersonalBest(wpm) {
 }
 
 function displayResultMessage(currentWpm, previousBest) {
-  const resultTitle = document.querySelector("#test-results h2");
-  const resultMessage = document.querySelector("#test-results p");
+  let resultSection;
+  let title, message;
+
   if (previousBest === 0) {
-    resultTitle.textContent = "Baseline Established!";
-    resultMessage.textContent =
+    // First test - Baseline Established
+    resultSection = document.querySelector("#baseline-established");
+    title = "Baseline Established!";
+    message =
       "Your baseline WPM has been set. Try again to beat your personal best!";
   } else if (currentWpm > previousBest) {
-    resultTitle.textContent = "High Score Smashed!";
-    resultMessage.textContent =
+    // New high score
+    resultSection = document.querySelector("#high-score-smashed");
+    title = "High Score Smashed!";
+    message =
       "Incredible work! You've beaten your personal best. Can you do it again?";
   } else {
-    resultTitle.textContent = "Test Complete!";
-    resultMessage.textContent =
-      "Solid run. Keep pushing to beat your high score.";
+    // Normal completion
+    resultSection = document.querySelector("#test-results");
+    title = "Test Complete!";
+    message = "Solid run. Keep pushing to beat your high score.";
+  }
+
+  // Update the h2 and p within the selected section
+  if (resultSection) {
+    const resultTitle = resultSection.querySelector(".test-complete h2");
+    const resultMessage = resultSection.querySelector(".test-complete p");
+    if (resultTitle) resultTitle.textContent = title;
+    if (resultMessage) resultMessage.textContent = message;
   }
 }
 
