@@ -631,15 +631,6 @@ document.addEventListener("DOMContentLoaded", () => {
           userInput.value = typedLines.join("\n");
           gameState.typedText = userInput.value;
         }
-
-        if (isExactMatch || typedLine.length >= expectedLine.length) {
-          // Check if current line is last line
-          if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-            endTest();
-          } else {
-            moveToNextLine();
-          }
-        }
       }
 
       // if user has typed spaces equal to the passage,
@@ -922,4 +913,4 @@ function displayResultMessage(currentWpm, previousBest) {
 
 // addind some animations
 
-// When type on first line it will end when I reach the last index? The passage not finished yet
+//
