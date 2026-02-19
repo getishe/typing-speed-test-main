@@ -153,6 +153,11 @@ async function startTest() {
     userInput.focus();
   }
 
+  // Update WPM display in results section
+  document.querySelectorAll("#personal-best").forEach((el) => {
+    el.textContent = getPersonalBest();
+  });
+
   if (gameState.mode === "timed") {
     startTimedMode();
   } else if (gameState.mode === "passage") {
@@ -227,6 +232,14 @@ function resetTest() {
   if (timeDisplay) {
     timeDisplay.textContent = `0:00`;
   }
+
+  const wpmDisplays = document.querySelectorAll(".wpm");
+  wpmDisplays.forEach((el) => (el.textContent = "0"));
+
+  const personalBest = getPersonalBest();
+  document.querySelectorAll("#personal-best").forEach((el) => {
+    el.textContent = personalBest;
+  });
 
   if (passageArea) {
     passageArea.style.display = "";
@@ -633,21 +646,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // if user has typed spaces equal to the passage,
-      // just move to the next line until to reach the end of the passage.
-      // Spaces-only skip rule: if user fills the line with spaces exactly equal to expected length, treat line as completed.
-      // const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
-      // const isSameLengthAsExpected = typedLine.length === expectedLine.length;
-
-      // if (isOnlySpaces && isSameLengthAsExpected) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-      //     endTest();
-      //   } else {
-      //     moveToNextLine();
-      //   }
-      //   return;
-      // }
-
       const hasTab = /\t/.test(typedLine);
       const isOnlySpaces = typedLine.length > 0 && /^ +$/.test(typedLine);
       const hasLettersOrDigits = /[A-Za-z0-9]/.test(typedLine);
@@ -658,23 +656,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const isExact = typedLine.length === expectedLine.length;
       const isLonger = typedLine.length > expectedLine.length;
       const isLineLengthReached = typedLine.length === expectedLine.length; // strict
-      // const isFullPassageTyped =
-      //   gameState.isTestActive && normalizedTyped === normalizedPassage;
-
-      // if (isFullPassageTyped) {
-      //   endTest();
-      //   return;
-      // }
-
-      // const finishOrAdvance = () => {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-      //     if (isFullPassageTyped || gameState.mode === "passage") {
-      //       endTest();
-      //     }
-      //     return;
-      //   }
-      //   moveToNextLine();
-      // };
       const isLineExact = typedLineNormalized === expectedLine;
       const isFullPassageTyped =
         gameState.isTestActive && normalizedTyped === normalizedPassage;
@@ -684,46 +665,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const fullLengthMatch =
         userInput.value.length === gameState.currentPassage.length;
 
-      // const finishOrAdvance = () => {
-      //   const isLastLine =
-      //     gameState.currentLineIndex >= gameState.passageLines.length - 1;
-
-      //   if (isLastLine) {
-      //     if (isFullPassageTyped) endTest();
-      //     return;
-      //   }
-
-      //   moveToNextLine();
-      // };
-      // if (isLineExact) {
-      //   finishOrAdvance();
-      //   return;
-      // }
-
-      // if (isOnlySpaces && isLineLengthReached) {
-      //   finishOrAdvance();
-      //   return;
-      // }
-
-      // // if (isOnlySpaces && isExact) {
-      // //   finishOrAdvance();
-      // //   return;
-      // // }
-
-      // if (typedAllSpaces && fullLengthMatch) {
-      //   finishOrAdvance();
-      //   return;
-      // }
-
-      // if (isMixedTextAndSpaces && isExact) {
-      //   finishOrAdvance();
-      //   return;
-      // }
-
-      // if (isExact) {
-      //   finishOrAdvance();
-      //   return;
-      // }
       const finishOrAdvance = ({ allowEndWithoutExact = false } = {}) => {
         const isLastLine =
           gameState.currentLineIndex >= gameState.passageLines.length - 1;
@@ -750,55 +691,6 @@ document.addEventListener("DOMContentLoaded", () => {
         finishOrAdvance({ allowEndWithoutExact: true });
         return;
       }
-
-      // 1) hard fail
-      // if (hasTab) {
-      //   endTest();
-      //   return;
-      // }
-
-      // 2) spaces-only skip rule
-      // if (isOnlySpaces && isExact) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-      //     endTest();
-      //   else moveToNextLine();
-      //   return;
-      // }
-
-      // 3) optional rule for mixed text + spaces
-      // if (isMixedTextAndSpaces && / {2,}/.test(typedLine)) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-      //     endTest();
-      //   else moveToNextLine();
-      //   return;
-      // }
-      // if (isMixedTextAndSpaces && isExact) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-      //     endTest();
-      //   else moveToNextLine();
-      //   return;
-      // }
-
-      //Exact match handling (with or without spaces) → move to next line or end test if it was the last line.
-      // if (isExact) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1) {
-      //     endTest();
-      //   } else {
-      //     moveToNextLine();
-      //   }
-      // }
-
-      // 4) normal length handling
-      // if (isShorter) {
-      //   return; // keep typing current line
-      // }
-
-      // if (isExact || isLonger) {
-      //   if (gameState.currentLineIndex >= gameState.passageLines.length - 1)
-      //     endTest();
-      //   else moveToNextLine();
-      //   return;
-      // }
     });
   }
   // Set the first difficulty button as active by default
