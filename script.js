@@ -112,7 +112,9 @@ async function startTest() {
   gameState.typedText = "";
 
   document.querySelectorAll(".wpm").forEach((el) => (el.textContent = "0"));
-
+  // document
+  //   .querySelectorAll(".wpm")
+  //   .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
   const passages = await loadData();
   const selectedPassage = getRandomSelection(passages, gameState.difficulty);
 
@@ -193,13 +195,19 @@ function endTest() {
   if (previousBest === 0) {
     // First test - Baseline Established
     savePersonalBest(finalWpm);
-    document.getElementById("personal-best").textContent = finalWpm;
+    // document.getElementById("personal-best").textContent = finalWpm;
+    document.querySelectorAll("#personal-best").forEach((el) => {
+      el.textContent = finalWpm;
+    });
     displayResultMessage(finalWpm, 0);
     setActiveStates("baseline-established");
   } else if (finalWpm > previousBest) {
     // New high score - High Score Smashed
     savePersonalBest(finalWpm);
-    document.getElementById("personal-best").textContent = finalWpm;
+    // document.getElementById("personal-best").textContent = finalWpm;
+    document.querySelectorAll("#personal-best").forEach((el) => {
+      el.textContent = finalWpm;
+    });
     displayResultMessage(finalWpm, previousBest);
     setActiveStates("high-score-smashed");
   } else {
@@ -214,7 +222,7 @@ function endTest() {
 function resetTest() {
   gameState.isTestActive = false;
   gameState.typedText = "";
-  gameState.startTime = null;
+  // gameState.startTime = null;
   gameState.timeRemaining = 0;
   previousLength = 0;
   if (timerInterval) {
@@ -227,7 +235,7 @@ function resetTest() {
   }
   calculateWpm(""); // Reset WPM display to 0
   gameState.timerStartTime = null;
-  gameState.startTime = null;
+  // gameState.startTime = null;
   const timeDisplay = document.querySelector(".time");
   if (timeDisplay) {
     timeDisplay.textContent = `0:00`;
@@ -759,16 +767,37 @@ function calculateWpm(typedText) {
  */
 
 // Create Helper Functions
+// function getPersonalBest() {
+//   const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
+//   if (personalBest === null) {
+//     return 0;
+//   }
+//   return parseInt(personalBest, 10);
+// }
+
+// what if localStorage is disabled? Add try/catch blocks
 function getPersonalBest() {
-  const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
-  if (personalBest === null) {
+  try {
+    const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
+    return personalBest === null ? 0 : parseInt(personalBest, 10);
+  } catch (error) {
+    console.warn("Error accessing localStorage:", error);
     return 0;
   }
-  return parseInt(personalBest, 10);
 }
 
+// function savePersonalBest(wpm) {
+//   localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
+// }
+
+// what if localStorage is disabled? Add try/catch blocks
+
 function savePersonalBest(wpm) {
-  localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
+  try {
+    localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
+  } catch (error) {
+    console.warn("Error saving to localStorage:", error);
+  }
 }
 
 function displayResultMessage(currentWpm, previousBest) {
@@ -803,6 +832,29 @@ function displayResultMessage(currentWpm, previousBest) {
   }
 }
 
-// addind some animations
+// Implement accuracy calculation** - Count correct vs incorrect characters
+// Accuracy Calculation
+function accuracyCalculate(typedText) {
+  if (typeof typedText !== "string") {
+    return "";
+  }
+  const correctChars = normalizeLine(userInput.value);
+  const correctPassage = normalizeLine(gameState.currentPassage);
 
-//
+  const max = Math.max(correctChars.length, correctPassage.length);
+  let correctvalue, incorrectValue;
+
+  for (let i = 0; i <= max; i++) {
+    const correctChars = correctChars[i] || "";
+    const correctPassage = correctPassage[i] || "";
+
+    let correctAccuracy =
+      correctChars === correctPassage ? correctvalue : incorrectValue;
+    correctAccuracy = typedText;
+  }
+  if (correctAccuracy === true) return correctAccuracy;
+}
+
+// Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
+// Could you review my code and, without giving me the actual code,
+// guide me on how to fix which code  incorrect the logic
