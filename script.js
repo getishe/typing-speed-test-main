@@ -836,23 +836,35 @@ function displayResultMessage(currentWpm, previousBest) {
 // Accuracy Calculation
 function accuracyCalculate(typedText) {
   if (typeof typedText !== "string") {
-    return "";
+    return 0;
   }
-  const correctChars = normalizeLine(userInput.value);
-  const correctPassage = normalizeLine(gameState.currentPassage);
+  let correctValue = 0;
+  let incorrectValue = 0;
 
-  const max = Math.max(correctChars.length, correctPassage.length);
-  let correctvalue, incorrectValue;
+  const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
+  const normalizedPassage = normalizeForCompare(
+    gameState.currentPassage,
+  ).toLocaleLowerCase();
 
-  for (let i = 0; i <= max; i++) {
-    const correctChars = correctChars[i] || "";
-    const correctPassage = correctPassage[i] || "";
+  // mode does penalize extra and missing.
+  const denominator = Math.max(
+    normalizedTyped.length,
+    normalizedPassage.length,
+  );
 
-    let correctAccuracy =
-      correctChars === correctPassage ? correctvalue : incorrectValue;
-    correctAccuracy = typedText;
+  // Loop through each character up to the length of the longer string
+  for (let i = 0; i < denominator; i++) {
+    const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
+    const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
+
+    if (typedChar === passageChar) {
+      correctValue++;
+    } else {
+      incorrectValue++;
+    }
   }
-  if (correctAccuracy === true) return correctAccuracy;
+
+  return denominator > 0 ? Math.round((correctValue / denominator) * 100) : 0;
 }
 
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
