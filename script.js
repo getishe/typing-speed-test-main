@@ -870,3 +870,21 @@ function accuracyCalculate(typedText) {
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
 // Could you review my code and, without giving me the actual code,
 // guide me on how to fix which code  incorrect the logic
+
+// Keep your normalization (normalizedTyped, normalizedPassage) and lowercasing — don’t change that.
+
+// Choose denominator:
+// Penalize both missing and extra chars → denominator = max(normalizedTyped.length, normalizedPassage.length)
+// Penalize only what the user typed → denominator = normalizedTyped.length
+
+// Set loopLength = denominator and iterate i from 0 to loopLength-1 (inclusive start, exclusive end).
+
+// For each i read typedChar = normalizedTyped[i] || "" and expectedChar = normalizedPassage[i] || "" and compare:
+// if equal → increment correctCount
+// else → increment incorrectCount (or infer incorrect = denominator - correct after loop)
+
+// Guard divide-by-zero: if denominator === 0 return 0.
+
+// Compute accuracy = (correctCount / denominator) * 100, round as desired, and return that value.
+
+// Optional: decide case sensitivity/whitespace policy and add tests for typed shorter, typed longer, exact match.
