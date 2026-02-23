@@ -838,22 +838,25 @@ function accuracyCalculate(typedText) {
   if (typeof typedText !== "string") {
     return "";
   }
-  const correctChars = normalizeLine(userInput.value);
-  const correctPassage = normalizeLine(gameState.currentPassage);
+  const correctChars = normalizeForCompare(userInput.value).toLocaleLowerCase;
+  const correctPassage = normalizeForCompare(
+    gameState.currentPassage,
+  ).toLocaleLowerCase;
 
   const max = Math.max(correctChars.length, correctPassage.length);
-  let correctvalue, incorrectValue;
+  let correctValue = 0;
+  let incorrectValue = 0;
 
-  for (let i = 0; i <= max; i++) {
+  for (let i = 0; i < max; i++) {
     const correctChars = correctChars[i] || "";
     const correctPassage = correctPassage[i] || "";
-
-    let correctAccuracy =
-      correctChars === correctPassage ? correctvalue : incorrectValue;
-    correctAccuracy = typedText;
+    max = correctChars[i] = correctPassage[i]
+      ? correctValue++
+      : incorrectValue++;
   }
-  if (correctAccuracy === true) return correctAccuracy;
 }
+
+return max > 0 ? Math.round((correctValue / max) * 100) : 0;
 
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
 // Could you review my code and, without giving me the actual code,
