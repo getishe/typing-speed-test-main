@@ -836,24 +836,35 @@ function displayResultMessage(currentWpm, previousBest) {
 // Accuracy Calculation
 function accuracyCalculate(typedText) {
   if (typeof typedText !== "string") {
-    return "";
+    return 0;
   }
-  const correctChars = normalizeForCompare(userInput.value).toLocaleLowerCase;
-  const correctPassage = normalizeForCompare(
-    gameState.currentPassage,
-  ).toLocaleLowerCase;
-
-  const max = Math.max(correctChars.length, correctPassage.length);
   let correctValue = 0;
   let incorrectValue = 0;
 
-  for (let i = 0; i < max; i++) {
-    const correctChars = correctChars[i] || "";
-    const correctPassage = correctPassage[i] || "";
-    max = correctChars[i] = correctPassage[i]
-      ? correctValue++
-      : incorrectValue++;
+  const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
+  const normalizedPassage = normalizeForCompare(
+    gameState.currentPassage,
+  ).toLocaleLowerCase();
+
+  // mode does penalize extra and missing.
+  const denominator = Math.max(
+    normalizedTyped.length,
+    normalizedPassage.length,
+  );
+
+  // Loop through each character up to the length of the longer string
+  for (let i = 0; i < denominator; i++) {
+    const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
+    const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
+
+    if (typedChar === passageChar) {
+      correctValue++;
+    } else {
+      incorrectValue++;
+    }
   }
+
+  return denominator > 0 ? Math.round((correctValue / denominator) * 100) : 0;
 }
 
 return max > 0 ? Math.round((correctValue / max) * 100) : 0;
@@ -861,3 +872,21 @@ return max > 0 ? Math.round((correctValue / max) * 100) : 0;
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
 // Could you review my code and, without giving me the actual code,
 // guide me on how to fix which code  incorrect the logic
+
+// Keep your normalization (normalizedTyped, normalizedPassage) and lowercasing — don’t change that.
+
+// Choose denominator:
+// Penalize both missing and extra chars → denominator = max(normalizedTyped.length, normalizedPassage.length)
+// Penalize only what the user typed → denominator = normalizedTyped.length
+
+// Set loopLength = denominator and iterate i from 0 to loopLength-1 (inclusive start, exclusive end).
+
+// For each i read typedChar = normalizedTyped[i] || "" and expectedChar = normalizedPassage[i] || "" and compare:
+// if equal → increment correctCount
+// else → increment incorrectCount (or infer incorrect = denominator - correct after loop)
+
+// Guard divide-by-zero: if denominator === 0 return 0.
+
+// Compute accuracy = (correctCount / denominator) * 100, round as desired, and return that value.
+
+// Optional: decide case sensitivity/whitespace policy and add tests for typed shorter, typed longer, exact match.
