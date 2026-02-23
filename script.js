@@ -867,8 +867,6 @@ function accuracyCalculate(typedText) {
   return denominator > 0 ? Math.round((correctValue / denominator) * 100) : 0;
 }
 
-return max > 0 ? Math.round((correctValue / max) * 100) : 0;
-
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
 // Could you review my code and, without giving me the actual code,
 // guide me on how to fix which code  incorrect the logic
