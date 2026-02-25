@@ -622,6 +622,15 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         endTest();
       }
+
+      document
+        .querySelectorAll(".wpm")
+        .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
+      document
+        .querySelectorAll(".accuracy")
+        .forEach(
+          (e) => (e.textContent = accuracyCalculate(gameState.typedText)),
+        );
       // Split into lines and
       const passageLines = gameState.passageLines;
       const typedLines = userInput.value.split("\n");
