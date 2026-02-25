@@ -868,8 +868,12 @@ function accuracyCalculate(typedText) {
 
     if (typedChar === passageChar) {
       correctValue++;
+      console.log(`Char ${i}: Correct ("${typedChar}")`);
     } else {
       incorrectValue++;
+      console.log(
+        `Char ${i}: Incorrect (typed: "${typedChar}", expected: "${passageChar}")`,
+      );
     }
   }
 
