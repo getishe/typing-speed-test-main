@@ -876,7 +876,7 @@ function accuracyCalculate(typedText) {
       );
     }
   }
-
+// more to do with this function 
   return denominator > 0 ? Math.round((correctValue / denominator) * 100) : 0;
 }
 
