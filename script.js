@@ -774,7 +774,7 @@ function calculateWpm(typedText) {
  
  * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
  */
-
+// update 
 // Create Helper Functions
 // function getPersonalBest() {
 //   const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
