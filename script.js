@@ -9,6 +9,10 @@ const difficultySettings = document.querySelectorAll(
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
+
+let totalKeysPressed = 0;
+let totalErrors = 0;
+
 let previousLength = 0;
 let timerInterval = null;
 const TOTAL_TIME = 60;
@@ -623,14 +627,14 @@ document.addEventListener("DOMContentLoaded", () => {
         endTest();
       }
 
-      document
-        .querySelectorAll(".wpm")
-        .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
-      document
-        .querySelectorAll(".accuracy")
-        .forEach(
-          (e) => (e.textContent = accuracyCalculate(gameState.typedText)),
-        );
+      // document
+      //   .querySelectorAll(".wpm")
+      //   .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
+      // document
+      //   .querySelectorAll(".accuracy")
+      //   .forEach(
+      //     (e) => (e.textContent = accuracyCalculate(gameState.typedText)),
+      //   );
       // Split into lines and
       const passageLines = gameState.passageLines;
       const typedLines = userInput.value.split("\n");
@@ -709,6 +713,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     });
+
+    let totalKeysPressed = 0;
+    let totalErrors = 0;
+
+    userInput.addEventListener("keydown", (e) => {
+      totalKeysPressed++;
+
+      //Compare current Compare current key to the expected character in the source
+      if (gameState.isTestActive && gameState.currentPassage !== e.key) {
+        totalErrors++;
+      }
+    });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
@@ -774,7 +790,7 @@ function calculateWpm(typedText) {
  
  * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
  */
-// update 
+// update
 // Create Helper Functions
 // function getPersonalBest() {
 //   const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
@@ -844,12 +860,14 @@ function displayResultMessage(currentWpm, previousBest) {
 // Implement accuracy calculation** - Count correct vs incorrect characters
 // Accuracy Calculation
 function accuracyCalculate(typedText) {
+  ("use strict");
   if (typeof typedText !== "string") {
     return 0;
   }
-  let correctValue = 0;
-  let incorrectValue = 0;
 
+  let errors = 0;
+  let missingValue = 0;
+  let extraValue = 0;
   const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
   const normalizedPassage = normalizeForCompare(
     gameState.currentPassage,
@@ -860,24 +878,53 @@ function accuracyCalculate(typedText) {
     normalizedTyped.length,
     normalizedPassage.length,
   );
+  //Confirm denominator rule: passage length vs max(passage, typed).
+  if (denominator === 0) {
+    return 0; // Guard against divide-by-zero if both are empty
+  }
 
   // Loop through each character up to the length of the longer string
   for (let i = 0; i < denominator; i++) {
     const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
     const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
 
-    if (typedChar === passageChar) {
-      correctValue++;
-      console.log(`Char ${i}: Correct ("${typedChar}")`);
-    } else {
-      incorrectValue++;
-      console.log(
-        `Char ${i}: Incorrect (typed: "${typedChar}", expected: "${passageChar}")`,
-      );
+    if (typedChar !== passageChar) {
+      errors++;
     }
+
+    // console.log(
+    //   `Char ${i}: incorrect ("${typedChar}", expected:"${passageChar}")`,
+    // );
+
+    missingValue = Math.max(0, passageChar.length - typedChar.length);
+
+    // console.log(
+    //   `Char ${i}: Incorrect (typed: "${typedChar}", expected: "missing")`,
+    // );
+
+    extraValue = Math.max(
+      0,
+      typedChar.length > passageChar.length
+        ? typedChar.length - passageChar.length
+        : 0,
+    );
+
+    console.log(
+      `Char ${i}: Incorrect (typed: "${typedChar}", expected: "${passageChar}")`,
+    );
   }
-// more to do with this function 
-  return denominator > 0 ? Math.round((correctValue / denominator) * 100) : 0;
+
+  // Account for missing and extra characters based on the chosen denominator rule
+  // If penalizing both missing and extra chars, errors already accounts for all discrepancies.
+  // If penalizing only what the user typed, we can infer incorrect = denominator - correct.
+  const totalErrors = errors + missingValue + extraValue;
+  const missingAndExtraPenalty = totalErrors; // If penalizing both
+  // const typedOnlyPenalty = denominator - correctValue; // If penalizing only what the user typed
+
+  // more to do with this function
+  return denominator > 0
+    ? Math.round(((denominator - missingAndExtraPenalty) / denominator) * 100)
+    : 0;
 }
 
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
