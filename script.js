@@ -1,3 +1,5 @@
+"use strict";
+
 const start = document.querySelector(".start-button");
 const reset = document.querySelector(".reset-button");
 const passageDisplay = document.querySelector("#passage-display");
@@ -11,8 +13,6 @@ const difficultySettings = document.querySelectorAll(
 const modeSettings = document.querySelectorAll(".mode-settings button");
 
 let totalKeysPressed = 0;
-let totalErrors = 0;
-
 let previousLength = 0;
 let timerInterval = null;
 const TOTAL_TIME = 60;
@@ -38,6 +38,11 @@ const gameState = {
   timerRunning: false,
   passageLines: [],
   currentLineIndex: 0,
+  accuracy: 0, // accuracy as a percentage
+  totalErrors: 0,
+  perIndexErrors: [], // New structure to track if each index has ever been typed incorrectly
+  normalizedTarget: "", // Store the normalized target text for strict comparison
+  normalizedTypedText: "", // Store the normalized user input for comparison
 };
 
 difficultySettings.forEach((button) => {
@@ -95,15 +100,15 @@ function setActiveStates(...stateNames) {
 setActiveStates("test-setup");
 
 // when the reset button is clicked, reset the game state and clear the passage display
-function setRemoveActiveStates(...stateNames) {
-  document
-    .querySelectorAll(".test-state")
-    .forEach((s) => s.classList.remove("active"));
-  stateNames.forEach((name) => {
-    const el = document.getElementById(name);
-    if (el) el.classList.add("active");
-  });
-}
+// function setRemoveActiveStates(...stateNames) {
+//   document
+//     .querySelectorAll(".test-state")
+//     .forEach((s) => s.classList.remove("active"));
+//   stateNames.forEach((name) => {
+//     const el = document.getElementById(name);
+//     if (el) el.classList.add("active");
+//   });
+// }
 
 async function startTest() {
   // Clear any existing timer
@@ -153,6 +158,10 @@ async function startTest() {
       passageDisplay.value =
         gameState.currentPassage || "No passage available.";
     }
+
+    gameState.normalizedTarget = gameState.currentPassage
+      ? normalizeForCompare(gameState.currentPassage).toLocaleLowerCase()
+      : "";
   });
 
   if (userInput) {
@@ -171,6 +180,32 @@ async function startTest() {
   }
   console.log("Test started with passage:", gameState.currentPassage); // ✅ Log normalized
   console.log("Passage length:", gameState.currentPassage.length); // ✅ Log length
+
+  //Clear your per-index “ever wrong” structure for a brand-new session.
+
+  //   Store a stable normalized target for this session
+  // After selecting passage, normalize once for strict
+  // comparison and save it in session state (separate from display-wrapped text).
+  // Ensure the stable normalized target is captured after any wrapping/transforming
+  // Capture a stable normalized target immediately (don't defer to rAF)
+  // Capture a stable normalized target after wrapping has been applied.
+  // Use requestAnimationFrame to ensure applyPassageWrapping() (which runs in rAF)
+  // has finished updating gameState.currentPassage before we normalize it.
+
+  // Reset input/session text state
+  // Clear gameState.typedText and input field.
+  // Reset line index and related per-line state.
+  gameState.currentLineIndex = 0;
+  gameState.typedText = "";
+  gameState.totalErrors = 0;
+  gameState.normalizedTypedText = "";
+  gameState.perIndexErrors = [];
+  gameState.accuracy = 0;
+  totalKeysPressed = 0;
+
+  document
+    .querySelectorAll(".accuracy")
+    .forEach((el) => (el.textContent = "100%"));
 }
 
 function endTest() {
@@ -221,6 +256,38 @@ function endTest() {
   }
 
   console.log("Test ended", gameState);
+
+  // Calculate and display accuracy
+  document.querySelectorAll(".accuracy").forEach((el) => {
+    el.textContent = `${gameState.accuracy}%`;
+  });
+
+  // update error UI from accuracy calculation
+  document.querySelectorAll(".result-Errors").forEach((e) => {
+    e.textContent = `${gameState.totalErrors} / ${Math.max(gameState.normalizedTypedText.length, gameState.normalizedTarget.length)} chars`;
+  });
+
+  const accuracyFinalWpm = accuracyCalculate(gameState.typedText);
+  const AccuracyPreviousBest = accuracyFinalWpm;
+
+  if (accuracyFinalWpm > AccuracyPreviousBest) {
+    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
+    document.querySelectorAll(".accuracy").forEach((el) => {
+      el.textContent = `${gameState.accuracy}%`;
+    });
+  } else if (accuracyFinalWpm === AccuracyPreviousBest) {
+    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
+    document.querySelectorAll(".accuracy").forEach((el) => {
+      el.textContent = `${gameState.accuracy}%`;
+    });
+  } else {
+    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
+    document.querySelectorAll(".accuracy").forEach((el) => {
+      el.textContent = `${gameState.accuracy}%`;
+    });
+  }
+
+  // Update Accuracy display in results section
 }
 
 function resetTest() {
@@ -588,6 +655,37 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
+      gameState.normalizedTypedText = normalizeForCompare(
+        userInput.value,
+      ).toLocaleLowerCase();
+
+      const typed = gameState.normalizedTypedText;
+      const target = gameState.normalizedTarget;
+      const strictDenominator = Math.max(typed.length, target.length);
+
+      if (gameState.perIndexErrors.length < strictDenominator) {
+        gameState.perIndexErrors.length = strictDenominator;
+      }
+
+      for (let i = 0; i < strictDenominator; i++) {
+        const typedChar = typed[i] || "";
+        const targetChar = target[i] || "";
+        if (typedChar !== targetChar) {
+          gameState.perIndexErrors[i] = true; // never reset to false
+        }
+      }
+
+      gameState.totalErrors = gameState.perIndexErrors.filter(Boolean).length;
+
+      gameState.accuracy =
+        strictDenominator === 0
+          ? 0
+          : Math.round(
+              ((strictDenominator - gameState.totalErrors) /
+                strictDenominator) *
+                100,
+            );
+
       // Sync scroll position between both textareas
       passageDisplay.scrollTop = userInput.scrollTop;
       passageDisplay.scrollLeft = userInput.scrollLeft;
@@ -626,7 +724,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         endTest();
       }
-
       // document
       //   .querySelectorAll(".wpm")
       //   .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
@@ -712,19 +809,30 @@ document.addEventListener("DOMContentLoaded", () => {
         finishOrAdvance({ allowEndWithoutExact: true });
         return;
       }
-    });
 
-    let totalKeysPressed = 0;
-    let totalErrors = 0;
+      // Keep one strict error metric source
+    });
 
     userInput.addEventListener("keydown", (e) => {
-      totalKeysPressed++;
+      if (!gameState.isTestActive) return;
 
-      //Compare current Compare current key to the expected character in the source
-      if (gameState.isTestActive && gameState.currentPassage !== e.key) {
-        totalErrors++;
-      }
+      const isCountedKey =
+        e.key.length === 1 || // Regular character keys
+        e.key === "Backspace" ||
+        e.key === "Enter" ||
+        e.key === "Tab";
+
+      if (isCountedKey) totalKeysPressed++;
     });
+
+    // userInput.addEventListener("keydown", (e) => {
+    //   totalKeysPressed++;
+
+    //   //Compare current Compare current key to the expected character in the source
+    //   if (gameState.isTestActive && gameState.currentPassage !== e.key) {
+    //     totalErrors++;
+    //   }
+    // });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
@@ -860,14 +968,6 @@ function displayResultMessage(currentWpm, previousBest) {
 // Implement accuracy calculation** - Count correct vs incorrect characters
 // Accuracy Calculation
 function accuracyCalculate(typedText) {
-  ("use strict");
-  if (typeof typedText !== "string") {
-    return 0;
-  }
-
-  let errors = 0;
-  let missingValue = 0;
-  let extraValue = 0;
   const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
   const normalizedPassage = normalizeForCompare(
     gameState.currentPassage,
@@ -883,48 +983,27 @@ function accuracyCalculate(typedText) {
     return 0; // Guard against divide-by-zero if both are empty
   }
 
+  let correct = 0;
   // Loop through each character up to the length of the longer string
   for (let i = 0; i < denominator; i++) {
     const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
     const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
 
-    if (typedChar !== passageChar) {
-      errors++;
+    if (typedChar === passageChar) {
+      correct++;
     }
 
     // console.log(
-    //   `Char ${i}: incorrect ("${typedChar}", expected:"${passageChar}")`,
+    //   `Char ${i}: Incorrect (typed: "missing", expected: "${passageChar}")`,
     // );
-
-    missingValue = Math.max(0, passageChar.length - typedChar.length);
-
-    // console.log(
-    //   `Char ${i}: Incorrect (typed: "${typedChar}", expected: "missing")`,
-    // );
-
-    extraValue = Math.max(
-      0,
-      typedChar.length > passageChar.length
-        ? typedChar.length - passageChar.length
-        : 0,
-    );
-
-    console.log(
-      `Char ${i}: Incorrect (typed: "${typedChar}", expected: "${passageChar}")`,
-    );
   }
 
   // Account for missing and extra characters based on the chosen denominator rule
   // If penalizing both missing and extra chars, errors already accounts for all discrepancies.
   // If penalizing only what the user typed, we can infer incorrect = denominator - correct.
-  const totalErrors = errors + missingValue + extraValue;
-  const missingAndExtraPenalty = totalErrors; // If penalizing both
-  // const typedOnlyPenalty = denominator - correctValue; // If penalizing only what the user typed
 
   // more to do with this function
-  return denominator > 0
-    ? Math.round(((denominator - missingAndExtraPenalty) / denominator) * 100)
-    : 0;
+  return denominator > 0 ? Math.round((correct / denominator) * 100) : 0;
 }
 
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
