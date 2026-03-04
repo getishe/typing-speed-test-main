@@ -270,12 +270,12 @@ function endTest() {
   const accuracyFinalWpm = accuracyCalculate(gameState.typedText);
   const AccuracyPreviousBest = accuracyFinalWpm;
 
-  if (accuracyFinalWpm > AccuracyPreviousBest) {
+  if (AccuracyPreviousBest === 0) {
     displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
     document.querySelectorAll(".accuracy").forEach((el) => {
       el.textContent = `${gameState.accuracy}%`;
     });
-  } else if (accuracyFinalWpm === AccuracyPreviousBest) {
+  } else if (accuracyFinalWpm > AccuracyPreviousBest) {
     displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
     document.querySelectorAll(".accuracy").forEach((el) => {
       el.textContent = `${gameState.accuracy}%`;
