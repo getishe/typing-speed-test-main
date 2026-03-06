@@ -205,7 +205,7 @@ async function startTest() {
 
   document
     .querySelectorAll(".accuracy")
-    .forEach((el) => (el.textContent = "100%"));
+    .forEach((el) => (el.textContent = "0%"));
 }
 
 function endTest() {
@@ -218,9 +218,9 @@ function endTest() {
     timerInterval = null;
   }
 
-  if (userInput) {
-    userInput.value = "";
-  }
+  // if (userInput) {
+  //   userInput.value = "";
+  // }
 
   const finalWpm = calculateWpm(gameState.typedText);
   const previousBest = getPersonalBest();
@@ -257,43 +257,36 @@ function endTest() {
 
   console.log("Test ended", gameState);
 
-  // Calculate and display accuracy
-  document.querySelectorAll(".accuracy").forEach((el) => {
-    el.textContent = `${gameState.accuracy}%`;
-  });
+  gameState.totalErrors = gameState.perIndexErrors.filter(Boolean).length;
+  const strictDenominator = Math.max(
+    gameState.normalizedTypedText.length,
+    gameState.normalizedTarget.length,
+  );
+  gameState.accuracy =
+    strictDenominator === 0
+      ? 0
+      : Math.round(
+          ((strictDenominator - gameState.totalErrors) / strictDenominator) *
+            100,
+        );
 
   // update error UI from accuracy calculation
+  // Update Accuracy display in results section
+  const incorrectCount = gameState.totalErrors;
+  const correctCount = strictDenominator - incorrectCount;
   document.querySelectorAll(".result-Errors").forEach((e) => {
-    e.textContent = `${gameState.totalErrors} / ${Math.max(gameState.normalizedTypedText.length, gameState.normalizedTarget.length)} chars`;
+    e.textContent = `${correctCount} / ${incorrectCount} chars`;
   });
 
-  const accuracyFinalWpm = accuracyCalculate(gameState.typedText);
-  const AccuracyPreviousBest = accuracyFinalWpm;
-
-  if (AccuracyPreviousBest === 0) {
-    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
-    document.querySelectorAll(".accuracy").forEach((el) => {
-      el.textContent = `${gameState.accuracy}%`;
-    });
-  } else if (accuracyFinalWpm > AccuracyPreviousBest) {
-    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
-    document.querySelectorAll(".accuracy").forEach((el) => {
-      el.textContent = `${gameState.accuracy}%`;
-    });
-  } else {
-    displayResultMessage(accuracyFinalWpm, AccuracyPreviousBest);
-    document.querySelectorAll(".accuracy").forEach((el) => {
-      el.textContent = `${gameState.accuracy}%`;
-    });
-  }
-
-  // Update Accuracy display in results section
+  // Calculate and display accuracy
+  document.querySelectorAll(".accuracy").forEach((el) => {
+    el.textContent = `${gameState.accuracy}%`; // Display the calculated accuracy percentage
+  });
 }
 
 function resetTest() {
   gameState.isTestActive = false;
   gameState.typedText = "";
-  // gameState.startTime = null;
   gameState.timeRemaining = 0;
   previousLength = 0;
   if (timerInterval) {
@@ -301,6 +294,16 @@ function resetTest() {
     timerInterval = null;
   }
   gameState.timerRunning = false;
+  // gameState.currentLineIndex = 0;
+  // clear all strict/session state related to typing and errors
+
+  gameState.perIndexErrors = [];
+  gameState.totalErrors = 0;
+  gameState.accuracy = 0;
+  gameState.normalizedTypedText = "";
+  gameState.normalizedTarget = "";
+  totalKeysPressed = 0;
+
   if (userInput) {
     userInput.value = "";
   }
@@ -315,6 +318,9 @@ function resetTest() {
   const wpmDisplays = document.querySelectorAll(".wpm");
   wpmDisplays.forEach((el) => (el.textContent = "0"));
 
+  const accuracyDisplays = document.querySelectorAll(".accuracy");
+  accuracyDisplays.forEach((el) => (el.textContent = "0%"));
+
   const personalBest = getPersonalBest();
   document.querySelectorAll("#personal-best").forEach((el) => {
     el.textContent = personalBest;
@@ -325,6 +331,10 @@ function resetTest() {
   }
   setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
+
+  document.querySelectorAll(".result-Errors").forEach((e) => {
+    e.textContent = `0 / 0 chars`;
+  });
 }
 
 // loadData data.json
@@ -661,30 +671,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const typed = gameState.normalizedTypedText;
       const target = gameState.normalizedTarget;
-      const strictDenominator = Math.max(typed.length, target.length);
+      const liveDenominator = Math.max(typed.length, target.length);
 
-      if (gameState.perIndexErrors.length < strictDenominator) {
-        gameState.perIndexErrors.length = strictDenominator;
-      }
+      // Only mark history for indices user has actually attempted
+      // const attemptedLength = typed.length;
 
-      for (let i = 0; i < strictDenominator; i++) {
+      // Ensure history array can hold attempted indices
+      // if (gameState.perIndexErrors.length < attemptedLength) {
+      //   gameState.perIndexErrors.length = attemptedLength;
+      // }
+      let liveIncorrect = 0;
+      let liveCorrect = 0;
+      for (let i = 0; i < liveDenominator; i++) {
         const typedChar = typed[i] || "";
         const targetChar = target[i] || "";
-        if (typedChar !== targetChar) {
-          gameState.perIndexErrors[i] = true; // never reset to false
+        if (typedChar === targetChar) {
+          // gameState.perIndexErrors[i] = true; // never reset to false
+          liveCorrect++;
         }
       }
-
-      gameState.totalErrors = gameState.perIndexErrors.filter(Boolean).length;
+      liveIncorrect = liveDenominator - liveCorrect;
+      gameState.totalErrors = liveIncorrect;
+      // gameState.totalErrors = gameState.perIndexErrors.filter(Boolean).length;
 
       gameState.accuracy =
-        strictDenominator === 0
+        liveDenominator === 0
           ? 0
-          : Math.round(
-              ((strictDenominator - gameState.totalErrors) /
-                strictDenominator) *
-                100,
-            );
+          : Math.round((liveCorrect / liveDenominator) * 100);
+
+      //Correct/incorrect character display
+      const incorrectCount = gameState.totalErrors;
+      const correctChars = Math.max(0, liveDenominator - incorrectCount);
+      document.querySelectorAll(".accuracy").forEach((el) => {
+        el.textContent = `${gameState.accuracy}%`; // Display the calculated accuracy percentage
+      });
+      document.querySelectorAll(".result-Errors").forEach((e) => {
+        e.textContent = `${correctChars} / ${incorrectCount} chars`;
+      });
+
+      document.querySelectorAll(".wpm").forEach((el) => {
+        el.textContent = calculateWpm(gameState.typedText);
+      });
 
       // Sync scroll position between both textareas
       passageDisplay.scrollTop = userInput.scrollTop;
