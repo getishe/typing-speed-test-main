@@ -258,7 +258,7 @@ function endTest() {
   // Snapshot final metrics (same model as live input)
   const typed = gameState.normalizedTypedText;
   const target = gameState.normalizedTarget;
-  const liveDenominator = Math.max(typed.length, target.length);
+  const liveDenominator = typed.length;
 
   let liveCorrect = 0;
   let liveIncorrect = 0;
@@ -272,9 +272,8 @@ function endTest() {
     }
   }
 
-  // gameState.totalErrors = liveIncorrect;
-  const incorrectCount = typed.length - liveCorrect;
-  const correctChars = typed.length - incorrectCount;
+  const incorrectCount = liveDenominator - liveCorrect;
+  const correctChars = liveCorrect;
   gameState.accuracy =
     liveDenominator === 0
       ? 0
@@ -675,7 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const typed = gameState.normalizedTypedText;
       const target = gameState.normalizedTarget;
-      const liveDenominator = Math.max(typed.length, target.length);
+      const liveDenominator = typed.length;
 
       let liveIncorrect = 0;
       let liveCorrect = 0;
@@ -689,16 +688,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // gameState.totalErrors = liveIncorrect;
-
       gameState.accuracy =
         liveDenominator === 0
           ? 0
           : Math.round((liveCorrect / liveDenominator) * 100);
 
       //Correct/incorrect character display
-      const incorrectCount = typed.length - liveCorrect;
-      const correctChars = typed.length - incorrectCount;
+      const incorrectCount = liveDenominator - liveCorrect;
+      const correctChars = liveCorrect;
       document.querySelectorAll(".accuracy").forEach((el) => {
         el.textContent = `${gameState.accuracy}%`; // Display the calculated accuracy percentage
       });
