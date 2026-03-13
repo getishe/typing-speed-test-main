@@ -1,7 +1,7 @@
 "use strict";
 
 const start = document.querySelector(".start-button");
-const reset = document.querySelector(".reset-button");
+const reset = document.querySelectorAll(".reset-button");
 const passageDisplay = document.querySelector("#passage-display");
 const userInput = document.querySelector("#user-input");
 const tryAgain = document.querySelector("#try-button");
@@ -77,11 +77,12 @@ if (start) {
   });
 }
 if (reset) {
-  reset.addEventListener("click", () => {
-    resetTest();
+  reset.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      resetTest();
+    });
   });
 }
-
 if (tryAgain) {
   tryAgain.addEventListener("click", () => {
     startTest();
