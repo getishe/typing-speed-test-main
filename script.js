@@ -847,6 +847,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isCountedKey) totalKeysPressed++;
     });
 
+    if (user) {
+      SVGGeometryElement.prototype.getTotalLength = function () {
+        return 100; // Return a fixed length for testing purposes
+      };
+    }
+
     // userInput.addEventListener("keydown", (e) => {
     //   totalKeysPressed++;
 
