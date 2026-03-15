@@ -42,6 +42,7 @@ const gameState = {
   totalErrors: 0,
   normalizedTarget: "", // Store the normalized target text for strict comparison
   normalizedTypedText: "", // Store the normalized user input for comparison
+  hasEverError: false, // Track if the user has ever made an error during the test
 };
 
 difficultySettings.forEach((button) => {
@@ -679,13 +680,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let liveIncorrect = 0;
       let liveCorrect = 0;
+      gameState.totalErrors = liveIncorrect;
+
       for (let i = 0; i < liveDenominator; i++) {
         const typedChar = typed[i] || "";
         const targetChar = target[i] || "";
         if (typedChar === targetChar) {
           liveCorrect++;
+          gameState.hasEverError = gameState.hasEverError || false; // once true, stays true
         } else if (typedChar !== targetChar) {
           liveIncorrect++;
+          gameState.hasEverError = true;
+        }
+
+        if (gameState.hasEverError) {
+          // persistent consistent errors remains when the user is backspace,,
+          liveCorrect = Math.min(liveCorrect, liveDenominator - 1);
         }
       }
 
@@ -847,11 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isCountedKey) totalKeysPressed++;
     });
 
-    if (user) {
-      SVGGeometryElement.prototype.getTotalLength = function () {
-        return 100; // Return a fixed length for testing purposes
-      };
-    }
+   
 
     // userInput.addEventListener("keydown", (e) => {
     //   totalKeysPressed++;
