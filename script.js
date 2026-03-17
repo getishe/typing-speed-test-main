@@ -86,7 +86,7 @@ if (reset) {
 }
 if (tryAgain) {
   tryAgain.addEventListener("click", () => {
-    startTest();
+    resetTest();
   });
 }
 function setActiveStates(...stateNames) {
@@ -264,13 +264,19 @@ function endTest() {
 
   let liveCorrect = 0;
   let liveIncorrect = 0;
+  gameState.totalErrors = liveIncorrect;
   for (let i = 0; i < liveDenominator; i++) {
     const typedChar = typed[i] || "";
     const targetChar = target[i] || "";
     if (typedChar === targetChar) {
       liveCorrect++;
+      gameState.hasEverError = gameState.hasEverError || false; // once true, stays true
     } else if (typedChar !== targetChar) {
       liveIncorrect++;
+      gameState.hasEverError = true; // once true, stays true
+    }
+    if (gameState.hasEverError) {
+      liveCorrect = Math.min(liveCorrect, liveDenominator - 1);
     }
   }
 
@@ -856,8 +862,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (isCountedKey) totalKeysPressed++;
     });
-
-   
 
     // userInput.addEventListener("keydown", (e) => {
     //   totalKeysPressed++;
