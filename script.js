@@ -161,7 +161,7 @@ async function startTest() {
     }
 
     gameState.normalizedTarget = gameState.currentPassage
-      ? normalizeForCompare(gameState.currentPassage).toLocaleLowerCase()
+      ? normalizeForCompare(gameState.currentPassage)
       : "";
   });
 
@@ -202,7 +202,7 @@ async function startTest() {
   gameState.normalizedTypedText = "";
   gameState.accuracy = 0;
   totalKeysPressed = 0;
-
+  gameState.hasEverError = false;
   document
     .querySelectorAll(".accuracy")
     .forEach((el) => (el.textContent = "0%"));
@@ -314,7 +314,7 @@ function resetTest() {
   gameState.normalizedTypedText = "";
   gameState.normalizedTarget = "";
   totalKeysPressed = 0;
-
+  gameState.hasEverError = false;
   if (userInput) {
     userInput.value = "";
   }
@@ -676,9 +676,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
-      gameState.normalizedTypedText = normalizeForCompare(
-        userInput.value,
-      ).toLocaleLowerCase();
+      gameState.normalizedTypedText = normalizeForCompare(userInput.value);
 
       const typed = gameState.normalizedTypedText;
       const target = gameState.normalizedTarget;
