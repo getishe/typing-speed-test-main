@@ -42,7 +42,7 @@ const gameState = {
   totalErrors: 0,
   normalizedTarget: "", // Store the normalized target text for strict comparison
   normalizedTypedText: "", // Store the normalized user input for comparison
-  hasEverError: false, // Track if the user has ever made an error during the test
+  perIndexErrors: [], // Track indices that were ever wrong
 };
 
 difficultySettings.forEach((button) => {
@@ -161,7 +161,7 @@ async function startTest() {
     }
 
     gameState.normalizedTarget = gameState.currentPassage
-      ? normalizeForCompare(gameState.currentPassage)
+      ? normalizeForCompare(gameState.currentPassage).toLocaleLowerCase()
       : "";
   });
 
@@ -202,7 +202,7 @@ async function startTest() {
   gameState.normalizedTypedText = "";
   gameState.accuracy = 0;
   totalKeysPressed = 0;
-  gameState.hasEverError = false;
+  gameState.perIndexErrors = [];
   document
     .querySelectorAll(".accuracy")
     .forEach((el) => (el.textContent = "0%"));
@@ -258,30 +258,26 @@ function endTest() {
   console.log("Test ended", gameState);
 
   // Snapshot final metrics (same model as live input)
-  const typed = gameState.normalizedTypedText;
-  const target = gameState.normalizedTarget;
-  const liveDenominator = typed.length;
+  const liveTyped = gameState.typedText;
+  const liveTarget = gameState.currentPassage;
+  const liveDenominator = liveTyped.length;
 
-  let liveCorrect = 0;
-  let liveIncorrect = 0;
-  gameState.totalErrors = liveIncorrect;
+  if (gameState.perIndexErrors.length < liveDenominator) {
+    gameState.perIndexErrors.length = liveDenominator;
+  }
   for (let i = 0; i < liveDenominator; i++) {
-    const typedChar = typed[i] || "";
-    const targetChar = target[i] || "";
-    if (typedChar === targetChar) {
-      liveCorrect++;
-      gameState.hasEverError = gameState.hasEverError || false; // once true, stays true
-    } else if (typedChar !== targetChar) {
-      liveIncorrect++;
-      gameState.hasEverError = true; // once true, stays true
-    }
-    if (gameState.hasEverError) {
-      liveCorrect = Math.min(liveCorrect, liveDenominator - 1);
+    const typedChar = liveTyped[i] || "";
+    const targetChar = liveTarget[i] || "";
+    if (typedChar !== targetChar) {
+      gameState.perIndexErrors[i] = true; // never reset to false
     }
   }
 
-  const incorrectCount = liveDenominator - liveCorrect;
-  const correctChars = liveCorrect;
+  const incorrectCount = gameState.perIndexErrors
+    .slice(0, liveDenominator)
+    .filter(Boolean).length;
+  gameState.totalErrors = incorrectCount;
+  const correctChars = liveDenominator - incorrectCount;
   gameState.accuracy =
     liveDenominator === 0
       ? 0
@@ -314,7 +310,7 @@ function resetTest() {
   gameState.normalizedTypedText = "";
   gameState.normalizedTarget = "";
   totalKeysPressed = 0;
-  gameState.hasEverError = false;
+  gameState.perIndexErrors = [];
   if (userInput) {
     userInput.value = "";
   }
@@ -676,41 +672,36 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
 
-      gameState.normalizedTypedText = normalizeForCompare(userInput.value);
+      gameState.normalizedTypedText = normalizeForCompare(
+        userInput.value,
+      ).toLocaleLowerCase();
 
-      const typed = gameState.normalizedTypedText;
-      const target = gameState.normalizedTarget;
-      const liveDenominator = typed.length;
+      // Live scoring uses raw input to preserve line breaks.
+      const liveTyped = userInput.value;
+      const liveTarget = gameState.currentPassage;
+      const liveDenominator = liveTyped.length;
 
-      let liveIncorrect = 0;
-      let liveCorrect = 0;
-      gameState.totalErrors = liveIncorrect;
-
+      if (gameState.perIndexErrors.length < liveDenominator) {
+        gameState.perIndexErrors.length = liveDenominator;
+      }
       for (let i = 0; i < liveDenominator; i++) {
-        const typedChar = typed[i] || "";
-        const targetChar = target[i] || "";
-        if (typedChar === targetChar) {
-          liveCorrect++;
-          gameState.hasEverError = gameState.hasEverError || false; // once true, stays true
-        } else if (typedChar !== targetChar) {
-          liveIncorrect++;
-          gameState.hasEverError = true;
-        }
-
-        if (gameState.hasEverError) {
-          // persistent consistent errors remains when the user is backspace,,
-          liveCorrect = Math.min(liveCorrect, liveDenominator - 1);
+        const typedChar = liveTyped[i] || "";
+        const targetChar = liveTarget[i] || "";
+        if (typedChar !== targetChar) {
+          gameState.perIndexErrors[i] = true; // never reset to false
         }
       }
+
+      const incorrectCount = gameState.perIndexErrors
+        .slice(0, liveDenominator)
+        .filter(Boolean).length;
+      gameState.totalErrors = incorrectCount;
+      const correctChars = liveDenominator - incorrectCount;
 
       gameState.accuracy =
         liveDenominator === 0
           ? 0
-          : Math.round((liveCorrect / liveDenominator) * 100);
-
-      //Correct/incorrect character display
-      const incorrectCount = liveDenominator - liveCorrect;
-      const correctChars = liveCorrect;
+          : Math.round((correctChars / liveDenominator) * 100);
       document.querySelectorAll(".accuracy").forEach((el) => {
         el.textContent = `${gameState.accuracy}%`; // Display the calculated accuracy percentage
       });
@@ -849,17 +840,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Keep one strict error metric source
     });
 
-    userInput.addEventListener("keydown", (e) => {
-      if (!gameState.isTestActive) return;
+    // userInput.addEventListener("keydown", (e) => {
+    //   if (!gameState.isTestActive) return;
 
-      const isCountedKey =
-        e.key.length === 1 || // Regular character keys
-        e.key === "Backspace" ||
-        e.key === "Enter" ||
-        e.key === "Tab";
+    //   const isCountedKey =
+    //     e.key.length === 1 || // Regular character keys
+    //     e.key === "Backspace" ||
+    //     e.key === "Enter" ||
+    //     e.key === "Tab";
 
-      if (isCountedKey) totalKeysPressed++;
-    });
+    //   if (isCountedKey) totalKeysPressed++;
+    // });
 
     // userInput.addEventListener("keydown", (e) => {
     //   totalKeysPressed++;
@@ -955,6 +946,8 @@ function getPersonalBest() {
   }
 }
 
+// localStorage.removeItem(PERSONAL_BEST_KEY); // Clear personal best for testing purposes
+
 // function savePersonalBest(wpm) {
 //   localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
 // }
@@ -985,6 +978,19 @@ function displayResultMessage(currentWpm, previousBest) {
     title = "High Score Smashed!";
     message =
       "Incredible work! You've beaten your personal best. Can you do it again?";
+    // confetti({
+    //   particleCount: 150,
+    //   spread: 100,
+    //   angle: 90,
+    // });
+
+    // setTimeout(() => {
+    //   confetti({
+    //     particleCount: 150,
+    //     spread: 100,
+    //     angle: 90,
+    //   });
+    // }, 300);
   } else {
     // Normal completion
     resultSection = document.querySelector("#test-results");
@@ -1003,44 +1009,44 @@ function displayResultMessage(currentWpm, previousBest) {
 
 // Implement accuracy calculation** - Count correct vs incorrect characters
 // Accuracy Calculation
-function accuracyCalculate(typedText) {
-  const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
-  const normalizedPassage = normalizeForCompare(
-    gameState.currentPassage,
-  ).toLocaleLowerCase();
+// function accuracyCalculate(typedText) {
+//   const normalizedTyped = normalizeForCompare(typedText).toLocaleLowerCase();
+//   const normalizedPassage = normalizeForCompare(
+//     gameState.currentPassage,
+//   ).toLocaleLowerCase();
 
-  // mode does penalize extra and missing.
-  const denominator = Math.max(
-    normalizedTyped.length,
-    normalizedPassage.length,
-  );
-  //Confirm denominator rule: passage length vs max(passage, typed).
-  if (denominator === 0) {
-    return 0; // Guard against divide-by-zero if both are empty
-  }
+//   // mode does penalize extra and missing.
+//   const denominator = Math.max(
+//     normalizedTyped.length,
+//     normalizedPassage.length,
+//   );
+//   //Confirm denominator rule: passage length vs max(passage, typed).
+//   if (denominator === 0) {
+//     return 0; // Guard against divide-by-zero if both are empty
+//   }
 
-  let correct = 0;
-  // Loop through each character up to the length of the longer string
-  for (let i = 0; i < denominator; i++) {
-    const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
-    const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
+//   let correct = 0;
+// Loop through each character up to the length of the longer string
+// for (let i = 0; i < denominator; i++) {
+//   const typedChar = normalizedTyped[i] || ""; // If user typed fewer chars, treat missing chars as incorrect
+//   const passageChar = normalizedPassage[i] || ""; // If passage has fewer chars, treat missing chars as incorrect
 
-    if (typedChar === passageChar) {
-      correct++;
-    }
+//   if (typedChar === passageChar) {
+//     correct++;
+//   }
 
-    // console.log(
-    //   `Char ${i}: Incorrect (typed: "missing", expected: "${passageChar}")`,
-    // );
-  }
+// console.log(
+//   `Char ${i}: Incorrect (typed: "missing", expected: "${passageChar}")`,
+// );
+// }
 
-  // Account for missing and extra characters based on the chosen denominator rule
-  // If penalizing both missing and extra chars, errors already accounts for all discrepancies.
-  // If penalizing only what the user typed, we can infer incorrect = denominator - correct.
+// Account for missing and extra characters based on the chosen denominator rule
+// If penalizing both missing and extra chars, errors already accounts for all discrepancies.
+// If penalizing only what the user typed, we can infer incorrect = denominator - correct.
 
-  // more to do with this function
-  return denominator > 0 ? Math.round((correct / denominator) * 100) : 0;
-}
+// more to do with this function
+//   return denominator > 0 ? Math.round((correct / denominator) * 100) : 0;
+// }
 
 // Based on Implement accuracy calculation** — Count correct vs. incorrect characters,
 // Could you review my code and, without giving me the actual code,
