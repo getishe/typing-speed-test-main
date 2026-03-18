@@ -271,6 +271,9 @@ function endTest() {
     if (typedChar !== targetChar) {
       gameState.perIndexErrors[i] = true; // never reset to false
     }
+    if (targetChar === " ") {
+      gameState.perIndexErrors[i] = true;
+    }
   }
 
   const incorrectCount = gameState.perIndexErrors
@@ -689,6 +692,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const targetChar = liveTarget[i] || "";
         if (typedChar !== targetChar) {
           gameState.perIndexErrors[i] = true; // never reset to false
+        }
+        if (targetChar === " ") {
+          gameState.perIndexErrors[i] = true;
         }
       }
 
