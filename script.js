@@ -694,7 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
           gameState.perIndexErrors[i] = true; // never reset to false
         }
         // Mark space characters as errors to prevent padding-based exploits
-        if (targetChar === " ") {
+        if (typedchar === " " || ) {
           gameState.perIndexErrors[i] = true;
         }
       }
