@@ -45,6 +45,35 @@ const gameState = {
   perIndexErrors: [], // Track indices that were ever wrong
 };
 
+function shouldReduceMotion() {
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+}
+
+function runConfettiBurst() {
+  if (typeof confetti !== "function") return;
+  if (shouldReduceMotion()) return;
+
+  confetti({
+    particleCount: 150,
+    spread: 100,
+    angle: 90,
+  });
+
+  setTimeout(() => {
+    confetti({
+      particleCount: 150,
+      spread: 100,
+      angle: 90,
+    });
+  }, 300);
+}
+
+function resetConfettiSafely() {
+  if (typeof confetti !== "function") return;
+  if (shouldReduceMotion()) return;
+  resetConfettiSafely();
+}
+
 difficultySettings.forEach((button) => {
   button.addEventListener("click", () => {
     // remove active from all
@@ -206,6 +235,7 @@ async function startTest() {
   document
     .querySelectorAll(".accuracy")
     .forEach((el) => (el.textContent = "0%"));
+  resetConfettiSafely();
 }
 
 function endTest() {
@@ -345,6 +375,8 @@ function resetTest() {
   document.querySelectorAll(".result-Errors").forEach((e) => {
     e.textContent = `0 / 0 chars`;
   });
+
+  resetConfettiSafely();
 }
 
 // loadData data.json
@@ -683,7 +715,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const liveTyped = userInput.value;
       const liveTarget = gameState.currentPassage;
       const liveDenominator = liveTyped.length;
+      //     It resizes the perIndexErrors array to match current typed length.
 
+      // Example:
+
+      // Before: perIndexErrors = [true, false] (length 2)
+      // liveDenominator = 5
+      // After perIndexErrors.length = 5:
+      // perIndexErrors = [true, false, empty, empty, empty]
       if (gameState.perIndexErrors.length < liveDenominator) {
         gameState.perIndexErrors.length = liveDenominator;
       }
@@ -693,8 +732,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typedChar !== targetChar) {
           gameState.perIndexErrors[i] = true; // never reset to false
         }
-        // Mark space characters as errors to prevent padding-based exploits
-        if (typedchar === " " || ) {
+      }
+      // It removes whitespace only at the start and end.
+      if (liveTyped.length > 0 && liveTyped.trim().length === 0) {
+        // If the user has typed something but it's all whitespace, mark all those indices as errors
+        for (let i = 0; i < liveDenominator; i++) {
           gameState.perIndexErrors[i] = true;
         }
       }
@@ -985,19 +1027,8 @@ function displayResultMessage(currentWpm, previousBest) {
     title = "High Score Smashed!";
     message =
       "Incredible work! You've beaten your personal best. Can you do it again?";
-    // confetti({
-    //   particleCount: 150,
-    //   spread: 100,
-    //   angle: 90,
-    // });
 
-    // setTimeout(() => {
-    //   confetti({
-    //     particleCount: 150,
-    //     spread: 100,
-    //     angle: 90,
-    //   });
-    // }, 300);
+    runConfettiBurst();
   } else {
     // Normal completion
     resultSection = document.querySelector("#test-results");
