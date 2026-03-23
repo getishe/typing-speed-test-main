@@ -75,6 +75,7 @@ header {
 
 main {
   padding: 20px 0;
+  position: relative;
 }
 
 section#intro-area {
@@ -100,12 +101,11 @@ section#intro-area {
   justify-content: center;
   font-weight: var(--font-weight-regular);
   color: var(--neutral-400);
-  border: 1px solid var(--neutral-500);
 }
 
 .time-measurements p.time-button span {
   font-size: clamp(0.5rem, 2vw, 5.2rem);
-  margin-left: 8px;
+  margin-left: 9px;
   /* font-weight: var(--font-weight-bold); */
   color: var(--neutral-0);
 }
@@ -113,6 +113,15 @@ section#intro-area {
 hr {
   border: 1px solid var(--neutral-500);
   font-weight: var(--font-weight-regular);
+}
+
+p.border {
+  border-left: 1px solid var(--neutral-500);
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  /* padding: 12px; */
 }
 
 .settings-wrapper {
@@ -206,7 +215,6 @@ hr {
 }
 
 section.text-area {
-  border: 2px solid red;
   display: grid;
 }
 textarea {
@@ -231,14 +239,14 @@ textarea:focus {
 }
 
 section#passage-area {
-  /* border: 2px solid red; */
+  /* position: absolute; */
   display: grid;
   text-align: center;
   justify-content: center;
   align-items: center;
   gap: 10px;
   position: absolute;
-  top: 40%;
+  top: 180%;
   left: 50%;
   transform: translate(-50%, -50%);
   /* width: 100%;
@@ -315,7 +323,6 @@ button.try-again-button {
 }
 
 .test-result {
-  border: 2px solid red;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -390,7 +397,6 @@ button.reset-button img:hover {
   position: relative;
   display: inline-block;
   width: 100%;
-  border: 2px solid red;
 }
 
 .passage-display {
@@ -409,7 +415,7 @@ button.reset-button img:hover {
   line-height: 1.6;
 }
 #user-input {
-  border: 2px solid blue;
+  /* border: 2px solid blue; */
   white-space: pre-wrap; /* Allow natural wrapping */
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -445,4 +451,16 @@ button.reset-button img:hover {
 
 .user-input::selection {
   background-color: rgba(0, 0, 255, 0.3);
+}
+
+#img_star-2 {
+  position: absolute;
+  top: 60px;
+  left: 0;
+}
+#img_star-1 {
+  position: absolute;
+  /* bottom: 60px; */
+  right: 0;
+  bottom: 60px;
 }
