@@ -3,6 +3,7 @@
 const start = document.querySelector(".start-button");
 const reset = document.querySelectorAll(".reset-button");
 const passageDisplay = document.querySelector("#passage-display");
+const passagePreview = document.querySelector("#passage-preview");
 const userInput = document.querySelector("#user-input");
 const tryAgain = document.querySelector("#try-button");
 const passageArea = document.querySelector("#passage-area");
@@ -81,6 +82,7 @@ difficultySettings.forEach((button) => {
     // add active to the clicked one
     button.classList.add("active");
     gameState.difficulty = button.textContent.toLocaleLowerCase();
+    renderPassagePreview();
     console.log("Difficulty", gameState.difficulty);
   });
 });
@@ -127,7 +129,20 @@ function setActiveStates(...stateNames) {
     if (el) el.classList.add("active");
   });
 }
-setActiveStates("test-setup");
+setActiveStates("test-setup", "passage-area");
+
+async function renderPassagePreview() {
+  if (!passagePreview) return;
+
+  const passages = await loadData();
+  const selectedPassage = getRandomSelection(passages, gameState.difficulty);
+  const previewText = selectedPassage
+    ? normalizeText(selectedPassage)
+    : "Preview unavailable.";
+
+  passagePreview.value = previewText;
+  passagePreview.classList.add("is-blurred");
+}
 
 // when the reset button is clicked, reset the game state and clear the passage display
 // function setRemoveActiveStates(...stateNames) {
@@ -178,6 +193,7 @@ async function startTest() {
   if (passageArea) {
     passageArea.style.display = "none";
   }
+  passagePreview?.classList.remove("is-blurred");
   setActiveStates("test-setup", "test-active", "try-button");
 
   //   After setActiveStates("test-setup", "test-active", "try-button"); changes classes/visibility, requestAnimationFrame(...) runs on the next paint frame, when those updates are applied.
@@ -369,6 +385,7 @@ function resetTest() {
   if (passageArea) {
     passageArea.style.display = "";
   }
+  renderPassagePreview();
   setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
 
@@ -700,6 +717,8 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(PERSONAL_BEST_KEY, "0");
     document.getElementById("personal-best").textContent = "0";
   }
+
+  renderPassagePreview();
 
   // ✅ NOW set up the input listener
   if (userInput) {
