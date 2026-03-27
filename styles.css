@@ -246,7 +246,7 @@ section#passage-area {
   align-items: center;
   gap: 10px;
   position: absolute;
-  top: 180%;
+  top: 210%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(100%, 860px);
@@ -260,8 +260,11 @@ section#passage-area {
 }
 
 .passage-preview {
-  min-height: 180px;
-  padding: 18px;
+  /* margin: 10px auto; */
+  min-height: 250px;
+  height: auto;
+  width: 1200px;
+  padding: 20px;
   border: 1px solid var(--neutral-700);
   border-radius: 10px;
   background-color: var(--neutral-800);
@@ -270,7 +273,9 @@ section#passage-area {
   font-size: 1.1rem;
   line-height: 1.7;
   pointer-events: none;
-  transition: filter 0.2s ease, opacity 0.2s ease;
+  transition:
+    filter 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .passage-preview.is-blurred {
@@ -279,6 +284,10 @@ section#passage-area {
 }
 
 .start-button {
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  z-index: 2;
   margin: 0 auto;
   padding: 4px 13px;
   border: none;
@@ -289,6 +298,16 @@ section#passage-area {
   border-radius: 6px;
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
+}
+
+p.click-text {
+  position: absolute;
+  top: 40%;
+  left: 35%;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  margin: 0 auto;
 }
 
 .start-button:hover {
