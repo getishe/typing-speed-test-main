@@ -1126,3 +1126,9 @@ function displayResultMessage(currentWpm, previousBest) {
 // Compute accuracy = (correctCount / denominator) * 100, round as desired, and return that value.
 
 // Optional: decide case sensitivity/whitespace policy and add tests for typed shorter, typed longer, exact match.
+
+getTextMeasureContext(test){
+  console.log(test);
+
+  return test;
+}
