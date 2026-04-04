@@ -1127,8 +1127,8 @@ function displayResultMessage(currentWpm, previousBest) {
 
 // Optional: decide case sensitivity/whitespace policy and add tests for typed shorter, typed longer, exact match.
 
-getTextMeasureContext(test){
-  console.log(test);
+// getTextMeasureContext(test){
+//   console.log(test);
 
-  return test;
-}
+//   return test;
+// }
