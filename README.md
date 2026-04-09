@@ -1,7 +1,7 @@
 # Frontend Mentor - Typing Speed Test
 ![Design preview for the Typing Speed Test coding challenge](./preview.jpg)
 
-here is my
+here is my here us
 
 ## Hi Welcome! 👋
 
