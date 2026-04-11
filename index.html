@@ -47,7 +47,6 @@
         <h1>Personal best: <span id="personal-best" class="wpm"> WPM</span></h1>
       </div>
     </header>
-// main
     <!-- Test Complete main start -->
     <main>
       <!-- TEST SETUP STATE (Initial View) -->
@@ -88,6 +87,7 @@
       <section id="passage-area" class="test-state active">
         <div class="passage-preview-wrapper">
           <textarea
+            title="passagePreview"
             id="passage-preview"
             class="passage-preview is-blurred"
             readonly
@@ -104,6 +104,7 @@ Loading preview...
 
         <div class="typing-container">
           <!-- Read-only passage display -->
+          <div id="visual-feedback" class="visual-feedback"></div>
           <textarea
             placeholder="loading"
             id="passage-display"

@@ -248,6 +248,7 @@ async function startTest() {
   gameState.accuracy = 0;
   totalKeysPressed = 0;
   gameState.perIndexErrors = [];
+  buildVisualFeedback();
   document
     .querySelectorAll(".accuracy")
     .forEach((el) => (el.textContent = "0%"));
@@ -394,6 +395,10 @@ function resetTest() {
   });
 
   resetConfettiSafely();
+  const visualFeedback = document.querySelector("#visual-feedback");
+  if (visualFeedback) {
+    visualFeedback.innerHTML = "";
+  }
 }
 
 // loadData data.json
@@ -752,6 +757,8 @@ document.addEventListener("DOMContentLoaded", () => {
           gameState.perIndexErrors[i] = true; // never reset to false
         }
       }
+
+      buildVisualFeedback();
       // It removes whitespace only at the start and end.
       if (liveTyped.length > 0 && liveTyped.trim().length === 0) {
         // If the user has typed something but it's all whitespace, mark all those indices as errors
@@ -784,6 +791,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Sync scroll position between both textareas
       passageDisplay.scrollTop = userInput.scrollTop;
       passageDisplay.scrollLeft = userInput.scrollLeft;
+      document.querySelector("#visual-feedback").scrollTop =
+        userInput.scrollTop;
+      document.querySelector("#visual-feedback").scrollLeft =
+        userInput.scrollLeft;
 
       if (
         gameState.isTestActive &&
@@ -1064,4 +1075,57 @@ function displayResultMessage(currentWpm, previousBest) {
   }
 }
 
-function displayResultMessage(currentWpm, previousBest) {}
+//Build colored Html
+
+function buildVisualFeedback() {
+  const visualFeedback = document.querySelector("#visual-feedback");
+  if (!visualFeedback) return;
+
+  const liveTyped = userInput.value;
+  const liveTarget = gameState.currentPassage;
+
+  let html = "";
+
+  // Loop through each character position
+  for (let i = 0; i < liveTarget.length; i++) {
+    const typedChar = liveTyped[i] || "";
+    const targetChar = liveTarget[i];
+
+    // Determine the class (status) of this character
+    let charClass = "untyped"; // Default: not typed yet
+
+    if (i < liveTyped.length) {
+      // User has typed this position
+      if (gameState.perIndexErrors[i]) {
+        charClass = "incorrect"; // Was marked as error
+      } else {
+        charClass = "correct"; // Correctly typed
+      }
+    } else {
+      charClass = "untyped"; // Not typed yet
+    }
+
+    // Escape HTML special characters
+    const displayChar = targetChar
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    // Add wrapped character to HTML
+    html += `<span class="${charClass}">${displayChar}</span>`;
+  }
+
+  // Handle extra characters (user typed more than passage)
+  if (liveTyped.length > liveTarget.length) {
+    for (let i = liveTarget.length; i < liveTyped.length; i++) {
+      const extraChar = liveTyped[i]
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      html += `<span class="extra">${extraChar}</span>`;
+    }
+  }
+
+  visualFeedback.innerHTML = html;
+}
