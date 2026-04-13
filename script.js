@@ -1081,51 +1081,51 @@ function buildVisualFeedback() {
   const visualFeedback = document.querySelector("#visual-feedback");
   if (!visualFeedback) return;
 
-  const liveTyped = userInput.value;
-  const liveTarget = gameState.currentPassage;
+  const liveTyped = userInput.value || "";
+  const liveTarget = gameState.currentPassage || "";
+  const cursorIndex = liveTyped.length;
 
   let html = "";
 
-  // Loop through each character position
   for (let i = 0; i < liveTarget.length; i++) {
-    const typedChar = liveTyped[i] || "";
     const targetChar = liveTarget[i];
-
-    // Determine the class (status) of this character
-    let charClass = "untyped"; // Default: not typed yet
+    let classes = [];
 
     if (i < liveTyped.length) {
-      // User has typed this position
-      if (gameState.perIndexErrors[i]) {
-        charClass = "incorrect"; // Was marked as error
-      } else {
-        charClass = "correct"; // Correctly typed
-      }
+      classes.push(gameState.perIndexErrors[i] ? "incorrect" : "correct");
     } else {
-      charClass = "untyped"; // Not typed yet
+      classes.push("untyped");
     }
 
-    // Escape HTML special characters
-    const displayChar = targetChar
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+    if (i === cursorIndex) {
+      classes.push("current");
+    }
 
-    // Add wrapped character to HTML
-    html += `<span class="${charClass}">${displayChar}</span>`;
+    let displayChar = targetChar;
+    if (targetChar === " ") {
+      displayChar = "&nbsp;";
+    } else if (targetChar === "<") {
+      displayChar = "&lt;";
+    } else if (targetChar === ">") {
+      displayChar = "&gt;";
+    } else if (targetChar === "&") {
+      displayChar = "&amp;";
+    }
+
+    html += `<span class="${classes.join(" ")}">${displayChar}</span>`;
   }
 
-  // Handle extra characters (user typed more than passage)
-  if (liveTyped.length > liveTarget.length) {
-    for (let i = liveTarget.length; i < liveTyped.length; i++) {
-      const extraChar = liveTyped[i]
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-
-      html += `<span class="extra">${extraChar}</span>`;
-    }
+  if (cursorIndex >= liveTarget.length) {
+    html += `<span class="current cursor-end">&nbsp;</span>`;
   }
 
   visualFeedback.innerHTML = html;
+}
+
+const typingContainer = document.querySelector(".typing-container");
+
+if (typingContainer && userInput) {
+  typingContainer.addEventListener("click", () => {
+    userInput.focus();
+  });
 }

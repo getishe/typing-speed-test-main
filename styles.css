@@ -441,13 +441,14 @@ button.reset-button img:hover {
   position: relative;
   display: inline-block;
   width: 100%;
+  height: 350px;
 }
 
 .passage-display {
   position: relative;
   z-index: 1; /* Passage behind */
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: transparent;
+  color: transparent;
   border: none;
   padding: 10px;
   font-family: monospace;
@@ -458,14 +459,6 @@ button.reset-button img:hover {
   pointer-events: none; /* Allow clicks to pass through to input below */
   line-height: 1.6;
 }
-#user-input {
-  /* border: 2px solid blue; */
-  white-space: pre-wrap; /* Allow natural wrapping */
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  resize: none; /* prevent resize */
-  user-select: none; /* Prevent text selection */
-}
 
 .visual-feedback {
   position: absolute;
@@ -473,34 +466,27 @@ button.reset-button img:hover {
   left: 0;
   z-index: 1.5;
   width: 100%;
-  height: 100%;
-  padding: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
+  height: 350px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 23px;
+  line-height: 1.6;
   word-wrap: break-word; /* Ensure text wraps the same way as the passage display */
   white-space: pre-wrap; /* Match user input wrapping */
   overflow: hidden; /* Hide overflow to prevent scrollbars from appearing */
   pointer-events: none;
   /* color: transparent; Hide the text, only show background changes */
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.5
-  ); /* Optional: Add a semi-transparent background for better visibility of feedback */
-  border: 1px solid yellow;
+  background-color: transparent;
 }
 
 .visual-feedback span.correct {
   color: rgb(0, 255, 0); /* Green for correct */
-  font-weight: bold; /* Optional: Make correct characters bold */
 }
 
 .visual-feedback span.incorrect {
   color: rgb(255, 0, 0); /* Red for incorrect */
-  text-decoration: underline wavy red; /* Optional: Add a wavy underline for incorrect characters */
-  font-weight: bold; /* Optional: Make incorrect characters bold */
+  text-decoration: underline; /* Optional: Add a wavy underline for incorrect characters */
+  text-decoration-color: rgb(255, 0, 0); /* Set underline color to red */
 }
 
 .visual-feedback span.untyped {
@@ -510,8 +496,27 @@ button.reset-button img:hover {
 
 .visual-feedback span.extra {
   color: rgb(255, 0, 0); /* Red for extra characters */
-  text-decoration: underline wavy red; /* Optional: Add a wavy underline for extra characters */
-  font-weight: bold; /* Optional: Make extra characters bold */
+  text-decoration: underline; /* Optional: Add a wavy underline for extra characters */
+  text-decoration-color: rgb(255, 0, 0); /* Set underline color to red */
+  /* font-weight: bold; Optional: Make extra characters bold */
+}
+.visual-feedback span.current {
+  border-left: 2px solid #3b82f6;
+}
+
+.visual-feedback span.cursor-end {
+  display: inline-block;
+  min-width: 2px;
+  height: 1.2em;
+  vertical-align: bottom;
+}
+
+.visual-feedback {
+  white-space: pre-wrap;
+}
+
+.visual-feedback span {
+  white-space: pre-wrap;
 }
 
 #passage-display {
@@ -520,6 +525,26 @@ button.reset-button img:hover {
   overflow-wrap: break-word;
   pointer-events: none;
   resize: none;
+  box-sizing: border-box;
+  /* user-select: none; Prevent text selection */
+}
+#user-input {
+  box-sizing: border-box;
+  white-space: pre-wrap; /* Allow natural wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  resize: none; /* prevent resize */
+  pointer-events: none;
+  /* user-select: none; Prevent text selection */
+}
+#visual-feedback {
+  box-sizing: border-box;
+  white-space: pre-wrap; /* Match user input wrapping */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  pointer-events: none;
+  resize: none;
+  /* user-select: none;s Prevent text selection */
 }
 .user-input {
   position: absolute;
