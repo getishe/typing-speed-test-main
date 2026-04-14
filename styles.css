@@ -501,7 +501,13 @@ button.reset-button img:hover {
   /* font-weight: bold; Optional: Make extra characters bold */
 }
 .visual-feedback span.current {
-  border-left: 2px solid #3b82f6;
+  background-color: rgba(
+    0,
+    100,
+    255,
+    0.3
+  ); /* Light blue background for cursor */
+  border-left: 2px solid rgb(0, 150, 255); /* Blue line for cursor */
 }
 
 .visual-feedback span.cursor-end {
@@ -555,7 +561,7 @@ button.reset-button img:hover {
   height: 350px;
   background-color: transparent;
   color: transparent; /* Hide the text being typed */
-  caret-color: blue; /* Show cursor */
+  /* caret-color: blue; Show cursor */
   border: none;
   padding: 10px;
   font-family: monospace;
