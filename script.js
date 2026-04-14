@@ -331,7 +331,7 @@ function endTest() {
   gameState.accuracy =
     liveDenominator === 0
       ? 0
-      : Math.round((liveCorrect / liveDenominator) * 100);
+      : Math.round((correctChars / liveDenominator) * 100);
 
   // Update final result UI
   document.querySelectorAll(".result-Errors").forEach((e) => {
@@ -789,8 +789,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Sync scroll position between both textareas
-      passageDisplay.scrollTop = userInput.scrollTop;
-      passageDisplay.scrollLeft = userInput.scrollLeft;
+      // passageDisplay.scrollTop = userInput.scrollTop;
+      // passageDisplay.scrollLeft = userInput.scrollLeft;
       document.querySelector("#visual-feedback").scrollTop =
         userInput.scrollTop;
       document.querySelector("#visual-feedback").scrollLeft =
@@ -1089,6 +1089,12 @@ function buildVisualFeedback() {
 
   for (let i = 0; i < liveTarget.length; i++) {
     const targetChar = liveTarget[i];
+
+    if (targetChar === "\n") {
+      html += `<br>`;
+      continue;
+    }
+
     let classes = [];
 
     if (i < liveTyped.length) {
@@ -1102,9 +1108,10 @@ function buildVisualFeedback() {
     }
 
     let displayChar = targetChar;
-    if (targetChar === " ") {
-      displayChar = "&nbsp;";
-    } else if (targetChar === "<") {
+    // if (targetChar === " ") {
+    //   displayChar = "&nbsp;";
+    // }
+    if (targetChar === "<") {
       displayChar = "&lt;";
     } else if (targetChar === ">") {
       displayChar = "&gt;";
@@ -1112,11 +1119,11 @@ function buildVisualFeedback() {
       displayChar = "&amp;";
     }
 
-    html += `<span class="${classes.join(" ")}">${displayChar}</span>`;
+    html += `<span class="${classes.join(" ")}" style="white-space: pre-wrap;">${displayChar}</span>`;
   }
 
   if (cursorIndex >= liveTarget.length) {
-    html += `<span class="current cursor-end">&nbsp;</span>`;
+    html += `<span class="current cursor-end" style="white-space: pre-wrap;">&nbsp;</span>`;
   }
 
   visualFeedback.innerHTML = html;
