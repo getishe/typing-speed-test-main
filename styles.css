@@ -6,6 +6,8 @@
 }
 :root {
   /* Neutral Colors */
+  --neutral-green: hsl(140, 63%, 57%);
+  --neutral-red: hsl(354, 63%, 57%);
   --neutral-900: hsl(0, 0%, 7%);
   --neutral-800: hsl(0, 0%, 15%);
   --neutral-700: hsl(240, 2%, 25%);
@@ -394,6 +396,7 @@ button.try-again-button:hover {
 :where(.result-WPM h1, .result-Accuracy h1, .result-Errors h1) {
   color: var(--neutral-400);
   font-size: var(--font-size-body);
+  border: 2px solid red;
 }
 
 button.reset-button {
