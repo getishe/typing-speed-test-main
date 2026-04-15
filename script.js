@@ -251,7 +251,11 @@ async function startTest() {
   buildVisualFeedback();
   document
     .querySelectorAll(".accuracy")
-    .forEach((el) => (el.textContent = "0%"));
+    .forEach((el) => (el.textContent = "100%"));
+
+  document
+    .querySelectorAll(".accuracy")
+    .forEach((el) => (el.style.color = "var(--neutral-green)"));
   resetConfettiSafely();
 }
 
@@ -334,8 +338,16 @@ function endTest() {
       : Math.round((correctChars / liveDenominator) * 100);
 
   // Update final result UI
-  document.querySelectorAll(".result-Errors").forEach((e) => {
-    e.textContent = `${correctChars} / ${incorrectCount} chars`;
+  document.querySelectorAll(".characters").forEach((e) => {
+    e.textContent = `${correctChars} / ${incorrectCount} `;
+    if (correctChars >= 1) {
+      e.style.color = "var(--neutral-green)";
+      e.style.fontWeight = "bold";
+    }
+    if (incorrectCount >= 0) {
+      e.style.color = "var(--neutral-red)";
+      e.style.fontWeight = "bold";
+    }
   });
 
   document.querySelectorAll(".accuracy").forEach((el) => {
@@ -390,8 +402,9 @@ function resetTest() {
   setActiveStates("test-setup", "passage-area");
   console.log("Test reset", gameState);
 
-  document.querySelectorAll(".result-Errors").forEach((e) => {
-    e.textContent = `0 / 0 chars`;
+  document.querySelectorAll(".characters").forEach((e) => {
+    e.textContent = `0 / 0`;
+    e.style.color = "var(--neutral-400)";
   });
 
   resetConfettiSafely();
@@ -780,8 +793,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".accuracy").forEach((el) => {
         el.textContent = `${gameState.accuracy}%`; // Display the calculated accuracy percentage
       });
-      document.querySelectorAll(".result-Errors").forEach((e) => {
-        e.textContent = `${correctChars} / ${incorrectCount} chars`;
+      document.querySelectorAll(".characters").forEach((e) => {
+        e.textContent = `${correctChars} / ${incorrectCount}`;
       });
 
       document.querySelectorAll(".wpm").forEach((el) => {
@@ -1105,6 +1118,16 @@ function buildVisualFeedback() {
 
     if (i === cursorIndex) {
       classes.push("current");
+    }
+    if (classes.includes("incorrect")) {
+      document
+        .querySelectorAll(".accuracy")
+        .forEach((el) => (el.style.color = "var(--neutral-red)"));
+    }
+    if (classes.includes("correct")) {
+      document
+        .querySelectorAll(".accuracy")
+        .forEach((el) => (el.style.color = "var(--neutral-green)"));
     }
 
     let displayChar = targetChar;
