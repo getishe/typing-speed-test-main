@@ -340,18 +340,15 @@ function endTest() {
   // Update final result UI
   document.querySelectorAll(".characters").forEach((e) => {
     e.textContent = `${correctChars} / ${incorrectCount} `;
-    if (correctChars >= 1) {
-      e.style.color = "var(--neutral-green)";
-      e.style.fontWeight = "bold";
-    }
-    if (incorrectCount >= 0) {
-      e.style.color = "var(--neutral-red)";
-      e.style.fontWeight = "bold";
-    }
   });
 
   document.querySelectorAll(".accuracy").forEach((el) => {
     el.textContent = `${gameState.accuracy}%`;
+  });
+
+  document.querySelectorAll(".characters").forEach((el) => {
+    el.innerHTML = `<span class="chars-correct">${correctChars}</span> / 
+    <span class="chars-incorrect">${incorrectCount}</span>`;
   });
 }
 

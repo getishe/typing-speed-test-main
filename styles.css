@@ -396,7 +396,16 @@ button.try-again-button:hover {
 :where(.result-WPM h1, .result-Accuracy h1, .result-Errors h1) {
   color: var(--neutral-400);
   font-size: var(--font-size-body);
-  border: 2px solid red;
+}
+
+.chars-correct {
+  color: var(--neutral-green);
+  font-weight: bold;
+}
+
+.chars-incorrect {
+  color: var(--neutral-red);
+  font-weight: bold;
 }
 
 button.reset-button {
