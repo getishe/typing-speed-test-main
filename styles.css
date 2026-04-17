@@ -616,4 +616,22 @@ button.reset-button img:hover {
 }
 
 @media screen and (max-width: 768px) {
+  body {
+    max-width: 630px;
+    width: 100%;
+    border: 2px solid red;
+  }
+
+  header {
+    display: flex;
+  }
+
+  section#intro-area {
+    display: block;
+    border: 2px solid red;
+  }
+
+  textarea {
+    width: 90%;
+  }
 }
