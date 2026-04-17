@@ -614,3 +614,6 @@ button.reset-button img:hover {
   right: 0;
   bottom: 60px;
 }
+
+@media screen and (max-width: 768px) {
+}

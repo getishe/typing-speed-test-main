@@ -769,6 +769,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       buildVisualFeedback();
+
       // It removes whitespace only at the start and end.
       if (liveTyped.length > 0 && liveTyped.trim().length === 0) {
         // If the user has typed something but it's all whitespace, mark all those indices as errors
@@ -840,15 +841,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         endTest();
       }
-      // document
-      //   .querySelectorAll(".wpm")
-      //   .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
-      // document
-      //   .querySelectorAll(".accuracy")
-      //   .forEach(
-      //     (e) => (e.textContent = accuracyCalculate(gameState.typedText)),
-      //   );
-      // Split into lines and
+
       const passageLines = gameState.passageLines;
       const typedLines = userInput.value.split("\n");
       // ) Determine current line and compare with the corresponding passage line
@@ -928,27 +921,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Keep one strict error metric source
     });
-
-    // userInput.addEventListener("keydown", (e) => {
-    //   if (!gameState.isTestActive) return;
-
-    //   const isCountedKey =
-    //     e.key.length === 1 || // Regular character keys
-    //     e.key === "Backspace" ||
-    //     e.key === "Enter" ||
-    //     e.key === "Tab";
-
-    //   if (isCountedKey) totalKeysPressed++;
-    // });
-
-    // userInput.addEventListener("keydown", (e) => {
-    //   totalKeysPressed++;
-
-    //   //Compare current Compare current key to the expected character in the source
-    //   if (gameState.isTestActive && gameState.currentPassage !== e.key) {
-    //     totalErrors++;
-    //   }
-    // });
   }
   // Set the first difficulty button as active by default
   const firstDifficultyButton = document.querySelector(
@@ -1002,28 +974,6 @@ function calculateWpm(typedText) {
   return Math.floor(wpm);
 }
 
-// Adding a Best Wpm calculation
-
-/**
- * Updates the best words per minute (WPM) score displayed on the page.
- *
- * Retrieves all elements with the "best-wpm" class, finds the highest existing WPM value,
- * and updates all instances if the current WPM exceeds the previous best score.
- *
- * current words per minute score to compare against the best score
- 
- * updateBestWpm(95); // Updates all .best-wpm elements to 95 if it's higher than the current best
- */
-// update
-// Create Helper Functions
-// function getPersonalBest() {
-//   const personalBest = localStorage.getItem(PERSONAL_BEST_KEY);
-//   if (personalBest === null) {
-//     return 0;
-//   }
-//   return parseInt(personalBest, 10);
-// }
-
 // what if localStorage is disabled? Add try/catch blocks
 function getPersonalBest() {
   try {
@@ -1034,14 +984,6 @@ function getPersonalBest() {
     return 0;
   }
 }
-
-// localStorage.removeItem(PERSONAL_BEST_KEY); // Clear personal best for testing purposes
-
-// function savePersonalBest(wpm) {
-//   localStorage.setItem(PERSONAL_BEST_KEY, wpm.toString());
-// }
-
-// what if localStorage is disabled? Add try/catch blocks
 
 function savePersonalBest(wpm) {
   try {
@@ -1116,16 +1058,6 @@ function buildVisualFeedback() {
     if (i === cursorIndex) {
       classes.push("current");
     }
-    if (classes.includes("incorrect")) {
-      document
-        .querySelectorAll(".accuracy")
-        .forEach((el) => (el.style.color = "var(--neutral-red)"));
-    }
-    if (classes.includes("correct")) {
-      document
-        .querySelectorAll(".accuracy")
-        .forEach((el) => (el.style.color = "var(--neutral-green)"));
-    }
 
     let displayChar = targetChar;
     // if (targetChar === " ") {
@@ -1142,6 +1074,14 @@ function buildVisualFeedback() {
     html += `<span class="${classes.join(" ")}" style="white-space: pre-wrap;">${displayChar}</span>`;
   }
 
+  let lastIndex = liveTyped.length - 1;
+  let hasErrors = Boolean(
+    lastIndex >= 0 && gameState.perIndexErrors[lastIndex],
+  );
+  let accuracyColorsValidation = document.querySelectorAll(".accuracy");
+  accuracyColorsValidation.forEach((el) => {
+    el.style.color = hasErrors ? "var(--neutral-red)" : "var(--neutral-green)";
+  });
   if (cursorIndex >= liveTarget.length) {
     html += `<span class="current cursor-end" style="white-space: pre-wrap;">&nbsp;</span>`;
   }
