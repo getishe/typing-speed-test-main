@@ -618,8 +618,9 @@ button.reset-button img:hover {
 @media screen and (max-width: 768px) {
   body {
     max-width: 630px;
-    width: 100%;
-    border: 2px solid red;
+    width: 90%;
+    border: 2px solid greenyellow;
+    margin: 0 auto;
   }
 
   header {
@@ -631,7 +632,7 @@ button.reset-button img:hover {
     border: 2px solid red;
   }
 
-  textarea {
-    width: 90%;
+  .passage-preview {
+    width: 630px;
   }
 }
