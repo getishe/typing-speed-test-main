@@ -165,7 +165,9 @@ async function startTest() {
   gameState.isTestActive = true;
   gameState.typedText = "";
 
-  document.querySelectorAll(".wpm").forEach((el) => (el.textContent = "0"));
+  document
+    .querySelectorAll(".wpm")
+    .forEach((el) => ((el.textContent = "0"), (el.style.fontSize = "20px")));
   // document
   //   .querySelectorAll(".wpm")
   //   .forEach((el) => (el.textContent = calculateWpm(gameState.typedText)));
