@@ -277,7 +277,7 @@ section#passage-area {
   font-family: monospace;
   font-size: 1.1rem;
   line-height: 1.7;
-  pointer-events: none;
+  /* pointer-events: none; */
   transition:
     filter 0.2s ease,
     opacity 0.2s ease;
@@ -478,7 +478,7 @@ button.reset-button img:hover {
   width: 100%;
   height: 350px;
   resize: none;
-  pointer-events: none; /* Allow clicks to pass through to input below */
+  /* pointer-events: none; Allow clicks to pass through to input below */
   line-height: 1.6;
   box-sizing: border-box;
   display: none; /* Initially hidden, shown when test starts */
@@ -498,9 +498,9 @@ button.reset-button img:hover {
   line-height: 1.6;
   word-wrap: break-word; /* Ensure text wraps the same way as the passage display */
   white-space: pre-wrap; /* Match user input wrapping */
-  overflow-y: auto; /* Show vertical scrollbar if content overflows */
+  overflow-y: scroll; /* Show vertical scrollbar if content overflows */
   overflow-x: hidden;
-  pointer-events: none;
+  pointer-events: auto;
   color: var(--neutral-100);
   background-color: transparent;
 }
@@ -555,7 +555,7 @@ button.reset-button img:hover {
   white-space: pre-wrap; /* Match user input wrapping */
   word-wrap: break-word;
   overflow-wrap: break-word;
-  pointer-events: none;
+  /* pointer-events: none; */
   resize: none;
   box-sizing: border-box;
   /* user-select: none; Prevent text selection */
@@ -574,7 +574,7 @@ button.reset-button img:hover {
   white-space: pre-wrap; /* Match user input wrapping */
   word-wrap: break-word;
   overflow-wrap: break-word;
-  pointer-events: none;
+  /* pointer-events: none; */
   resize: none;
   display: block;
   /* user-select: none;s Prevent text selection */
@@ -596,7 +596,7 @@ button.reset-button img:hover {
   resize: none;
   outline: none;
   line-height: 1.6;
-  pointer-events: auto; /* Allow user interaction */
+  /* pointer-events: auto; Allow user interaction */
 }
 
 .user-input::selection {
@@ -615,84 +615,61 @@ button.reset-button img:hover {
   bottom: 60px;
 }
 
-/* Media Queries for Different Screen Sizes */
+.visual-feedback,
+.user-input {
+  height: auto;
+  max-height: 350px; /* or another value you prefer */
+  overflow-y: auto;
+}
+
+/* Improved Media Queries for Responsiveness */
 @media screen and (max-width: 1200px) {
   body {
     max-width: 100%;
     width: 95%;
-    border: 2px solid greenyellow;
     margin: 0 auto;
-    padding: 0 10px;
+    padding: 0 1rem;
+    /* Remove debug border */
   }
 
-  header {
-    display: flex;
-  }
-
-  .time-measurements p.time-button span {
-    /* font-size: clamp(0.5rem, 2vw, 3.2rem); */
-    font-size: 30px;
-    font-weight: var(--font-weight-bold);
-    margin-left: 9px;
-    /* font-weight: var(--font-weight-bold); */
-    color: var(--neutral-0);
-  }
-
-  p.time-button {
-    font-size: 20px;
-  }
-  span.wpm {
-    font-size: 20px;
-  }
-
-  .difficulty-settings p {
-    font-size: 20px;
-  }
-
-  .difficulty-settings button {
-    font-size: 16px;
-  }
-
+  .time-measurements p.time-button span,
+  p.time-button,
+  span.wpm,
+  .difficulty-settings p,
   .mode-settings p {
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 
+  .difficulty-settings button,
   .mode-settings button {
-    font-size: 16px;
-  }
-
-  .mode-settings button {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .typing-container {
-    height: 400px;
-    border: 2px solid red;
+    height: 28rem;
+    /* Remove debug border */
   }
 
   section#intro-area {
     display: block;
-    border: 2px solid red;
+    /* Remove debug border */
   }
 
   section#passage-area {
     position: static;
     transform: none;
     width: min(90%, 900px);
-    margin: 40px auto;
+    margin: 2.5rem auto;
   }
 
   .passage-preview-wrapper {
-    /* max-width: 80%; */
     max-width: 100%;
     width: 100%;
-    /* max-width: 700px; */
   }
 
   .passage-preview {
-    max-width: 990px;
-    /* width: 80%; */
-    height: 450px;
+    max-width: 62rem;
+    height: 28rem;
   }
 
   .start-button {
@@ -710,23 +687,50 @@ button.reset-button img:hover {
   }
 }
 
-/* media device laptop */
-
 @media screen and (max-width: 1044px) {
   .passage-preview {
-    max-width: 890px;
-    /* width: 80%; */
-    height: 450px;
+    max-width: 57.6rem;
+  }
+  .visual-feedback,
+  .user-input {
+    height: auto;
+    max-height: 16rem; /* or another value you prefer */
+    overflow-y: auto;
+    user-select: auto;
+  }
+
+  .typing-container {
+    height: 16rem;
   }
 }
 
 @media screen and (max-width: 910px) {
   .passage-preview {
-    max-width: 800px;
+    max-width: 50rem;
   }
 }
+
 @media screen and (max-width: 884px) {
   .passage-preview {
-    max-width: 750px;
+    max-width: 46.9rem;
   }
+  /* .user-input {
+    height: 14rem;
+  }
+  .typing-container {
+    height: 14rem;
+  } */
+}
+
+@media screen and (max-width: 768px) {
+  .passage-preview {
+    max-width: 40rem;
+  }
+
+  /* .user-input {
+    height: 18rem;
+  }
+  .typing-container {
+    height: 15rem;
+  } */
 }
