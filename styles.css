@@ -498,7 +498,7 @@ button.reset-button img:hover {
   line-height: 1.6;
   word-wrap: break-word; /* Ensure text wraps the same way as the passage display */
   white-space: pre-wrap; /* Match user input wrapping */
-  overflow-y: scroll; /* Show vertical scrollbar if content overflows */
+  overflow-y: auto; /* Show vertical scrollbar if content overflows */
   overflow-x: hidden;
   pointer-events: auto;
   color: var(--neutral-100);
@@ -617,7 +617,7 @@ button.reset-button img:hover {
 
 .visual-feedback,
 .user-input {
-  height: auto;
+  box-sizing: border-box;
   max-height: 350px; /* or another value you prefer */
   overflow-y: auto;
 }
