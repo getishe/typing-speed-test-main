@@ -1098,3 +1098,10 @@ if (typingContainer && userInput) {
     userInput.focus();
   });
 }
+//helper function
+function setActiveStates(...stateNames) {
+  
+
+
+
+
