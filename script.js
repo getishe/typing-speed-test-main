@@ -1099,7 +1099,7 @@ if (typingContainer && userInput) {
   });
 }
 //helper function
-function setActiveStates(...stateNames) {
+
   
 
 
