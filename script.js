@@ -1,5 +1,5 @@
 "use strict";
-//dom manipulation methods set selectors
+//dom manipulation methods set selectors elements 
 const start = document.querySelector(".start-button");
 const reset = document.querySelectorAll(".reset-button");
 const passageDisplay = document.querySelector("#passage-display");
