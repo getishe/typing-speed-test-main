@@ -183,6 +183,8 @@ p.border {
 
 .mode-settings {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
 }
 .mode-settings p {
@@ -621,6 +623,14 @@ button.reset-button img:hover {
   max-height: 350px; /* or another value you prefer */
   overflow-y: auto;
 }
+.custom-dropdwon {
+  gap: 10px;
+  display: flex;
+}
+.dropdown-wrapper {
+  display: flex;
+  gap: 5px;
+}
 
 /* Improved Media Queries for Responsiveness */
 @media screen and (max-width: 1200px) {
@@ -707,12 +717,14 @@ button.reset-button img:hover {
 @media screen and (max-width: 910px) {
   .passage-preview {
     max-width: 50rem;
+    height: 30vh;
   }
 }
 
 @media screen and (max-width: 884px) {
   .passage-preview {
     max-width: 46.9rem;
+    height: 20 vh;
   }
   /* .user-input {
     height: 14rem;
@@ -725,6 +737,7 @@ button.reset-button img:hover {
 @media screen and (max-width: 768px) {
   .passage-preview {
     max-width: 40rem;
+    height: 10vh;
   }
 
   /* .user-input {
@@ -733,4 +746,23 @@ button.reset-button img:hover {
   .typing-container {
     height: 15rem;
   } */
+}
+
+@media screen and (max-width: 660px) {
+  .difficulty-settings p {
+    display: none;
+  }
+  .mode-settings p {
+    display: none;
+  }
+  .custom-dropdwon {
+    gap: 10px;
+    border: 2px solid red;
+    flex-direction: column;
+  }
+  .dropdown-wrapper {
+    gap: 5px;
+    border: 2px solid red;
+    flex-direction: column;
+  }
 }
