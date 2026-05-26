@@ -1098,10 +1098,42 @@ if (typingContainer && userInput) {
     userInput.focus();
   });
 }
-//helper function
 
-  
+// toggle for mode
 
+const dropDown = document.querySelector(".dropdown-wrapper");
+const mode = document.querySelector("ul.mode-dropdown");
+const modeLists = document.querySelectorAll(".mode-dropdown li");
+const select = document.querySelector(".select");
+const mobileDropdownMedia = window.matchMedia("(max-width: 660px)");
 
+function applyMobileDropdownState() {
+  if (!mode) return;
+  if (mobileDropdownMedia.matches) {
+    mode.style.display = "none";
+  } else {
+    // On larger screens, return control to CSS layout.
+    mode.style.display = "";
+  }
+}
 
+if (dropDown && mode) {
+  dropDown.addEventListener("click", () => {
+    if (!mobileDropdownMedia.matches) return;
+    mode.style.display = mode.style.display === "none" ? "block" : "none";
+  });
+}
 
+modeLists.forEach((li) => {
+  li.addEventListener("click", function () {
+    if (select) {
+      select.textContent = li.textContent.trim();
+    }
+    if (mobileDropdownMedia.matches && mode) {
+      mode.style.display = "none";
+    }
+  });
+});
+
+applyMobileDropdownState();
+mobileDropdownMedia.addEventListener("change", applyMobileDropdownState);
