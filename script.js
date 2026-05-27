@@ -1137,3 +1137,44 @@ modeLists.forEach((li) => {
 
 applyMobileDropdownState();
 mobileDropdownMedia.addEventListener("change", applyMobileDropdownState);
+
+const customDropDown = document.querySelector(".custom-dropdwon");
+const difficultyDrop = document.querySelector("ul.diffculty-dropdown-match");
+const difficultyList = document.querySelectorAll(
+  ".diffculty-dropdown-match li",
+);
+const difficulty = document.querySelector(".difficulty");
+const difficultyMediaMatch = window.matchMedia("(max-width: 660px)");
+
+function applyMatchedForDifficulty() {
+  if (!difficultyDrop) return;
+
+  if (difficultyMediaMatch.matches) {
+    difficultyDrop.style.display = "none";
+  } else {
+    difficultyDrop.style.display = "";
+  }
+}
+
+if (customDropDown && difficultyDrop) {
+  customDropDown.addEventListener("click", function () {
+    if (!difficultyMediaMatch) return;
+    difficultyDrop.style.display =
+      difficultyDrop.style.display === "none" ? "block" : "none";
+  });
+}
+
+difficultyList.forEach((li) => {
+  li.addEventListener("click", function () {
+    if (difficulty) {
+      difficulty.textContent = li.textContent.trim();
+    }
+
+    if (difficultyMediaMatch.matches && difficultyDrop) {
+      difficultyDrop.style.display = "none";
+    }
+  });
+});
+
+applyMatchedForDifficulty();
+difficultyMediaMatch.addEventListener("change", applyMatchedForDifficulty);

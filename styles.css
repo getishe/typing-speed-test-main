@@ -633,6 +633,25 @@ button.reset-button img:hover {
 }
 
 .img,
+#Arraow_Icon_diifuclty {
+  display: none;
+}
+
+.diffculty-dropdown-match {
+  display: flex;
+  gap: 10px;
+}
+
+ul.diffculty-dropdown-match li {
+  display: flex;
+  list-style: none;
+}
+
+.difficulty {
+  display: none;
+}
+
+.img,
 #Arraow_Icon {
   display: none;
 }
@@ -649,6 +668,12 @@ ul.mode-dropdown li {
 
 .select {
   display: none;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Improved Media Queries for Responsiveness */
@@ -771,27 +796,18 @@ ul.mode-dropdown li {
   .difficulty-settings p {
     display: none;
   }
-  .settings-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 160px;
-    border: 2px solid red;
-  }
+
   .mode-settings {
+    border: 2px solid blue;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     flex-direction: column;
   }
+
   .mode-settings p {
     display: none;
-  }
-  .custom-dropdwon {
-    gap: 10px;
-    border: 2px solid red;
-    flex-direction: column;
   }
 
   .img,
@@ -810,7 +826,7 @@ ul.mode-dropdown li {
     position: relative;
     padding: 10px;
     height: 40px;
-    width: 240px;
+    width: 280px;
     background-color: var(--neutral-800);
     border-radius: 8px;
     display: flex;
@@ -827,20 +843,86 @@ ul.mode-dropdown li {
 
   .mode-dropdown {
     position: absolute;
-    top: 27%;
-    left: 50%;
+    top: 25%;
     bottom: auto;
     background-color: var(--neutral-800);
     padding: 10px;
-    width: 240px;
+    width: 280px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
+    z-index: 1;
+    opacity: 1;
   }
 
   .mode-dropdown li {
     border: 2px solid red;
     margin: 5px 0;
     display: flex;
+  }
+
+  .settings-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 160px;
+    border: 2px solid red;
+  }
+
+  .custom-dropdwon {
+    gap: 10px;
+    border: 2px solid red;
+    flex-direction: column;
+  }
+
+  .custom-dropdwon {
+    position: relative;
+    padding: 10px;
+    height: 40px;
+    width: 280px;
+    background-color: var(--neutral-800);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .difficulty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .img,
+  #Arraow_Icon_diifuclty {
+    position: absolute;
+    left: 70%;
+    top: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* width: 160px; */
+    height: 8px;
+  }
+
+  .diffculty-dropdown-match {
+    position: absolute;
+    top: 25%;
+    bottom: auto;
+    background-color: var(--neutral-800);
+    padding: 10px;
+    width: 280px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    opacity: 1;
+  }
+
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: 2px soli yellow;
   }
 }
