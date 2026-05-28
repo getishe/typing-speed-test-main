@@ -1105,7 +1105,7 @@ const dropDown = document.querySelector(".dropdown-wrapper");
 const mode = document.querySelector("ul.mode-dropdown");
 const modeLists = document.querySelectorAll(".mode-dropdown li");
 const select = document.querySelector(".select");
-const mobileDropdownMedia = window.matchMedia("(max-width: 660px)");
+const mobileDropdownMedia = window.matchMedia("(max-width: 690px)");
 
 function applyMobileDropdownState() {
   if (!mode) return;
@@ -1118,19 +1118,22 @@ function applyMobileDropdownState() {
 }
 
 if (dropDown && mode) {
-  dropDown.addEventListener("click", () => {
+  dropDown.addEventListener("click", (event) => {
     if (!mobileDropdownMedia.matches) return;
+    // Prevent the click from propagating to the document
     mode.style.display = mode.style.display === "none" ? "block" : "none";
   });
 }
 
 modeLists.forEach((li) => {
-  li.addEventListener("click", function () {
+  li.addEventListener("click", function (event) {
     if (select) {
       select.textContent = li.textContent.trim();
     }
     if (mobileDropdownMedia.matches && mode) {
       mode.style.display = "none";
+      // event.preventDefault();
+      // event.stopPropagation(); // Prevent the click from propagating to the document
     }
   });
 });
@@ -1144,7 +1147,7 @@ const difficultyList = document.querySelectorAll(
   ".diffculty-dropdown-match li",
 );
 const difficulty = document.querySelector(".difficulty");
-const difficultyMediaMatch = window.matchMedia("(max-width: 660px)");
+const difficultyMediaMatch = window.matchMedia("(max-width: 690px)");
 
 function applyMatchedForDifficulty() {
   if (!difficultyDrop) return;
@@ -1157,15 +1160,18 @@ function applyMatchedForDifficulty() {
 }
 
 if (customDropDown && difficultyDrop) {
-  customDropDown.addEventListener("click", function () {
+  customDropDown.addEventListener("click", function (event) {
     if (!difficultyMediaMatch) return;
+
     difficultyDrop.style.display =
       difficultyDrop.style.display === "none" ? "block" : "none";
+    // event.preventDefault();
+    // event.stopPropagation(); // Prevent the click from propagating to the document
   });
 }
 
 difficultyList.forEach((li) => {
-  li.addEventListener("click", function () {
+  li.addEventListener("click", function (event) {
     if (difficulty) {
       difficulty.textContent = li.textContent.trim();
     }
@@ -1174,6 +1180,22 @@ difficultyList.forEach((li) => {
       difficultyDrop.style.display = "none";
     }
   });
+});
+
+document.body.addEventListener("click", function (event) {
+  if (difficultyMediaMatch.matches && difficultyDrop) {
+    if (!customDropDown.contains(event.target)) {
+      difficultyDrop.style.display = "none";
+    }
+  }
+});
+
+document.body.addEventListener("click", function (event) {
+  if (mobileDropdownMedia.matches && mode) {
+    if (!dropDown.contains(event.target)) {
+      mode.style.display = "none";
+    }
+  }
 });
 
 applyMatchedForDifficulty();
