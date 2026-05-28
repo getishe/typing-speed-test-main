@@ -129,6 +129,12 @@ p.border {
   /* padding: 12px; */
 }
 
+.difficulty-settings p.border {
+  padding-top: 10px;
+  height: 30px;
+  margin-left: 20px;
+}
+
 .settings-wrapper {
   /* border: 2px solid blue; */
   display: flex;
@@ -674,6 +680,9 @@ ul.mode-dropdown li {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
+  width: 100%; /* Respect parent width */
+  max-width: 100%; /* Don't exceed parent */
 }
 
 /* Improved Media Queries for Responsiveness */
@@ -739,6 +748,13 @@ ul.mode-dropdown li {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  .wrapper {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1044px) {
@@ -756,173 +772,340 @@ ul.mode-dropdown li {
   .typing-container {
     height: 16rem;
   }
-}
-
-@media screen and (max-width: 910px) {
-  .passage-preview {
-    max-width: 50rem;
-    height: 30vh;
+  .wrapper {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
   }
-}
 
-@media screen and (max-width: 884px) {
-  .passage-preview {
-    max-width: 46.9rem;
-    height: 20 vh;
+  @media screen and (max-width: 910px) {
+    .passage-preview {
+      max-width: 50rem;
+      height: 30vh;
+    }
+    .wrapper {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
   }
-  /* .user-input {
+
+  @media screen and (max-width: 884px) {
+    .passage-preview {
+      max-width: 46.9rem;
+      height: 20 vh;
+    }
+
+    .wrapper {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    /* .user-input {
     height: 14rem;
   }
   .typing-container {
     height: 14rem;
   } */
-}
-
-@media screen and (max-width: 768px) {
-  .passage-preview {
-    max-width: 40rem;
-    height: 10vh;
   }
 
-  /* .user-input {
+  @media screen and (max-width: 768px) {
+    .passage-preview {
+      max-width: 40rem;
+      height: 10vh;
+    }
+    .wrapper {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    /* .user-input {
     height: 18rem;
   }
   .typing-container {
     height: 15rem;
   } */
+  }
+
+  @media screen and (max-width: 690px) {
+    .passage-preview {
+      max-width: 38rem;
+      height: 10vh;
+    }
+    .difficulty-settings p {
+      display: none;
+    }
+
+    .mode-settings {
+      border: 1px solid var(--neutral-500);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-direction: column;
+      border-radius: 8px;
+    }
+
+    .mode-settings p {
+      display: none;
+    }
+
+    .img,
+    #Arraow_Icon {
+      position: absolute;
+      left: 70%;
+      top: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* width: 160px; */
+      height: 8px;
+    }
+
+    .dropdown-wrapper {
+      position: relative;
+      padding: 10px;
+      height: 40px;
+      width: 280px;
+      background-color: var(--neutral-900);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      /* border: 2px solid red; */
+    }
+
+    .select {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mode-dropdown {
+      position: absolute;
+      top: 25%;
+      bottom: auto;
+      background-color: var(--neutral-800);
+      padding: 5px;
+      width: 280px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+      opacity: 1;
+    }
+
+    .mode-dropdown li {
+      /* border: 2px solid red; */
+      margin: 5px 0;
+      display: flex;
+    }
+
+    .settings-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .custom-dropdwon {
+      gap: 10px;
+      border: 1px solid var(--neutral-500);
+      flex-direction: column;
+    }
+
+    .custom-dropdwon {
+      position: relative;
+      padding: 10px;
+      height: 40px;
+      width: 280px;
+      background-color: var(--neutral-900);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .difficulty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .img,
+    #Arraow_Icon_diifuclty {
+      position: absolute;
+      left: 63%;
+      top: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* width: 160px; */
+      height: 8px;
+    }
+
+    .diffculty-dropdown-match {
+      position: absolute;
+      top: 25%;
+      bottom: auto;
+      background-color: var(--neutral-800);
+      padding: 5px;
+      width: 280px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      z-index: 1;
+      opacity: 1;
+    }
+    .diffculty-dropdown-match li:not(:last-child) {
+      border-bottom: 1px solid var(--neutral-500);
+      margin: 5px 0;
+      padding-bottom: 5px;
+      display: flex;
+    }
+
+    .diffculty-dropdown-match li button {
+      background-color: transparent;
+      color: var(--neutral-0);
+      border: none;
+      text-align: center;
+      padding: 0 10px;
+      width: auto;
+      height: 30px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .difficulty-settings button.active {
+      border: none;
+      color: white;
+    }
+
+    .mode-dropdown li:not(:last-child) {
+      border-bottom: 1px solid var(--neutral-500);
+      margin: 5px 0;
+      padding-bottom: 5px;
+      display: flex;
+    }
+
+    .mode-dropdown li button {
+      background-color: transparent;
+      color: var(--neutral-0);
+      border: none;
+      text-align: center;
+      padding: 0 10px;
+      width: auto;
+      height: 30px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .mode-settings button.active {
+      border: none;
+      color: white;
+    }
+  }
+}
+@media screen and (max-width: 627px) {
+  .passage-preview {
+    max-width: 32rem;
+    height: 10vh;
+  }
+  .custom-dropdwon,
+  .dropdown-wrapper {
+    width: 228px;
+    max-width: 100%;
+    height: auto;
+    padding: 5px;
+  }
+
+  img,
+  #Arraow_Icon,
+  #Arraow_Icon_diifuclty {
+    top: 40%;
+  }
+  .mode-dropdown {
+    left: 43%;
+  }
 }
 
-@media screen and (max-width: 660px) {
-  .difficulty-settings p {
-    display: none;
+/* Fix 1: Flatten the media queries structure */
+/* Remove nesting - move all queries to top level */
+
+/* Add NEW phone breakpoint */
+@media screen and (max-width: 480px) {
+  body {
+    padding: 0 0.5rem;
+    max-width: 100%;
   }
 
-  .mode-settings {
-    border: 2px solid blue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .time-measurements {
+    flex-direction: column;
     gap: 10px;
-    flex-direction: column;
   }
 
-  .mode-settings p {
-    display: none;
+  .time-measurements p.time-button span {
+    font-size: clamp(0.5rem, 4vw, 1.5rem);
   }
 
-  .img,
-  #Arraow_Icon {
-    position: absolute;
-    left: 70%;
-    top: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* width: 160px; */
-    height: 8px;
+  .typing-container {
+    height: 200px;
   }
 
-  .dropdown-wrapper {
-    position: relative;
-    padding: 10px;
-    height: 40px;
-    width: 280px;
-    background-color: var(--neutral-800);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    /* border: 2px solid red; */
+  .visual-feedback,
+  .user-input {
+    font-size: 18px;
+    max-height: 200px;
   }
 
-  .select {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .dropdown-wrapper,
+  .custom-dropdwon {
+    width: 100%;
+    height: auto;
   }
 
-  .mode-dropdown {
-    position: absolute;
-    top: 25%;
-    bottom: auto;
-    background-color: var(--neutral-800);
-    padding: 10px;
-    width: 280px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-    opacity: 1;
-  }
-
-  .mode-dropdown li {
-    border: 2px solid red;
-    margin: 5px 0;
-    display: flex;
+  .mode-dropdown,
+  .diffculty-dropdown-match {
+    width: 100%;
   }
 
   .settings-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 160px;
-    border: 2px solid red;
-  }
-
-  .custom-dropdwon {
+    flex-direction: column;
     gap: 10px;
-    border: 2px solid red;
-    flex-direction: column;
   }
 
-  .custom-dropdwon {
-    position: relative;
-    padding: 10px;
-    height: 40px;
-    width: 280px;
-    background-color: var(--neutral-800);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
+  .passage-preview {
+    font-size: 0.9rem;
+    height: 150px;
+  }
+}
+
+/* Smallest devices (320px) */
+@media screen and (max-width: 375px) {
+  body {
+    padding: 0 0.25rem;
+  }
+
+  .difficulty-settings button,
+  .mode-settings button {
+    padding: 0 5px;
+    font-size: 0.9rem;
+  }
+
+  .test-result {
     gap: 5px;
   }
-  .difficulty {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 
-  .img,
-  #Arraow_Icon_diifuclty {
-    position: absolute;
-    left: 70%;
-    top: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* width: 160px; */
-    height: 8px;
-  }
-
-  .diffculty-dropdown-match {
-    position: absolute;
-    top: 25%;
-    bottom: auto;
-    background-color: var(--neutral-800);
-    padding: 10px;
-    width: 280px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-    opacity: 1;
-  }
-
-  .wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border: 2px soli yellow;
+  :is(.result-WPM, .result-Accuracy, .result-Errors) {
+    width: 90px;
+    height: 60px;
   }
 }
