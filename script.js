@@ -1192,6 +1192,7 @@ document.body.addEventListener("click", function (event) {
 
 document.body.addEventListener("click", function (event) {
   if (mobileDropdownMedia.matches && mode) {
+    // Closes when you click outside the .dropdown-wrapper container
     if (!dropDown.contains(event.target)) {
       mode.style.display = "none";
     }
@@ -1200,3 +1201,26 @@ document.body.addEventListener("click", function (event) {
 
 applyMatchedForDifficulty();
 difficultyMediaMatch.addEventListener("change", applyMatchedForDifficulty);
+
+const personalMatchMedia = window.matchMedia("(max-width: 572px)");
+const personalTextContext = document.querySelector(".personal");
+
+document.addEventListener("DOMContentLoaded", function () {
+  if (personalTextContext) {
+    if (personalMatchMedia.matches) {
+      personalTextContext.textContent = `Best:${getPersonalBest()}`;
+    } else {
+      personalTextContext.textContent = `Personal best:${getPersonalBest()}`;
+    }
+  }
+});
+
+personalMatchMedia.addEventListener("change", function (e) {
+  // Initialize on page load
+
+  if (e.matches) {
+    personalTextContext.textContent = `Best:${getPersonalBest()}`;
+  } else {
+    personalTextContext.textContent = `Personal best:${getPersonalBest()}`;
+  }
+});
