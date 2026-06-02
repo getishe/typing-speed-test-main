@@ -1224,3 +1224,17 @@ personalMatchMedia.addEventListener("change", function (e) {
     personalTextContext.textContent = `Personal best:${getPersonalBest()}`;
   }
 });
+
+const logo = document.querySelector(".logo");
+const logoMach = window.matchMedia("max-width: 415px");
+
+function applyLogoMach() {
+  if (!logo) return;
+
+  if (logo && logoMach.matches) {
+    logo.style.display = "none";
+  }
+}
+
+applyLogoMach();
+logoMach.addEventListener("change", applyLogoMach);

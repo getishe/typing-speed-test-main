@@ -302,25 +302,28 @@ section#passage-area {
   left: 40%;
   z-index: 2;
   margin: 0 auto;
-  padding: 4px 13px;
+  padding: 6px 15px;
   border: none;
   background-color: var(--blue-600);
   color: var(--neutral-0);
-  font-size: var(--font-size-body);
+  font-size: 1.29rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
   line-height: 1.6;
   border-radius: 6px;
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-regular);
 }
 
 p.click-text {
   position: absolute;
   top: 40%;
-  left: 35%;
+  left: 33.4%;
   text-align: center;
   justify-content: center;
   display: flex;
   margin: 0 auto;
+  font-size: 1.2rem;
+  font-weight: bold;
+  /* max-width: ; */
 }
 
 .start-button:hover {
@@ -1012,6 +1015,16 @@ ul.mode-dropdown li {
     border: none;
     color: white;
   }
+
+  p.click-text {
+    top: 60%;
+    left: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    max-width: 430px;
+    width: 100%;
+    /* padding: 10px; */
+  }
 }
 
 @media screen and (max-width: 627px) {
@@ -1033,7 +1046,7 @@ ul.mode-dropdown li {
     top: 40%;
   }
   .mode-dropdown {
-    left: 44%;
+    /* left: 44%; */
     width: 245px;
   }
 }
@@ -1056,7 +1069,7 @@ ul.mode-dropdown li {
     top: 40%;
   }
   .mode-dropdown {
-    left: 50%;
+    /* left: 50%; */
     width: 215px;
   }
 }
@@ -1123,7 +1136,7 @@ ul.mode-dropdown li {
   }
   .mode-dropdown {
     top: 32%;
-    left: 52%;
+    /* left: 52%; */
     width: 180px;
     max-width: 100%;
     height: auto;
@@ -1131,7 +1144,7 @@ ul.mode-dropdown li {
 
   .start-button {
     padding: 4px 15px;
-    font-size: 1.2rem;
+    font-size: 1.12rem;
     font-weight: bold;
     top: 60%;
     left: 50%;
@@ -1145,7 +1158,7 @@ ul.mode-dropdown li {
     font-weight: bold;
     max-width: 430px;
     width: 100%;
-    border: 1px solid var(--neutral-500);
+
     /* padding: 10px; */
   }
 
@@ -1167,6 +1180,13 @@ ul.mode-dropdown li {
   }
 }
 
+@media screen and (max-width: 415px) {
+  .passage-preview {
+    max-width: 22rem;
+    height: 2vh;
+  }
+}
+
 /* Smallest devices (320px) */
 @media screen and (max-width: 375px) {
   body {
@@ -1174,7 +1194,8 @@ ul.mode-dropdown li {
   }
 
   .start-button {
-    padding: 4px 13px;
+    padding: 4px 10px;
+    font-weight: 200;
   }
 
   .difficulty-settings button,
