@@ -1121,11 +1121,15 @@ ul.mode-dropdown li {
     max-height: 200px;
   }
 
-  /* .dropdown-wrapper,
-  .custom-dropdwon {
-    width: 100%;
-    height: auto;
-  } */
+  .img,
+  #Arraow_Icon {
+    left: 80%;
+  }
+
+  .img,
+  #Arraow_Icon_diifuclty {
+    left: 70%;
+  }
 
   .custom-dropdwon,
   .dropdown-wrapper {
@@ -1181,21 +1185,83 @@ ul.mode-dropdown li {
 }
 
 @media screen and (max-width: 415px) {
+  body {
+    padding: 0 0.34rem;
+    max-width: 100%;
+    width: 76%;
+  }
+
+  .time-measurements {
+    gap: 7px;
+  }
+  .time-measurements p {
+    padding: 7px;
+  }
+
+  p.border {
+    height: 50px;
+  }
+
   .passage-preview {
-    max-width: 22rem;
-    height: 2vh;
+    max-width: 23rem;
+    height: 10vh;
+  }
+
+  .custom-dropdwon,
+  .dropdown-wrapper {
+    width: 160px;
+    max-width: 100%;
+    height: auto;
+    padding: 5px;
+  }
+  .start-button {
+    max-width: 100%;
+    width: 65%;
+    padding: 13px 14px;
+  }
+
+  p.click-text {
+    font-size: 1.1rem;
+  }
+
+  .wrapper {
+    justify-content: center;
   }
 }
 
 /* Smallest devices (320px) */
 @media screen and (max-width: 375px) {
   body {
-    padding: 0 0.25rem;
+    padding: 0 0.2rem;
+    max-width: 100%;
+    width: 90%;
   }
 
-  .start-button {
-    padding: 4px 10px;
-    font-weight: 200;
+  .passage-preview {
+    max-width: 20rem;
+    height: 10vh;
+  }
+
+  .custom-dropdwon,
+  .dropdown-wrapper {
+    width: 140px;
+    max-width: 100%;
+    height: auto;
+    padding: 5px;
+  }
+
+  .mode-dropdown {
+    top: 30%;
+    width: 140px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diffculty-dropdown-match {
+    top: 30%;
+    width: 140px;
+    max-width: 100%;
+    height: auto;
   }
 
   .difficulty-settings button,
@@ -1211,5 +1277,34 @@ ul.mode-dropdown li {
   :is(.result-WPM, .result-Accuracy, .result-Errors) {
     width: 90px;
     height: 60px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  body {
+    padding: 0 0.1rem;
+    max-width: 100%;
+    width: 95%;
+  }
+
+  .passage-preview {
+    max-width: 18rem;
+    height: 10vh;
+  }
+
+  .difficulty-settings button,
+  .mode-settings button {
+    padding: 0 5px;
+    font-size: 0.8rem;
+  }
+
+  .test-result {
+    gap: 5px;
+  }
+
+  :is(.result-WPM, .result-Accuracy, .result-Errors) {
+    width: 80px;
+    height: 50px;
+    font-size: 0.8rem;
   }
 }

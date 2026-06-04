@@ -1226,15 +1226,34 @@ personalMatchMedia.addEventListener("change", function (e) {
 });
 
 const logo = document.querySelector(".logo");
-const logoMach = window.matchMedia("max-width: 415px");
+const logoMach = window.matchMedia("(max-width: 415px)");
 
 function applyLogoMach() {
   if (!logo) return;
 
   if (logo && logoMach.matches) {
     logo.style.display = "none";
+  } else {
+    logo.style.display = "";
   }
 }
 
 applyLogoMach();
 logoMach.addEventListener("change", applyLogoMach);
+
+const logoDisplay = document.querySelector(".logo");
+const logoSmallMatch = window.matchMedia("(max-width: 375px)");
+
+function applyLogoDisplay() {
+  if (!logoDisplay) return;
+  if (logoDisplay && logoSmallMatch.matches) {
+    logoDisplay.style.display = "block";
+    logoDisplay.src = "./assets/images/logo-small.svg";
+  } else {
+    logoDisplay.style.display = "block";
+    logoDisplay.src = "./assets/images/logo-large.svg";
+  }
+}
+
+applyLogoDisplay();
+logoSmallMatch.addEventListener("change", applyLogoDisplay);
