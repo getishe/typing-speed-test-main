@@ -819,6 +819,11 @@ ul.mode-dropdown li {
 }
 
 @media screen and (max-width: 768px) {
+  body {
+    padding: 0 0.34rem;
+    max-width: 100%;
+    width: 89%;
+  }
   .passage-preview {
     max-width: 40rem;
     height: 10vh;
@@ -840,6 +845,11 @@ ul.mode-dropdown li {
 }
 
 @media screen and (max-width: 690px) {
+  body {
+    padding: 0 0.34rem;
+    max-width: 100%;
+    width: 80%;
+  }
   .passage-preview {
     max-width: 36rem;
     height: 10vh;
@@ -1057,12 +1067,11 @@ ul.mode-dropdown li {
   }
   .custom-dropdwon,
   .dropdown-wrapper {
-    width: 215px;
+    width: 200px;
     max-width: 100%;
     height: auto;
     padding: 5px;
   }
-
   img,
   #Arraow_Icon,
   #Arraow_Icon_diifuclty {
@@ -1072,6 +1081,21 @@ ul.mode-dropdown li {
     /* left: 50%; */
     width: 215px;
   }
+
+  .diffculty-dropdown-match {
+    /* left: 50%; */
+    width: 215px;
+  }
+  .start-button {
+    padding: 4px 10px;
+    font-size: 1.12rem;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    width: 50%;
+  }
 }
 
 /* Fix 1: Flatten the media queries structure */
@@ -1080,8 +1104,9 @@ ul.mode-dropdown li {
 /* Add NEW phone breakpoint */
 @media screen and (max-width: 480px) {
   body {
-    padding: 0 0.5rem;
+    padding: 0 0.4rem;
     max-width: 100%;
+    width: 70%;
   }
 
   #paasge-display,
@@ -1147,12 +1172,14 @@ ul.mode-dropdown li {
   }
 
   .start-button {
-    padding: 4px 15px;
+    padding: 4px 10px;
     font-size: 1.12rem;
     font-weight: bold;
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
+    max-width: 100%;
+    width: 60%;
   }
 
   p.click-text {
@@ -1234,7 +1261,7 @@ ul.mode-dropdown li {
   body {
     padding: 0 0.2rem;
     max-width: 100%;
-    width: 90%;
+    width: 80%;
   }
 
   .passage-preview {
@@ -1278,18 +1305,38 @@ ul.mode-dropdown li {
     width: 90px;
     height: 60px;
   }
+
+  .start-button {
+    max-width: 100%;
+    width: 65%;
+    padding: 13px 10px;
+  }
+  p.click-text {
+    font-size: 1rem;
+  }
 }
 
 @media screen and (max-width: 320px) {
   body {
     padding: 0 0.1rem;
     max-width: 100%;
-    width: 95%;
+    width: 85%;
   }
 
   .passage-preview {
     max-width: 18rem;
     height: 10vh;
+  }
+
+  .time-measurements {
+    gap: var(--neutral-500);
+  }
+  .time-measurements p {
+    padding: 4px;
+  }
+
+  p.click-text {
+    font-size: 1rem;
   }
 
   .difficulty-settings button,
@@ -1306,5 +1353,141 @@ ul.mode-dropdown li {
     width: 80px;
     height: 50px;
     font-size: 0.8rem;
+  }
+  .start-button {
+    max-width: 100%;
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  body {
+    padding: 0 0.91rem;
+    max-width: 100%;
+    width: 70%;
+  }
+  .passage-preview {
+    max-width: 16rem;
+    height: 10vh;
+  }
+
+  .difficulty-settings button,
+  .mode-settings button {
+    padding: 0 5px;
+    font-size: 0.7rem;
+  }
+
+  .test-result {
+    gap: 5px;
+  }
+
+  :is(.result-WPM, .result-Accuracy, .result-Errors) {
+    width: 70px;
+    height: 40px;
+    font-size: 0.7rem;
+  }
+  .start-button {
+    max-width: 100%;
+    width: 95%;
+    padding: 10px 4px;
+  }
+}
+@media screen and (max-width: 260px) {
+  /* Header adjustments */
+  header {
+    margin-top: 10px;
+    gap: 5px;
+  }
+
+  .logo {
+    height: 30px;
+  }
+
+  .theme-toggle h1 {
+    font-size: 0.75rem;
+  }
+
+  .trophy-icon {
+    height: 18px;
+  }
+
+  /* Main content */
+  body {
+    padding: 0 0.3rem;
+    max-width: 100%;
+    width: 60%;
+  }
+
+  /* Time measurements */
+  .time-measurements {
+    gap: 2px;
+    margin-bottom: 10px;
+  }
+
+  .time-measurements p.time-button span {
+    /* font-size: clamp(0.3rem, 4vw, 2rem); */
+    margin-left: 4px;
+  }
+
+  /* Passage preview */
+  .passage-preview {
+    max-width: 12rem;
+    height: 6vh;
+    padding: 8px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  /* Buttons */
+  .difficulty-settings button,
+  .mode-settings button {
+    padding: 0 2px;
+    /* font-size: 0.5rem; */
+    height: 24px;
+  }
+
+  .start-button {
+    padding: 3px 19px;
+    font-size: 0.68rem;
+    max-width: 100%;
+    width: 90%;
+  }
+
+  /* Test results */
+  .test-result {
+    gap: 2px;
+  }
+
+  :is(.result-WPM, .result-Accuracy, .result-Errors) {
+    width: 50px;
+    height: 32px;
+    font-size: 0.5rem;
+    padding: 5px;
+  }
+
+  /* Typing container */
+  .typing-container {
+    height: 120px;
+  }
+
+  .visual-feedback,
+  .user-input {
+    font-size: 12px;
+    max-height: 120px;
+  }
+
+  /* Dropdowns */
+  .custom-dropdwon,
+  .dropdown-wrapper,
+  .mode-dropdown,
+  .diffculty-dropdown-match {
+    width: 120px;
+    padding: 3px;
+  }
+
+  /* Click text */
+  p.click-text {
+    font-size: 0.9rem;
+    max-width: 100%;
   }
 }
