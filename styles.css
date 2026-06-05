@@ -1063,6 +1063,9 @@ ul.mode-dropdown li {
 @media screen and (max-width: 572px) {
   body {
     border: 2px solid red;
+    max-width: 100%;
+    width: 99%;
+    height: 100%;
   }
   .passage-preview {
     max-width: 29rem;
