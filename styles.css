@@ -1061,6 +1061,9 @@ ul.mode-dropdown li {
   }
 }
 @media screen and (max-width: 572px) {
+  body {
+    border: 2px solid red;
+  }
   .passage-preview {
     max-width: 29rem;
     height: 10vh;
@@ -1081,6 +1084,50 @@ ul.mode-dropdown li {
     /* left: 50%; */
     width: 215px;
   }
+}
+@media screen and (max-width: 494px) {
+  body {
+    padding: 0 0.34rem;
+    max-width: 100%;
+    width: 98%;
+  }
+
+  .time-measurements {
+    gap: 7px;
+  }
+  .time-measurements p {
+    padding: 7px;
+  }
+
+  p.border {
+    height: 50px;
+  }
+
+  .passage-preview {
+    max-width: 23rem;
+    height: 10vh;
+  }
+
+  .custom-dropdwon,
+  .dropdown-wrapper {
+    width: 160px;
+    max-width: 100%;
+    height: auto;
+    padding: 5px;
+  }
+  .start-button {
+    max-width: 100%;
+    width: 65%;
+    padding: 13px 14px;
+  }
+
+  p.click-text {
+    font-size: 1.1rem;
+  }
+
+  .wrapper {
+    justify-content: center;
+  }
 
   .diffculty-dropdown-match {
     /* left: 50%; */
@@ -1097,7 +1144,6 @@ ul.mode-dropdown li {
     width: 50%;
   }
 }
-
 /* Fix 1: Flatten the media queries structure */
 /* Remove nesting - move all queries to top level */
 
@@ -1106,7 +1152,7 @@ ul.mode-dropdown li {
   body {
     padding: 0 0.4rem;
     max-width: 100%;
-    width: 70%;
+    width: 95%;
   }
 
   #paasge-display,
@@ -1211,57 +1257,12 @@ ul.mode-dropdown li {
   }
 }
 
-@media screen and (max-width: 494px) {
-  body {
-    padding: 0 0.34rem;
-    max-width: 100%;
-    width: 76%;
-  }
-
-  .time-measurements {
-    gap: 7px;
-  }
-  .time-measurements p {
-    padding: 7px;
-  }
-
-  p.border {
-    height: 50px;
-  }
-
-  .passage-preview {
-    max-width: 23rem;
-    height: 10vh;
-  }
-
-  .custom-dropdwon,
-  .dropdown-wrapper {
-    width: 160px;
-    max-width: 100%;
-    height: auto;
-    padding: 5px;
-  }
-  .start-button {
-    max-width: 100%;
-    width: 65%;
-    padding: 13px 14px;
-  }
-
-  p.click-text {
-    font-size: 1.1rem;
-  }
-
-  .wrapper {
-    justify-content: center;
-  }
-}
-
 /* Smallest devices (320px) */
 @media screen and (max-width: 375px) {
   body {
     padding: 0 0.2rem;
     max-width: 100%;
-    width: 80%;
+    width: 90%;
   }
 
   .passage-preview {
@@ -1393,6 +1394,11 @@ ul.mode-dropdown li {
   }
 }
 @media screen and (max-width: 260px) {
+  body {
+    padding: 0 0.91rem;
+    max-width: 100%;
+    width: 60%;
+  }
   /* Header adjustments */
   header {
     margin-top: 10px;
