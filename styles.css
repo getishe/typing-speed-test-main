@@ -1156,6 +1156,14 @@ ul.mode-dropdown li {
     max-width: 100%;
     width: 50%;
   }
+
+  .visual-feedback,
+  .user-input {
+    height: auto;
+    max-height: 32rem; /* or another value you prefer */
+    overflow-y: auto;
+    user-select: auto;
+  }
 }
 /* Fix 1: Flatten the media queries structure */
 /* Remove nesting - move all queries to top level */
