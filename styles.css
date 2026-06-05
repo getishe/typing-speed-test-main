@@ -767,7 +767,7 @@ ul.mode-dropdown li {
   .visual-feedback,
   .user-input {
     height: auto;
-    max-height: 16rem; /* or another value you prefer */
+    max-height: 19rem; /* or another value you prefer */
     overflow-y: auto;
     user-select: auto;
   }
@@ -1196,7 +1196,8 @@ ul.mode-dropdown li {
   }
 
   button.try-again-button {
-    margin: 60px auto;
+    margin: 110px auto;
+    border: 2px solid red;
     font-size: var(--font-size-body);
   }
 
