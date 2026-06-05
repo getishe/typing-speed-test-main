@@ -1195,6 +1195,11 @@ ul.mode-dropdown li {
     /* max-height: 200px; */
   }
 
+  button.try-again-button {
+    margin: 60px auto;
+    font-size: var(--font-size-body);
+  }
+
   .img,
   #Arraow_Icon {
     left: 80%;
