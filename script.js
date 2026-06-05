@@ -1226,7 +1226,7 @@ personalMatchMedia.addEventListener("change", function (e) {
 });
 
 const logo = document.querySelector(".logo");
-const logoMach = window.matchMedia("(max-width: 415px)");
+const logoMach = window.matchMedia("(max-width: 494px)");
 
 function applyLogoMach() {
   if (!logo) return;

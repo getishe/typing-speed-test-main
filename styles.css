@@ -1211,7 +1211,7 @@ ul.mode-dropdown li {
   }
 }
 
-@media screen and (max-width: 415px) {
+@media screen and (max-width: 494px) {
   body {
     padding: 0 0.34rem;
     max-width: 100%;
