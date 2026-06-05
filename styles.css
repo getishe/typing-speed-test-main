@@ -1069,8 +1069,17 @@ ul.mode-dropdown li {
   }
   .passage-preview {
     max-width: 29rem;
-    height: 10vh;
+    height: 220vh;
   }
+
+   .visual-feedback,
+  .user-input {
+    height: auto;
+    max-height: 22rem; /* or another value you prefer */
+    overflow-y: auto;
+    user-select: auto;
+  }
+  
   .custom-dropdwon,
   .dropdown-wrapper {
     width: 200px;
