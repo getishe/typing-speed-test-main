@@ -1059,6 +1059,10 @@ ul.mode-dropdown li {
     /* left: 44%; */
     width: 245px;
   }
+  button.try-again-button {
+    margin: 150px auto;
+    font-size: var(--font-size-body);
+  }
 }
 @media screen and (max-width: 572px) {
   body {
@@ -1256,10 +1260,6 @@ ul.mode-dropdown li {
   .passage-preview {
     font-size: 0.9rem;
     height: 150px;
-  }
-  button.try-again-button {
-    margin: 150px auto;
-    font-size: var(--font-size-body);
   }
 }
 
