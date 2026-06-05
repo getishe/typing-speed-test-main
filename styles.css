@@ -1192,7 +1192,7 @@ ul.mode-dropdown li {
   .visual-feedback,
   .user-input {
     font-size: 18px;
-    max-height: 200px;
+    /* max-height: 200px; */
   }
 
   .img,
