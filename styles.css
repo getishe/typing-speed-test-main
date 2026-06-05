@@ -767,7 +767,7 @@ ul.mode-dropdown li {
   .visual-feedback,
   .user-input {
     height: auto;
-    max-height: 19rem; /* or another value you prefer */
+    max-height: 21rem; /* or another value you prefer */
     overflow-y: auto;
     user-select: auto;
   }
@@ -1062,7 +1062,6 @@ ul.mode-dropdown li {
 }
 @media screen and (max-width: 572px) {
   body {
-    border: 2px solid red;
     max-width: 100%;
     width: 99%;
     height: 90%;
@@ -1195,12 +1194,6 @@ ul.mode-dropdown li {
     /* max-height: 200px; */
   }
 
-  button.try-again-button {
-    margin: 110px auto;
-    border: 2px solid red;
-    font-size: var(--font-size-body);
-  }
-
   .img,
   #Arraow_Icon {
     left: 80%;
@@ -1263,6 +1256,10 @@ ul.mode-dropdown li {
   .passage-preview {
     font-size: 0.9rem;
     height: 150px;
+  }
+  button.try-again-button {
+    margin: 150px auto;
+    font-size: var(--font-size-body);
   }
 }
 
