@@ -259,6 +259,40 @@ async function startTest() {
     .querySelectorAll(".accuracy")
     .forEach((el) => (el.style.color = "var(--neutral-green)"));
   resetConfettiSafely();
+
+  const AllButton = document.querySelectorAll(
+    "button.easy-button, button.medium-button, button.hard-button",
+  );
+  const modeButtons = document.querySelectorAll(
+    "button.Time-mode-button, button.Passage-mode-button",
+  );
+  document
+    .querySelectorAll(
+      "button.easy-button, button.medium-button, button.hard-button",
+    )
+    .forEach((btn) => (btn.disabled = true));
+  document
+    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .forEach((btn) => (btn.disabled = true));
+  AllButton.forEach((btn) => {
+    btn.addEventListener("click", function (event) {
+      if (btn.disabled) {
+        event.preventDefault();
+        event.stopPropagation();
+        btn.disabled = true; // ← Sets HTML disabled attribute
+      }
+    });
+  });
+
+  modeButtons.forEach((btn) => {
+    btn.addEventListener("click", function (event) {
+      if (btn.disabled) {
+        event.preventDefault();
+        event.stopPropagation();
+        btn.disabled = true; // ← Sets HTML disabled attribute
+      }
+    });
+  });
 }
 
 function endTest() {
@@ -411,6 +445,15 @@ function resetTest() {
   if (visualFeedback) {
     visualFeedback.innerHTML = "";
   }
+  // Re-enable difficulty and mode buttons
+  document
+    .querySelectorAll(
+      "button.easy-button, button.medium-button, button.hard-button",
+    )
+    .forEach((btn) => (btn.disabled = false));
+  document
+    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .forEach((btn) => (btn.disabled = false));
 }
 
 // loadData data.json
@@ -1127,6 +1170,11 @@ if (dropDown && mode) {
 
 modeLists.forEach((li) => {
   li.addEventListener("click", function (event) {
+    if (li.classList.contains("disabled")) {
+      event.preventDefault();
+      event.stopPropagation(); // Prevent the click from propagating to the document
+      return;
+    }
     if (select) {
       select.textContent = li.textContent.trim();
     }
@@ -1172,6 +1220,11 @@ if (customDropDown && difficultyDrop) {
 
 difficultyList.forEach((li) => {
   li.addEventListener("click", function (event) {
+    if (li.classList.contains("disabled")) {
+      event.preventDefault();
+      event.stopPropagation(); // Prevent the click from propagating to the document
+      return;
+    }
     if (difficulty) {
       difficulty.textContent = li.textContent.trim();
     }
