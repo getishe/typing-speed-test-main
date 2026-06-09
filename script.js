@@ -355,7 +355,6 @@ function endTest() {
     el.innerHTML = `<span class="chars-correct">${correctChars}</span> / 
     <span class="chars-incorrect">${incorrectCount}</span>`;
   });
-  enableAllButtons();
 }
 
 // localStorage.setItem(PERSONAL_BEST_KEY, "0");
@@ -426,6 +425,8 @@ function resetTest() {
   document
     .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
     .forEach((btn) => (btn.disabled = false));
+
+  enableAllButtons();
 }
 
 // loadData data.json
@@ -1320,25 +1321,3 @@ function enableAllButtons() {
       btn.style.opacity = ""; // Reset to default
     });
 }
-
-// Check all buttons on the page
-console.log("All buttons:", document.querySelectorAll("button").length);
-
-// Check if selector finds anything
-console.log(
-  "Difficulty buttons found:",
-  document.querySelectorAll(
-    "button.easy-button, button.medium-button, button.hard-button",
-  ).length,
-);
-console.log(
-  "Mode buttons found:",
-  document.querySelectorAll(
-    "button.Time-mode-button, button.Passage-mode-button",
-  ).length,
-);
-
-// Log actual button classes
-document.querySelectorAll("button").forEach((btn, i) => {
-  console.log(`Button ${i}:`, btn.className, btn.textContent);
-});
