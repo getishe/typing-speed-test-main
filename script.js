@@ -72,7 +72,7 @@ function runConfettiBurst() {
 function resetConfettiSafely() {
   if (typeof confetti !== "function") return;
   if (shouldReduceMotion()) return;
-  resetConfettiSafely();
+  confetti.reset();
 }
 
 difficultySettings.forEach((button) => {
@@ -423,7 +423,7 @@ function resetTest() {
     )
     .forEach((btn) => (btn.disabled = false));
   document
-    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .querySelectorAll("button.Time-mode-button, button.passage-mode-button")
     .forEach((btn) => (btn.disabled = false));
 
   enableAllButtons();
@@ -1295,7 +1295,7 @@ function disableAllButtons() {
       btn.style.opacity = "0.5"; // Optional: visually indicate they are disabled
     });
   document
-    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .querySelectorAll("button.Time-mode-button, button.passage-mode-button")
     .forEach((btn) => {
       btn.disabled = true;
       btn.style.pointerEvents = "none"; // Optional: visually indicate they are disabled
@@ -1314,7 +1314,7 @@ function enableAllButtons() {
       btn.style.opacity = ""; // Reset to default
     });
   document
-    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .querySelectorAll("button.Time-mode-button, button.passage-mode-button")
     .forEach((btn) => {
       btn.disabled = false;
       btn.style.pointerEvents = ""; // Reset to default
