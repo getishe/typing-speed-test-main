@@ -260,38 +260,13 @@ async function startTest() {
     .forEach((el) => (el.style.color = "var(--neutral-green)"));
   resetConfettiSafely();
 
-  const AllButton = document.querySelectorAll(
-    "button.easy-button, button.medium-button, button.hard-button",
-  );
-  const modeButtons = document.querySelectorAll(
-    "button.Time-mode-button, button.Passage-mode-button",
-  );
-  document
-    .querySelectorAll(
-      "button.easy-button, button.medium-button, button.hard-button",
-    )
-    .forEach((btn) => (btn.disabled = true));
-  document
-    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
-    .forEach((btn) => (btn.disabled = true));
-  AllButton.forEach((btn) => {
-    btn.addEventListener("click", function (event) {
-      if (btn.disabled) {
-        event.preventDefault();
-        event.stopPropagation();
-        btn.disabled = true; // ← Sets HTML disabled attribute
-      }
-    });
+  // Disable difficulty and mode buttons during test
+  disableAllButtons();
+  difficultySettings.forEach((btn) => {
+    btn.disabled = true;
   });
-
-  modeButtons.forEach((btn) => {
-    btn.addEventListener("click", function (event) {
-      if (btn.disabled) {
-        event.preventDefault();
-        event.stopPropagation();
-        btn.disabled = true; // ← Sets HTML disabled attribute
-      }
-    });
+  modeSettings.forEach((btn) => {
+    btn.disabled = true;
   });
 }
 
@@ -321,19 +296,13 @@ function endTest() {
   if (previousBest === 0) {
     // First test - Baseline Established
     savePersonalBest(finalWpm);
-    // document.getElementById("personal-best").textContent = finalWpm;
-    document.querySelectorAll("#personal-best").forEach((el) => {
-      el.textContent = finalWpm;
-    });
+    updatePersonalBestHeader();
     displayResultMessage(finalWpm, 0);
     setActiveStates("baseline-established");
   } else if (finalWpm > previousBest) {
     // New high score - High Score Smashed
     savePersonalBest(finalWpm);
-    // document.getElementById("personal-best").textContent = finalWpm;
-    document.querySelectorAll("#personal-best").forEach((el) => {
-      el.textContent = finalWpm;
-    });
+    updatePersonalBestHeader();
     displayResultMessage(finalWpm, previousBest);
     setActiveStates("high-score-smashed");
   } else {
@@ -386,7 +355,10 @@ function endTest() {
     el.innerHTML = `<span class="chars-correct">${correctChars}</span> / 
     <span class="chars-incorrect">${incorrectCount}</span>`;
   });
+  enableAllButtons();
 }
+
+// localStorage.setItem(PERSONAL_BEST_KEY, "0");
 
 function resetTest() {
   gameState.isTestActive = false;
@@ -771,11 +743,8 @@ function moveToNextLine() {
 document.addEventListener("DOMContentLoaded", () => {
   // ✅ INITIALIZE LOCALSTORAGE ON PAGE LOAD
   const storedBest = localStorage.getItem(PERSONAL_BEST_KEY);
-  if (storedBest) {
-    document.getElementById("personal-best").textContent = storedBest;
-  } else {
+  if (!storedBest) {
     localStorage.setItem(PERSONAL_BEST_KEY, "0");
-    document.getElementById("personal-best").textContent = "0";
   }
 
   renderPassagePreview();
@@ -1256,26 +1225,29 @@ applyMatchedForDifficulty();
 difficultyMediaMatch.addEventListener("change", applyMatchedForDifficulty);
 
 const personalMatchMedia = window.matchMedia("(max-width: 572px)");
-const personalTextContext = document.querySelector(".personal");
+const personalLabel = document.querySelector("#personal-label");
+const personalBestSpan = document.querySelector("#personal-best");
 
-document.addEventListener("DOMContentLoaded", function () {
-  if (personalTextContext) {
+function updatePersonalBestHeader() {
+  const currentBest = getPersonalBest();
+  if (personalBestSpan) {
+    personalBestSpan.textContent = ` ${currentBest} WPM`;
+  }
+  if (personalLabel) {
     if (personalMatchMedia.matches) {
-      personalTextContext.textContent = `Best:${getPersonalBest()}`;
+      personalLabel.textContent = "Best:";
     } else {
-      personalTextContext.textContent = `Personal best:${getPersonalBest()}`;
+      personalLabel.textContent = "Personal best:";
     }
   }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  updatePersonalBestHeader();
 });
 
-personalMatchMedia.addEventListener("change", function (e) {
-  // Initialize on page load
-
-  if (e.matches) {
-    personalTextContext.textContent = `Best:${getPersonalBest()}`;
-  } else {
-    personalTextContext.textContent = `Personal best:${getPersonalBest()}`;
-  }
+personalMatchMedia.addEventListener("change", function () {
+  updatePersonalBestHeader();
 });
 
 const logo = document.querySelector(".logo");
@@ -1310,3 +1282,63 @@ function applyLogoDisplay() {
 
 applyLogoDisplay();
 logoSmallMatch.addEventListener("change", applyLogoDisplay);
+
+function disableAllButtons() {
+  document
+    .querySelectorAll(
+      "button.easy-button, button.medium-button, button.hard-button",
+    )
+    .forEach((btn) => {
+      btn.disabled = true;
+      btn.style.pointerEvents = "none"; // Optional: visually indicate they are disabled
+      btn.style.opacity = "0.5"; // Optional: visually indicate they are disabled
+    });
+  document
+    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .forEach((btn) => {
+      btn.disabled = true;
+      btn.style.pointerEvents = "none"; // Optional: visually indicate they are disabled
+      btn.style.opacity = "0.5"; // Optional: visually indicate they are disabled
+    });
+}
+
+function enableAllButtons() {
+  document
+    .querySelectorAll(
+      "button.easy-button, button.medium-button, button.hard-button",
+    )
+    .forEach((btn) => {
+      btn.disabled = false;
+      btn.style.pointerEvents = ""; // Reset to default
+      btn.style.opacity = ""; // Reset to default
+    });
+  document
+    .querySelectorAll("button.Time-mode-button, button.Passage-mode-button")
+    .forEach((btn) => {
+      btn.disabled = false;
+      btn.style.pointerEvents = ""; // Reset to default
+      btn.style.opacity = ""; // Reset to default
+    });
+}
+
+// Check all buttons on the page
+console.log("All buttons:", document.querySelectorAll("button").length);
+
+// Check if selector finds anything
+console.log(
+  "Difficulty buttons found:",
+  document.querySelectorAll(
+    "button.easy-button, button.medium-button, button.hard-button",
+  ).length,
+);
+console.log(
+  "Mode buttons found:",
+  document.querySelectorAll(
+    "button.Time-mode-button, button.Passage-mode-button",
+  ).length,
+);
+
+// Log actual button classes
+document.querySelectorAll("button").forEach((btn, i) => {
+  console.log(`Button ${i}:`, btn.className, btn.textContent);
+});
