@@ -414,6 +414,7 @@ function resetTest() {
   // Re-enable difficulty and mode buttons
 
   enableAllButtons();
+  enableMenu();
 }
 
 // loadData data.json
@@ -1324,5 +1325,18 @@ function disableMenu() {
     dropDown.disabled = true;
     dropDown.style.pointerEvents = "none";
     dropDown.style.opacity = "0.5";
+  }
+}
+
+function enableMenu() {
+  if (difficultyMediaMatch.matches) {
+    customDropDown.disabled = false;
+    customDropDown.style.pointerEvents = "";
+    customDropDown.style.opacity = "";
+  }
+  if (mobileDropdownMedia.matches) {
+    dropDown.disabled = false;
+    dropDown.style.pointerEvents = "";
+    dropDown.style.opacity = "";
   }
 }
