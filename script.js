@@ -262,12 +262,7 @@ async function startTest() {
 
   // Disable difficulty and mode buttons during test
   disableAllButtons();
-  difficultySettings.forEach((btn) => {
-    btn.disabled = true;
-  });
-  modeSettings.forEach((btn) => {
-    btn.disabled = true;
-  });
+  disableMenu();
 }
 
 function endTest() {
@@ -417,14 +412,6 @@ function resetTest() {
     visualFeedback.innerHTML = "";
   }
   // Re-enable difficulty and mode buttons
-  document
-    .querySelectorAll(
-      "button.easy-button, button.medium-button, button.hard-button",
-    )
-    .forEach((btn) => (btn.disabled = false));
-  document
-    .querySelectorAll("button.Time-mode-button, button.passage-mode-button")
-    .forEach((btn) => (btn.disabled = false));
 
   enableAllButtons();
 }
@@ -1167,6 +1154,7 @@ const difficultyList = document.querySelectorAll(
 const difficulty = document.querySelector(".difficulty");
 const difficultyMediaMatch = window.matchMedia("(max-width: 690px)");
 
+// Toggle difficulty dropdown visibility based on screen size
 function applyMatchedForDifficulty() {
   if (!difficultyDrop) return;
 
@@ -1300,6 +1288,7 @@ function disableAllButtons() {
       btn.disabled = true;
       btn.style.pointerEvents = "none"; // Optional: visually indicate they are disabled
       btn.style.opacity = "0.5"; // Optional: visually indicate they are disabled
+      btn.style.cursor = "not-allowed"; // Optional: change cursor to indicate disabled state
     });
 }
 
@@ -1319,5 +1308,21 @@ function enableAllButtons() {
       btn.disabled = false;
       btn.style.pointerEvents = ""; // Reset to default
       btn.style.opacity = ""; // Reset to default
+      btn.style.cursor = ""; // Reset to default
     });
+}
+
+//mobile menu toggle
+
+function disableMenu() {
+  if (difficultyMediaMatch.matches) {
+    customDropDown.disabled = true;
+    customDropDown.style.pointerEvents = "none";
+    customDropDown.style.opacity = "0.5";
+  }
+  if (mobileDropdownMedia.matches) {
+    dropDown.disabled = true;
+    dropDown.style.pointerEvents = "none";
+    dropDown.style.opacity = "0.5";
+  }
 }
