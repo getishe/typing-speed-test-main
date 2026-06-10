@@ -1,152 +1,181 @@
-# Frontend Mentor - Typing Speed Test
-![Design preview for the Typing Speed Test coding challenge](./preview.jpg)
+# Frontend Mentor - Typing Speed Test solution
 
-here is my here us
+This is a solution to the [Typing Speed Test challenge on Frontend Mentor](https://www.frontendmentor.io/challenges/typing-speed-test). Frontend Mentor challenges help you improve your coding skills by building realistic projects.
 
-## Hi Welcome! 👋
+## Table of contents
 
-Thanks for checking out this front-end coding challenge.
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [Screenshot](#screenshot)
+  - [Links](#links)
+- [My process](#my-process)
+  - [Built with](#built-with)
+  - [What I learned](#what-i-learned)
+  - [Continued development](#continued-development)
+  - [Useful resources](#useful-resources)
+- [Author](#author)
+- [Acknowledgments](#acknowledgments)
 
-[Frontend Mentor](https://www.frontendmentor.io) challenges help you improve your coding skills by building realistic projects.
+## Overview
 
-**To do this challenge, you need a good understanding of HTML, CSS and JavaScript.**
+This project is a fully-featured, responsive, and interactive **Typing Speed Test** application. It is designed to evaluate a user's typing speed (WPM) and accuracy in real-time under different settings and conditions. Built as part of a Frontend Mentor challenge, the app provides a highly polished typing interface with immediate visual feedback, progress calculations, and persistent personal high scores to encourage users to continuously improve.
 
-## The challenge
+### The challenge
 
-Your challenge is to build out this typing speed test app and get it looking as close to the design as possible.
+Users should be able to:
 
-You can use any tools you like to help you complete the challenge. So if you've got something you'd like to practice, feel free to give it a go.
-
-We store the passage data in a local `data.json` file. You can use that to randomly select passages of varying difficulty.
-
-Your users should be able to:
-
-#### Test Controls
-
+- View the optimal layout for the interface depending on their device's screen size
+- See hover and focus states for all interactive elements on the page
 - Start a test by clicking the start button or by clicking the passage and typing
-- Select a difficulty level (Easy, Medium, Hard) for passages of varying complexity
+- Select a difficulty level (Easy, Medium, Hard) for passages of varying complexity from a local `data.json` file
 - Switch between "Timed (60s)" mode and "Passage" mode (timer counts up, no limit)
 - Restart at any time to get a new random passage from the selected difficulty
-
-#### Typing Experience
-
 - See real-time WPM, accuracy, and time stats while typing
 - See visual feedback showing correct characters (green), errors (red/underlined), and cursor position
 - Correct mistakes with backspace (original errors still count against accuracy)
-
-#### Results & Progress
-
 - View results showing WPM, accuracy, and characters (correct/incorrect) after completing a test
 - See a "Baseline Established!" message on their first test, setting their personal best
 - See a "High Score Smashed!" celebration with confetti when beating their personal best
 - Have their personal best persist across sessions via localStorage
 
-#### UI & Responsiveness
+### Screenshot
 
-- View the optimal layout depending on their device's screen size
-- See hover and focus states for all interactive elements
+![Typing Speed Test Solution Screenshot](./screenshot.jpg)
 
-### Data Model
+### Links
 
-A `data.json` file is provided with passages organized by difficulty. Each passage has the following structure:
+- Solution URL: [Frontend Mentor Solution](https://www.frontendmentor.io/solutions/typing-speed-test-solution-built-with-vanilla-js-and-css-custom-properties-2Yc8v_1oF)
+- Live Site URL: [Live Deployment on GitHub Pages](https://getishe.github.io/typing-speed-test-main/)
 
-```json
-{
-  "id": "easy-1",
-  "text": "The sun rose over the quiet town. Birds sang in the trees as people woke up and started their day."
+## My process
+
+My development process followed a structured, mobile-first methodology. I began by analyzing the design mockups to map out a semantic HTML structure and CSS variables. Next, I engineered the core typing engine in JavaScript, focusing on handling complex keyboard event listeners, real-time string alignment, and accuracy calculation. Finally, I integrated interactive features like state management, modal popups, local storage, and confetti burst animations to polish the final user experience.
+
+### Built with
+
+- Semantic HTML5 markup
+- CSS custom properties
+- Flexbox
+- CSS Grid
+- Mobile-first workflow
+- Vanilla JavaScript (ES6+)
+- Canvas-Confetti library
+- LocalStorage API
+
+### What I learned
+
+During this project, I gained experience in building a real-time text validation and analysis engine. Highlighting letters dynamically while handling edge cases like tab, space, and backspaces required a precise DOM rendering strategy.
+
+I'm proud of the custom WPM calculation function which accounts for character count division to simulate typical word length relative to elapsed seconds:
+
+```js
+function calculateWpm(typedText) {
+  if (typeof typedText !== "string") {
+    return 0;
+  }
+
+  if (!gameState.timerStartTime) {
+    return 0;
+  }
+  const elapsedSeconds = Math.floor(
+    (Date.now() - gameState.timerStartTime) / 1000,
+  );
+
+  if (elapsedSeconds < 1) {
+    return 0;
+  }
+
+  const charsTyped = typedText.length;
+  const words = charsTyped / 5;
+  const elapsedMinutes = elapsedSeconds / 60;
+  const wpm = words / elapsedMinutes;
+
+  return Math.floor(wpm);
 }
 ```
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `id` | string | Unique identifier for the passage (e.g., "easy-1", "medium-3", "hard-10") |
-| `text` | string | The passage text the user will type |
+I also built a rendering function `buildVisualFeedback()` to dynamically assign visual styles to correct/incorrect characters and display the cursor:
 
-### Expected Behaviors
+```js
+function buildVisualFeedback() {
+  const visualFeedback = document.querySelector("#visual-feedback");
+  if (!visualFeedback) return;
 
-- **Starting the test**: The timer begins when the user starts typing or clicks the start button. Clicking directly on the passage text and typing also initiates the test
-- **Timed mode**: 60-second countdown. Test ends when timer reaches 0 or passage is completed
-- **Passage mode**: Timer counts up with no limit. Test ends when the full passage is typed
-- **Error handling**: Incorrect characters are highlighted in red with an underline. Backspace allows corrections, but errors still count against accuracy
-- **Results logic**:
-  - First completed test: "Baseline Established!" - sets initial personal best
-  - New personal best: "High Score Smashed!" with confetti animation
-  - Normal completion: "Test Complete!" with encouragement message
+  const liveTyped = userInput.value || "";
+  const liveTarget = gameState.currentPassage || "";
+  const cursorIndex = liveTyped.length;
 
-### Data Persistence
+  let html = "";
 
-The personal best score should persist across browser sessions using `localStorage`. When a user beats their high score, the new value should be saved and displayed on subsequent visits.
+  for (let i = 0; i < liveTarget.length; i++) {
+    const targetChar = liveTarget[i];
 
-### Want some support on the challenge? 
+    if (targetChar === "\n") {
+      html += `<br>`;
+      continue;
+    }
 
-[Join our community](https://www.frontendmentor.io/community) and ask questions in the **#help** channel.
+    let classes = [];
 
-## Where to find everything
+    if (i < liveTyped.length) {
+      classes.push(gameState.perIndexErrors[i] ? "incorrect" : "correct");
+    } else {
+      classes.push("untyped");
+    }
 
-Your task is to build out the project to the designs inside the `/design` folder. You will find both a mobile and a desktop version of the design. 
+    if (i === cursorIndex) {
+      classes.push("current");
+    }
 
-The designs are in JPG static format. Using JPGs will mean that you'll need to use your best judgment for styles such as `font-size`, `padding` and `margin`. 
+    let displayChar = targetChar;
+    if (targetChar === "<") {
+      displayChar = "<";
+    } else if (targetChar === ">") {
+      displayChar = ">";
+    } else if (targetChar === "&") {
+      displayChar = "&";
+    }
 
-If you would like the Figma design file to gain experience using professional tools and build more accurate projects faster, you can [subscribe as a PRO member](https://www.frontendmentor.io/pro).
+    html += `<span class="${classes.join(" ")}" style="white-space: pre-wrap;">${displayChar}</span>`;
+  }
+  visualFeedback.innerHTML = html;
+}
+```
 
-All the required assets for this project are in the `/assets` folder. The images are already exported for the correct screen size and optimized.
+On the styling side, defining fluid typography and structured CSS variables allowed for highly responsive states on mobile and desktop layout variations:
 
-We also include variable and static font files for the required fonts for this project. You can choose to either link to Google Fonts or use the local font files to host the fonts yourself. Note that we've removed the static font files for the font weights that aren't needed for this project.
+```css
+:root {
+  --neutral-green: hsl(140, 63%, 57%);
+  --neutral-red: hsl(354, 63%, 57%);
+  --neutral-900: hsl(0, 0%, 7%);
+  --neutral-800: hsl(0, 0%, 15%);
+  --neutral-700: hsl(240, 2%, 25%);
+  --neutral-500: hsl(240, 3%, 46%);
 
-There is also a `style-guide.md` file containing the information you'll need, such as color palette and fonts.
+  --font-family: "Sora", sans-serif;
+  --font-size-body: 16px;
+}
+```
 
-## Building your project
+### Continued development
 
-Feel free to use any workflow that you feel comfortable with. Below is a suggested process, but do not feel like you need to follow these steps:
+In future projects, I plan to focus on:
 
-1. Initialize your project as a public repository on [GitHub](https://github.com/). Creating a repo will make it easier to share your code with the community if you need help. If you're not sure how to do this, [have a read-through of this Try Git resource](https://try.github.io/).
-2. Configure your repository to publish your code to a web address. This will also be useful if you need some help during a challenge as you can share the URL for your project with your repo URL. There are a number of ways to do this, and we provide some recommendations below.
-3. Look through the designs to start planning out how you'll tackle the project. This step is crucial to help you think ahead for CSS classes to create reusable styles.
-4. Before adding any styles, structure your content with HTML. Writing your HTML first can help focus your attention on creating well-structured content.
-5. Write out the base styles for your project, including general content styles, such as `font-family` and `font-size`.
-6. Start adding styles to the top of the page and work down. Only move on to the next section once you're happy you've completed the area you're working on.
+- **Declarative Frameworks**: Migrating projects like this to React or Svelte to handle complex state transitions and component rendering more cleanly.
+- **Enhanced Accessibility**: Standardizing ARIA attributes to better announce ongoing typing accuracy and speed metrics live to screen-reader users.
+- **Detailed Key Statistics**: Implementing analytics tracking such as keystroke latency (heatmaps for slowest keys) to help users optimize speed.
 
-## Deploying your project
+### Useful resources
 
-As mentioned above, there are many ways to host your project for free. Our recommend hosts are:
+- [MDN Web Docs - KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent) - This was essential for finding keys, handling specific behaviors (like Space or Backspace), and managing default browser event preventions.
+- [Canvas Confetti GitHub Repo](https://github.com/catdad/canvas-confetti) - A very useful and lightweight package to trigger confetti animations when users beat their personal best.
 
-- [GitHub Pages](https://pages.github.com/)
-- [Vercel](https://vercel.com/)
-- [Netlify](https://www.netlify.com/)
+## Author
 
-You can host your site using one of these solutions or any of our other trusted providers. [Read more about our recommended and trusted hosts](https://medium.com/frontend-mentor/frontend-mentor-trusted-hosting-providers-bf000dfebe).
+- Website - [Getahun Alemayhu](https://github.com/getishe)
+- Frontend Mentor - [@getishe](https://www.frontendmentor.io/profile/getishe)
 
-## Create a custom `README.md`
+## Acknowledgments
 
-We strongly recommend overwriting this `README.md` with a custom one. We've provided a template inside the [`README-template.md`](./README-template.md) file in this starter code.
-
-The template provides a guide for what to add. A custom `README` will help you explain your project and reflect on your learnings. Please feel free to edit our template as much as you like.
-
-Once you've added your information to the template, delete this file and rename the `README-template.md` file to `README.md`. That will make it show up as your repository's README file.
-
-## Submitting your solution
-
-Submit your solution on the platform for the rest of the community to see. Follow our ["Complete guide to submitting solutions"](https://medium.com/frontend-mentor/a-complete-guide-to-submitting-solutions-on-frontend-mentor-ac6384162248) for tips on how to do this.
-
-Remember, if you're looking for feedback on your solution, be sure to ask questions when submitting it. The more specific and detailed you are with your questions, the higher the chance you'll get valuable feedback from the community.
-
-## Sharing your solution
-
-There are multiple places you can share your solution:
-
-1. Share your solution page in the **#finished-projects** channel of our [community](https://www.frontendmentor.io/community). 
-2. Tweet [@frontendmentor](https://twitter.com/frontendmentor) and mention **@frontendmentor**, including the repo and live URLs in the tweet. We'd love to take a look at what you've built and help share it around.
-3. Share your solution on other social channels like LinkedIn.
-4. Blog about your experience building your project. Writing about your workflow, technical choices, and talking through your code is a brilliant way to reinforce what you've learned. Great platforms to write on are [dev.to](https://dev.to/), [Hashnode](https://hashnode.com/), and [CodeNewbie](https://community.codenewbie.org/).
-
-We provide templates to help you share your solution once you've submitted it on the platform. Please do edit them and include specific questions when you're looking for feedback. 
-
-The more specific you are with your questions the more likely it is that another member of the community will give you feedback.
-
-## Got feedback for us?
-
-We love receiving feedback! We're always looking to improve our challenges and our platform. So if you have anything you'd like to mention, please email hi[at]frontendmentor[dot]io.
-
-This challenge is completely free. Please share it with anyone who will find it useful for practice.
-
-**Have fun building!** 🚀
+Thanks to Frontend Mentor for providing the clean assets and professional mockups that made developing this typing speed app a rewarding challenge.
