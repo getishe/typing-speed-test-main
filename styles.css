@@ -547,6 +547,13 @@ button.reset-button img:hover {
   opacity: 2.5; /* Slightly transparent for better visibility */
 }
 
+@keyframes blink {
+  50% {
+    background-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
 .visual-feedback span.cursor-end {
   display: inline-block;
   min-width: 2px;
@@ -1169,7 +1176,7 @@ ul.mode-dropdown li {
     width: 95%;
   }
 
-  #paasge-display,
+  #passage-display,
   #visual-feedback,
   #user-input {
     font-size: 35px;

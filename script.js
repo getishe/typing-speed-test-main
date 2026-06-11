@@ -108,6 +108,17 @@ if (start) {
     // passageDisplay.focus();
   });
 }
+if (passagePreview) {
+  passagePreview.addEventListener("click", () => {
+    startTest();
+  });
+}
+const clickText = document.querySelector(".click-text");
+if (clickText) {
+  clickText.addEventListener("click", () => {
+    startTest();
+  });
+}
 if (reset) {
   reset.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -210,6 +221,8 @@ async function startTest() {
     gameState.normalizedTarget = gameState.currentPassage
       ? normalizeForCompare(gameState.currentPassage).toLocaleLowerCase()
       : "";
+
+    buildVisualFeedback();
   });
 
   if (userInput) {
@@ -221,10 +234,13 @@ async function startTest() {
     el.textContent = getPersonalBest();
   });
 
-  if (gameState.mode === "timed") {
-    startTimedMode();
-  } else if (gameState.mode === "passage") {
-    startPassageMode();
+  const timeDisplay = document.querySelector(".time");
+  if (timeDisplay) {
+    if (gameState.mode === "timed") {
+      timeDisplay.textContent = "1:00";
+    } else {
+      timeDisplay.textContent = "0:00";
+    }
   }
   console.log("Test started with passage:", gameState.currentPassage); // ✅ Log normalized
   console.log("Passage length:", gameState.currentPassage.length); // ✅ Log length
@@ -387,7 +403,10 @@ function resetTest() {
   wpmDisplays.forEach((el) => (el.textContent = "0"));
 
   const accuracyDisplays = document.querySelectorAll(".accuracy");
-  accuracyDisplays.forEach((el) => (el.textContent = "0%"));
+  accuracyDisplays.forEach((el) => {
+    el.textContent = "100%";
+    el.style.color = "var(--neutral-green)";
+  });
 
   const personalBest = getPersonalBest();
   document.querySelectorAll("#personal-best").forEach((el) => {
@@ -743,6 +762,19 @@ document.addEventListener("DOMContentLoaded", () => {
     userInput.addEventListener("input", () => {
       const currentLength = userInput.value.length;
       gameState.typedText = userInput.value;
+
+      // Start the timer on the first keystroke if it's not already running
+      if (
+        gameState.isTestActive &&
+        !gameState.timerRunning &&
+        currentLength > 0
+      ) {
+        if (gameState.mode === "timed") {
+          startTimedMode();
+        } else if (gameState.mode === "passage") {
+          startPassageMode();
+        }
+      }
 
       gameState.normalizedTypedText = normalizeForCompare(
         userInput.value,
@@ -1136,6 +1168,10 @@ modeLists.forEach((li) => {
     if (select) {
       select.textContent = li.textContent.trim();
     }
+    const btn = li.querySelector("button");
+    if (btn && event.target !== btn) {
+      btn.click();
+    }
     if (mobileDropdownMedia.matches && mode) {
       mode.style.display = "none";
       // event.preventDefault();
@@ -1186,6 +1222,10 @@ difficultyList.forEach((li) => {
     }
     if (difficulty) {
       difficulty.textContent = li.textContent.trim();
+    }
+    const btn = li.querySelector("button");
+    if (btn && event.target !== btn) {
+      btn.click();
     }
 
     if (difficultyMediaMatch.matches && difficultyDrop) {
