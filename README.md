@@ -18,7 +18,7 @@ This is a solution to the [Typing Speed Test challenge on Frontend Mentor](https
 
 ## Overview
 
-This project is a fully-featured, responsive, and interactive **Typing Speed Test** application. It is designed to evaluate a user's typing speed (WPM) and accuracy in real-time under different settings and conditions. Built as part of a Frontend Mentor challenge, the app provides a highly polished typing interface with immediate visual feedback, progress calculations, and persistent personal high scores to encourage users to continuously improve.
+This project is a fully-featured, responsive, and interactive **Typing Speed Test** and application. It is designed to evaluate a user's typing speed (WPM) and accuracy in real-time under different settings and conditions. Built as part of a Frontend Mentor challenge, the app provides a highly polished typing interface with immediate visual feedback, progress calculations, and persistent personal high scores to encourage users to continuously improve.
 
 ### The challenge
 
