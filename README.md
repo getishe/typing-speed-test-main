@@ -22,7 +22,7 @@ This project is a fully-featured, responsive, and interactive **Typing Speed Tes
 
 ### The challenge
 
-Users should be able to:
+Users should be able to implements:
 
 - View the optimal layout for the interface depending on their device's screen size
 - See hover and focus states for all interactive elements on the page
