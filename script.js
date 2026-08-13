@@ -106,6 +106,7 @@ if (start) {
   start.addEventListener("click", () => {
     startTest();
     // passageDisplay.focus();
+    console.log(start)
   });
 }
 if (passagePreview) {
