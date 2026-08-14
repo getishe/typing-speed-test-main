@@ -112,6 +112,7 @@ if (start) {
 if (passagePreview) {
   passagePreview.addEventListener("click", () => {
     startTest();
+    console.log(startTest())
   });
 }
 const clickText = document.querySelector(".click-text");
