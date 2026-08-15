@@ -97,6 +97,7 @@ modeSettings.forEach((buttons) => {
       ? "timed"
       : "passage";
     console.log("Mode", gameState.mode);
+    console.log(gameState.mode);
   });
 });
 
