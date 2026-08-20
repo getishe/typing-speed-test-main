@@ -108,6 +108,7 @@ if (start) {
     startTest();
     // passageDisplay.focus();
     console.log(start)
+    console.log(start)
   });
 }
 if (passagePreview) {
