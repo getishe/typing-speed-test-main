@@ -12,7 +12,7 @@ const difficultySettings = document.querySelectorAll(
 );
 
 const modeSettings = document.querySelectorAll(".mode-settings button");
-
+console.log(modeSettings)
 let totalKeysPressed = 0;
 let previousLength = 0;
 let timerInterval = null;
